@@ -1,0 +1,30 @@
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import App from "./views/App.tsx";
+// Inline the compiled Tailwind CSS via Vite so it can be injected into the shadow root
+// This relies on @tailwindcss/vite to process the CSS before inlining
+import tailwindCss from "../styles/tailwind.css?inline";
+
+console.log("[CRXJS] Hello world from content script!");
+
+// Create shadow host and attach shadow root
+const host = document.createElement("div");
+host.id = "ghost-click-shadow-host";
+document.body.appendChild(host);
+
+const shadowRoot = host.attachShadow({ mode: "open" });
+
+// Inject compiled Tailwind CSS into shadow root to style isolated UI
+const styleEl = document.createElement("style");
+styleEl.textContent = tailwindCss as unknown as string;
+shadowRoot.appendChild(styleEl);
+
+// Mount point inside shadow root
+const mount = document.createElement("div");
+shadowRoot.appendChild(mount);
+
+createRoot(mount).render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+);
