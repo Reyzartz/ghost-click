@@ -1,8 +1,8 @@
-import { BaseService } from "@/services/BaseService";
+import { BaseService } from "@/utils/BaseService";
 import { Emitter } from "./Emitter";
 import { Logger } from "./Logger";
-import { ShortcutService } from "@/services/ShortcutService";
-import { RecorderService } from "@/services/RecorderService";
+import { ShortcutService } from "@/background/services/ShortcutService";
+import { RecorderService } from "@/background/services/RecorderService";
 
 export class App {
   emitter: Emitter;

@@ -1,4 +1,4 @@
-import { BaseService } from "./BaseService";
+import { BaseService } from "../../utils/BaseService";
 import { Emitter } from "@/utils/Emitter";
 
 export class ShortcutService extends BaseService {

@@ -1,4 +1,4 @@
-import { BaseService } from "./BaseService";
+import { BaseService } from "../../utils/BaseService";
 import { Emitter } from "@/utils/Emitter";
 
 export class RecorderService extends BaseService {
@@ -18,6 +18,10 @@ export class RecorderService extends BaseService {
 
     this.emitter.on("STOP_RECORDING", () => {
       this.stopRecording();
+    });
+
+    this.emitter.on("USER_ACTION", (data) => {
+      this.recordUserAction(data);
     });
   }
 
@@ -53,5 +57,15 @@ export class RecorderService extends BaseService {
     // - Remove event listeners
     // - Save recorded macro
     // - Notify user
+  }
+
+  private recordUserAction(data: any): void {
+    if (!this.isRecording) {
+      this.logger.warn("No recording in progress. Ignoring user action.");
+      return;
+    }
+
+    this.logger.info(`Recording user "${data.type}" action`, { data });
+    // TODO: Store the user action in the current recording session
   }
 }
