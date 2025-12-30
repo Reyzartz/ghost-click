@@ -1,15 +1,14 @@
-import { Emitter } from "@/utils/Emitter";
 import { EventTypes } from "@/utils/Event";
-import { Logger } from "@/utils/Logger";
+import { BaseService } from "./BaseService";
+import { Emitter } from "@/utils/Emitter";
 
-export class ShortcutService {
+export class ShortcutService extends BaseService {
   private static commands = {
     START_RECORDING: "start-recording",
   };
-  private logger: Logger;
 
-  constructor(private readonly emitter: Emitter) {
-    this.logger = new Logger("ShortcutService");
+  constructor(protected readonly emitter: Emitter) {
+    super("ShortcutService", emitter);
   }
 
   init(): void {

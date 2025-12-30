@@ -16,6 +16,7 @@ export default defineManifest({
     default_popup: "src/popup/index.html",
   },
   background: {
+    scripts: ["src/utils/App.ts", "src/services/ShortcutService.ts"],
     service_worker: "src/background/index.ts",
     type: "module",
   },
@@ -30,5 +31,14 @@ export default defineManifest({
   ],
   side_panel: {
     default_path: "src/sidepanel/index.html",
+  },
+  commands: {
+    "start-recording": {
+      description: "Start Ghost Click recording",
+      suggested_key: {
+        default: "Alt+Q",
+        mac: "Alt+Q",
+      },
+    },
   },
 });
