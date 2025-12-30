@@ -1,12 +1,8 @@
-export type EventType = "START_RECORDING";
-
-export const EventTypes: Record<EventType, EventType> = {
-  START_RECORDING: "START_RECORDING",
-};
+export type EventType = "START_RECORDING" | "STOP_RECORDING";
 
 interface Event {
   name: EventType;
-  data?: any;
+  data?: {};
 }
 
 export interface StartRecordingEvent extends Event {
@@ -14,4 +10,9 @@ export interface StartRecordingEvent extends Event {
   data: {
     sessionId: string;
   };
+}
+
+export interface StopRecordingEvent extends Event {
+  name: "STOP_RECORDING";
+  data: never;
 }

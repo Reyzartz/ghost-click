@@ -34,11 +34,13 @@ export class Emitter {
     this.events[event] = this.events[event].filter((l) => l !== listener);
   }
 
-  emit<T extends EventType>(event: T, data: EventOf<T>["data"]): void {
+  emit<T extends EventType>(event: T, data?: EventOf<T>["data"]): void {
     this.logger.info(`Emitting event: ${event}`);
 
     if (this.events[event] === undefined) return;
 
-    this.events[event].forEach((listener) => listener(data));
+    this.events[event].forEach((listener) =>
+      listener(data as EventOf<T>["data"])
+    );
   }
 }

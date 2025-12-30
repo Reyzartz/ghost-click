@@ -2,6 +2,7 @@ import { BaseService } from "@/services/BaseService";
 import { Emitter } from "./Emitter";
 import { Logger } from "./Logger";
 import { ShortcutService } from "@/services/ShortcutService";
+import { RecorderService } from "@/services/RecorderService";
 
 export class App {
   emitter: Emitter;
@@ -23,7 +24,10 @@ export class App {
   static create(): App {
     const emitter = new Emitter();
     const logger = new Logger("App");
-    const services: Array<BaseService> = [new ShortcutService(emitter)];
+    const services: Array<BaseService> = [
+      new ShortcutService(emitter),
+      new RecorderService(emitter),
+    ];
 
     return new App(emitter, logger, services);
   }

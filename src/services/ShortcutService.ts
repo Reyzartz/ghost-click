@@ -1,4 +1,3 @@
-import { EventTypes } from "@/utils/Event";
 import { BaseService } from "./BaseService";
 import { Emitter } from "@/utils/Emitter";
 
@@ -24,9 +23,13 @@ export class ShortcutService extends BaseService {
       case ShortcutService.commands.START_RECORDING:
         const sessionId = crypto.randomUUID();
 
-        this.emitter.emit(EventTypes.START_RECORDING, {
+        this.emitter.emit("START_RECORDING", {
           sessionId,
         });
+        break;
+
+      case "stop-recording":
+        this.emitter.emit("STOP_RECORDING");
         break;
       default:
         this.logger.warn(`Unhandled command: ${command}`);

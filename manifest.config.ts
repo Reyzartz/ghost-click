@@ -16,7 +16,7 @@ export default defineManifest({
     default_popup: "src/popup/index.html",
   },
   background: {
-    scripts: ["src/utils/App.ts", "src/services/ShortcutService.ts"],
+    scripts: ["src/utils/App.ts"],
     service_worker: "src/background/index.ts",
     type: "module",
   },
@@ -38,6 +38,13 @@ export default defineManifest({
       suggested_key: {
         default: "Alt+Q",
         mac: "Alt+Q",
+      },
+    },
+    "stop-recording": {
+      description: "Stop Ghost Click recording",
+      suggested_key: {
+        default: "Alt+W",
+        mac: "Alt+W",
       },
     },
   },
