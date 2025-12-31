@@ -1,11 +1,15 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./views/App.tsx";
+import { ContentApp } from "./ContentApp";
 // Inline the compiled Tailwind CSS via Vite so it can be injected into the shadow root
 // This relies on @tailwindcss/vite to process the CSS before inlining
 import tailwindCss from "../styles/tailwind.css?inline";
 
 console.log("[CRXJS] Hello world from content script!");
+
+const contentApp = new ContentApp();
+contentApp.init();
 
 // Create shadow host and attach shadow root
 const host = document.createElement("div");
@@ -25,6 +29,12 @@ shadowRoot.appendChild(mount);
 
 createRoot(mount).render(
   <StrictMode>
-    <App />
+    <App app={contentApp} />
   </StrictMode>
 );
+
+// TODO:
+// Cleanup on unload (if ever needed)
+// 1. Unmount React app
+// 2. Remove shadow host from document body
+// 3. Create a render class to handle mounting and unmounting the app

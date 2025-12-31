@@ -1,0 +1,54 @@
+import { BaseViewModel } from "@/utils/BaseViewModel";
+import { Emitter } from "@/utils/Emitter";
+
+export type AppStatus = "idle" | "recording" | "playing";
+
+export interface StatusIndicatorState {
+  status: AppStatus;
+}
+
+export class StatusIndicatorViewModel extends BaseViewModel {
+  private state: StatusIndicatorState = { status: "idle" };
+  private listeners: Array<(state: StatusIndicatorState) => void> = [];
+
+  constructor(protected readonly emitter: Emitter) {
+    super("StatusIndicatorViewModel", emitter);
+  }
+
+  init(): void {
+    this.logger.info("Initializing status indicator view model");
+    this.emitter.on("START_RECORDING", () => {
+      this.updateStatus("recording");
+    });
+
+    this.emitter.on("STOP_RECORDING", () => {
+      this.updateStatus("idle");
+    });
+
+    this.emitter.on("PLAY_MACRO", () => {
+      this.updateStatus("playing");
+    });
+  }
+
+  subscribe(listener: (state: StatusIndicatorState) => void): () => void {
+    this.listeners.push(listener);
+    listener(this.state);
+    return () => {
+      this.listeners = this.listeners.filter((l) => l !== listener);
+    };
+  }
+
+  private setState(next: Partial<StatusIndicatorState>): void {
+    this.state = { ...this.state, ...next };
+    this.listeners.forEach((l) => l(this.state));
+  }
+
+  private updateStatus(status: AppStatus): void {
+    if (this.state.status === status) return;
+    this.logger.info("Updating status", {
+      from: this.state.status,
+      to: status,
+    });
+    this.setState({ status });
+  }
+}

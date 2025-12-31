@@ -1,38 +1,35 @@
-import Logo from "@/assets/crx.svg";
 import { useState, useEffect } from "react";
+import { ContentApp } from "../ContentApp";
+import {
+  AppStatus,
+  StatusIndicatorState,
+} from "../viewmodels/StatusIndicatorViewModel";
 
-function App() {
-  const [injected, setInjected] = useState(false);
+const statusStyles: Record<AppStatus, string> = {
+  idle: "",
+  recording: "border-solid border-4 border-red-500",
+  playing: "border-solid border-4 border-green-500",
+};
+
+function App({ app }: { app: ContentApp }) {
+  const [statusState, setStatusState] = useState<StatusIndicatorState>({
+    status: "idle",
+  });
 
   useEffect(() => {
-    // Listen for messages from popup or background
-    chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-      console.log("[CONTENT] Message received:", message);
-
-      if (message.type === "INJECT_TEST") {
-        setInjected(true);
-        setTimeout(() => setInjected(false), 3000);
-        sendResponse({ status: "injected" });
-      }
-
-      return true;
-    });
-  }, []);
-
-  if (!injected) return null;
+    const unsubscribe = app.statusIndicatorViewModel.subscribe(setStatusState);
+    return () => unsubscribe();
+  }, [app]);
 
   return (
-    <div className="fixed top-5 right-5 z-999999 max-w-75 bg-red-400 border-2 border-indigo-500 rounded-lg p-5 shadow-md">
-      <div className="text-center">
-        <img src={Logo} alt="Ghost Click" className="w-12 h-12 mx-auto" />
-        <h2 className="text-base font-semibold mt-2 text-gray-800">
-          Content Script Active
-        </h2>
-        <p className="text-xs text-gray-600 mt-1">
-          Ghost Click is running on this page
-        </p>
-      </div>
-    </div>
+    <div
+      style={{
+        zIndex: 9999,
+      }}
+      className={`fixed inset-0 box-border  pointer-events-none w-screen h-screen ${
+        statusStyles[statusState.status]
+      }`}
+    />
   );
 }
 
