@@ -24,7 +24,7 @@ export default defineManifest({
   host_permissions: ["https://*/*", "http://*/*"],
   content_scripts: [
     {
-      js: ["src/content/main.tsx"],
+      js: ["src/content/index.ts"],
       matches: ["<all_urls>"],
       run_at: "document_idle",
     },
