@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App";
+import App from "./views/App";
 import { SidePanelApp } from "./SidePanelApp";
 import "../styles/tailwind.css";
 

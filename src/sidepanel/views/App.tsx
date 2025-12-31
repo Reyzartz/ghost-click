@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Macro } from "@/models";
-import { SidePanelApp } from "./SidePanelApp";
+import { SidePanelApp } from "../SidePanelApp";
 
 type MacroListState = {
   loading: boolean;
@@ -8,7 +8,6 @@ type MacroListState = {
   error?: string | null;
 };
 
-// ViewModel-driven rendering: the component subscribes to VM state
 export default function App({ app }: { app: SidePanelApp }) {
   const [state, setState] = useState<MacroListState>({
     loading: true,
@@ -56,11 +55,29 @@ export default function App({ app }: { app: SidePanelApp }) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-medium text-slate-900">{macro.name}</p>
-                <p className="text-xs text-slate-500">{macro.id}</p>
+                <span className="text-xs text-slate-600">
+                  {macro.steps.length} step{macro.steps.length === 1 ? "" : "s"}
+                </span>
               </div>
-              <span className="text-xs text-slate-600">
-                {macro.steps.length} step{macro.steps.length === 1 ? "" : "s"}
-              </span>
+
+              <div className="flex items-end gap-2 flex-col ">
+                <button
+                  className="cursor-pointer rounded bg-slate-900 px-2 py-1 text-xs text-white hover:bg-slate-800"
+                  onClick={() => {
+                    app.emitter.emit("PLAY_MACRO", { macroId: macro.id });
+                  }}
+                >
+                  Play
+                </button>
+                <button
+                  className="cursor-pointer rounded bg-red-600 px-2 py-1 text-xs text-white hover:bg-red-700"
+                  onClick={() =>
+                    void app.macroListViewModel.deleteMacro(macro.id)
+                  }
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </li>
         ))}

@@ -4,7 +4,10 @@ export type EventType =
   | "START_RECORDING"
   | "STOP_RECORDING"
   | "USER_ACTION"
-  | "SAVED_MACRO";
+  | "SAVED_MACRO"
+  | "PLAY_MACRO"
+  | "PLAYBACK_COMPLETED"
+  | "PLAYBACK_ERROR";
 
 export interface BaseEvent {
   name: EventType;
@@ -49,4 +52,26 @@ export interface UserActionEvent extends BaseEvent {
 export interface SavedMacroEvent extends BaseEvent {
   name: "SAVED_MACRO";
   data: Macro;
+}
+
+export interface PlayMacroEvent extends BaseEvent {
+  name: "PLAY_MACRO";
+  data: {
+    macroId: string;
+  };
+}
+
+export interface PlaybackCompletedEvent extends BaseEvent {
+  name: "PLAYBACK_COMPLETED";
+  data: {
+    macroId: string;
+  };
+}
+
+export interface PlaybackErrorEvent extends BaseEvent {
+  name: "PLAYBACK_ERROR";
+  data: {
+    macroId: string;
+    error: any;
+  };
 }

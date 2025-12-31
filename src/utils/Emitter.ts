@@ -1,5 +1,8 @@
 import {
   EventType,
+  PlaybackCompletedEvent,
+  PlaybackErrorEvent,
+  PlayMacroEvent,
   SavedMacroEvent,
   StartRecordingEvent,
   StopRecordingEvent,
@@ -11,7 +14,10 @@ type Events =
   | StartRecordingEvent
   | StopRecordingEvent
   | UserActionEvent
-  | SavedMacroEvent;
+  | SavedMacroEvent
+  | PlayMacroEvent
+  | PlaybackCompletedEvent
+  | PlaybackErrorEvent;
 
 type EventOf<T extends EventType> = Extract<Events, { name: T }>;
 
@@ -122,7 +128,7 @@ export class Emitter {
           error: err,
         });
       });
-    } else if (this.appType === "background") {
+    } else {
       // Background script sends to all content scripts in current tab
       chrome.tabs.query(
         {
@@ -139,13 +145,10 @@ export class Emitter {
       );
 
       // Also notify extension pages (popup/sidepanel/options)
-      chrome.runtime.sendMessage(message).catch(() => {
-        // ignore if no listeners
-      });
-    } else if (this.appType === "popup" || this.appType === "sidepanel") {
-      // Popup and sidepanel send to background
       chrome.runtime.sendMessage(message).catch((err) => {
-        this.logger.info("Failed to send message from UI", { error: err });
+        this.logger.info(`Failed to send message from ${this.appType}`, {
+          error: err,
+        });
       });
     }
   }

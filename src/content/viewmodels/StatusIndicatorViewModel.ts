@@ -28,6 +28,14 @@ export class StatusIndicatorViewModel extends BaseViewModel {
     this.emitter.on("PLAY_MACRO", () => {
       this.updateStatus("playing");
     });
+
+    this.emitter.on("PLAYBACK_COMPLETED", () => {
+      this.updateStatus("idle");
+    });
+
+    this.emitter.on("PLAYBACK_ERROR", () => {
+      this.updateStatus("idle");
+    });
   }
 
   subscribe(listener: (state: StatusIndicatorState) => void): () => void {

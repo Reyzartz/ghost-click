@@ -64,7 +64,9 @@ export class UserInputService extends BaseService {
       return;
     }
 
+    // TODO: Capture click on element in which the click handler is attached
     const target = event.target as HTMLElement;
+    console.log("Captured click on element:", target);
     const clickData: UserClickEventData = {
       sessionId: this.currentSessionId,
       timestamp: Date.now(),
@@ -72,7 +74,7 @@ export class UserInputService extends BaseService {
       target: {
         id: target.id || "",
         className: target.className || "",
-        xpath: this.getXPath(target),
+        xpath: UserInputService.getXPath(target),
       },
     };
 
@@ -82,31 +84,100 @@ export class UserInputService extends BaseService {
     this.emitter.emit("USER_ACTION", clickData);
   }
 
-  private getXPath(element: HTMLElement): string {
-    const paths: string[] = [];
-    let current: HTMLElement | null = element;
+  private static getXPath(el: Document | Element | DocumentFragment) {
+    let element: Element | (Node & ParentNode) = el;
+    let parent: Element | (Node & ParentNode) | null;
+    let sames: Node[];
+    let elementType: number;
+    let result = "";
 
-    while (current && current.nodeType === Node.ELEMENT_NODE) {
-      let index = 0;
-      let sibling: Node | null = current.previousSibling;
+    const escapeXPath = (name: string): string =>
+      name.replace(/([:*])/g, "\\$1"); // Escapes colons and asterisks
 
-      while (sibling) {
-        if (
-          sibling.nodeType === Node.ELEMENT_NODE &&
-          (sibling as HTMLElement).tagName === current.tagName
-        ) {
-          index++;
-        }
-        sibling = sibling.previousSibling;
+    const filterNode = (_node: Node): void => {
+      if (_node.nodeName === element.nodeName) {
+        sames.push(_node);
       }
+    };
 
-      const tagName = current.tagName.toLowerCase();
-      const pathIndex = index > 0 ? `[${index + 1}]` : "";
-      paths.unshift(`${tagName}${pathIndex}`);
-
-      current = current.parentElement;
+    if (!(element instanceof Node)) {
+      return result;
     }
 
-    return `/${paths.join("/")}`;
+    parent = element.parentNode ?? element.ownerDocument ?? null;
+
+    while (parent !== null) {
+      elementType = element.nodeType;
+      sames = [];
+
+      try {
+        parent.childNodes.forEach(filterNode);
+      } catch {
+        break;
+      }
+
+      const nodeNameEscaped: string = escapeXPath(element.nodeName);
+
+      switch (elementType) {
+        case Node.ELEMENT_NODE: {
+          const nodeName: string = nodeNameEscaped.toLowerCase();
+          const isSVG =
+            (element as Element).namespaceURI === "http://www.w3.org/2000/svg";
+          const name: string = isSVG ? `*[name()='${nodeName}']` : nodeName;
+          const sameNodesCount: string = `[${
+            [].indexOf.call(sames, element as never) + 1
+          }]`;
+          result = `/${name}${sames.length > 1 ? sameNodesCount : ""}${result}`;
+          break;
+        }
+
+        case Node.TEXT_NODE: {
+          const textNodes: ChildNode[] = Array.from(parent.childNodes).filter(
+            (n) => n.nodeType === Node.TEXT_NODE
+          );
+          const index: number =
+            element instanceof Node && "remove" in element
+              ? [].indexOf.call(sames, element as never) + 1
+              : 1;
+
+          result = `/text()${
+            textNodes.length > 1 ? `[${index}]` : ""
+          }${result}`;
+          break;
+        }
+
+        case Node.ATTRIBUTE_NODE: {
+          result = `/@${nodeNameEscaped.toLowerCase()}${result}`;
+          break;
+        }
+
+        case Node.COMMENT_NODE: {
+          const index: number =
+            Array.from(parent.childNodes)
+              .filter((n) => n.nodeType === Node.COMMENT_NODE)
+              .indexOf(element as never) + 1;
+          result = `/comment()[${index}]${result}`;
+          break;
+        }
+
+        case Node.PROCESSING_INSTRUCTION_NODE: {
+          result = `/processing-instruction('${nodeNameEscaped}')${result}`;
+          break;
+        }
+
+        case Node.DOCUMENT_NODE: {
+          result = `/${result}`;
+          break;
+        }
+
+        default:
+          break;
+      }
+
+      element = parent;
+      parent = element.parentNode ?? element.ownerDocument ?? null;
+    }
+
+    return `.//${result.replace(/^\//, "")}`;
   }
 }
