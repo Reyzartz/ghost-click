@@ -1,11 +1,18 @@
+import { Macro, MacroStep } from "@/models";
+import { MacroRepository } from "@/repositories/MacroRepository";
 import { BaseService } from "../../utils/BaseService";
 import { Emitter } from "@/utils/Emitter";
+import { UserActionEvent } from "@/utils/Event";
 
 export class RecorderService extends BaseService {
   private isRecording = false;
   private currentSessionId: string | null = null;
+  private macroSteps: MacroStep[] = [];
 
-  constructor(protected readonly emitter: Emitter) {
+  constructor(
+    protected readonly emitter: Emitter,
+    private readonly macroRepository: MacroRepository
+  ) {
     super("RecorderService", emitter);
   }
 
@@ -17,7 +24,7 @@ export class RecorderService extends BaseService {
     });
 
     this.emitter.on("STOP_RECORDING", () => {
-      this.stopRecording();
+      void this.stopRecording();
     });
 
     this.emitter.on("USER_ACTION", (data) => {
@@ -37,35 +44,80 @@ export class RecorderService extends BaseService {
     this.currentSessionId = sessionId;
     this.logger.info("Recording started", { sessionId });
 
-    // TODO: Implement actual recording logic
-    // - Inject content script if needed
-    // - Set up DOM event listeners
-    // - Start capturing user actions
+    this.macroSteps = [];
   }
 
-  private stopRecording(): void {
+  private async stopRecording(): Promise<void> {
     if (!this.isRecording) {
       this.logger.warn("No recording in progress");
       return;
     }
 
+    if (!this.currentSessionId) {
+      this.logger.warn("Missing session id while stopping recording");
+      this.isRecording = false;
+      this.macroSteps = [];
+      return;
+    }
+
     this.logger.info("Recording stopped", { sessionId: this.currentSessionId });
     this.isRecording = false;
+    const sessionId = this.currentSessionId;
     this.currentSessionId = null;
 
-    // TODO: Implement cleanup logic
-    // - Remove event listeners
-    // - Save recorded macro
-    // - Notify user
+    await this.saveMacro(sessionId, this.macroSteps);
+    this.macroSteps = [];
   }
 
-  private recordUserAction(data: any): void {
+  private async saveMacro(
+    sessionId: string,
+    steps: MacroStep[]
+  ): Promise<void> {
+    const now = Date.now();
+    const existing = await this.macroRepository.findById(sessionId);
+
+    const macro: Macro = {
+      id: sessionId,
+      name: existing?.name ?? sessionId,
+      steps: [...steps],
+      createdAt: existing?.createdAt ?? now,
+      updatedAt: now,
+    };
+
+    await this.macroRepository.save(macro);
+    this.logger.info("Saved macro after recording stop", {
+      id: macro.id,
+      steps: macro.steps.length,
+    });
+  }
+
+  private recordUserAction(data: UserActionEvent["data"]): void {
     if (!this.isRecording) {
       this.logger.warn("No recording in progress. Ignoring user action.");
       return;
     }
 
     this.logger.info(`Recording user "${data.type}" action`, { data });
-    // TODO: Store the user action in the current recording session
+
+    switch (data.type) {
+      case "CLICK":
+        this.recordClickAction(data);
+        break;
+      default:
+        this.logger.warn("Unknown user action type", { type: data.type });
+    }
+  }
+
+  private recordClickAction(data: UserActionEvent["data"]): void {
+    const step: MacroStep = {
+      type: "CLICK",
+      target: data.target,
+      timestamp: data.timestamp,
+    };
+
+    this.macroSteps.push(step);
+    this.logger.info("Recorded click action", { step });
+
+    // TODO: Optionally emit an event or save the step immediately
   }
 }

@@ -1,4 +1,10 @@
-export type EventType = "START_RECORDING" | "STOP_RECORDING" | "USER_ACTION";
+import { Macro } from "@/models";
+
+export type EventType =
+  | "START_RECORDING"
+  | "STOP_RECORDING"
+  | "USER_ACTION"
+  | "SAVED_MACRO";
 
 export interface BaseEvent {
   name: EventType;
@@ -38,4 +44,9 @@ export interface UserClickEventData extends BaseUserEventData {
 export interface UserActionEvent extends BaseEvent {
   name: "USER_ACTION";
   data: UserClickEventData;
+}
+
+export interface SavedMacroEvent extends BaseEvent {
+  name: "SAVED_MACRO";
+  data: Macro;
 }

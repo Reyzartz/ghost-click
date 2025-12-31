@@ -1,12 +1,17 @@
 import {
   EventType,
+  SavedMacroEvent,
   StartRecordingEvent,
   StopRecordingEvent,
   UserActionEvent,
 } from "./Event";
 import { Logger } from "./Logger";
 
-type Events = StartRecordingEvent | StopRecordingEvent | UserActionEvent;
+type Events =
+  | StartRecordingEvent
+  | StopRecordingEvent
+  | UserActionEvent
+  | SavedMacroEvent;
 
 type EventOf<T extends EventType> = Extract<Events, { name: T }>;
 
@@ -16,7 +21,7 @@ interface ChromeMessage<T extends EventType = EventType> {
   type: "EMIT_EVENT";
   event: T;
   data?: EventOf<T>["data"];
-  source: "background" | "content" | "popup";
+  source: "background" | "content" | "popup" | "sidepanel";
 }
 
 export class Emitter {
@@ -24,7 +29,9 @@ export class Emitter {
   private events: { [K in EventType]?: Array<EventDispatcher<K>> } = {};
   private messageListenerSetup = false;
 
-  constructor(private readonly appType: "background" | "content" | "popup") {
+  constructor(
+    private readonly appType: "background" | "content" | "popup" | "sidepanel"
+  ) {
     this.logger = new Logger(`${this.appType}/Emitter`);
     this.setupChromeMessageListener();
   }
@@ -75,22 +82,14 @@ export class Emitter {
     }
   }
 
-  /**
-   * Emit event to listeners and bridge to other contexts if needed
-   */
   emit<T extends EventType>(event: T, data?: EventOf<T>["data"]): void {
     this.logger.info(`Emitting event: ${event}`, { data });
 
-    // Always emit locally first
     this.emitLocally(event, data);
 
-    // Bridge to other contexts based on current app type
     this.bridgeToOtherContexts(event, data);
   }
 
-  /**
-   * Emit event only to local listeners
-   */
   private emitLocally<T extends EventType>(
     event: T,
     data?: EventOf<T>["data"]
@@ -124,16 +123,29 @@ export class Emitter {
         });
       });
     } else if (this.appType === "background") {
-      // Background script sends to all content scripts in all tabs
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs[0].id) {
-          chrome.tabs.sendMessage(tabs[0].id, message);
+      // Background script sends to all content scripts in current tab
+      chrome.tabs.query(
+        {
+          active: true,
+          currentWindow: true,
+        },
+        (tabs) => {
+          if (tabs[0]?.id) {
+            chrome.tabs.sendMessage(tabs[0].id, message).catch(() => {
+              // ignore if no listeners
+            });
+          }
         }
+      );
+
+      // Also notify extension pages (popup/sidepanel/options)
+      chrome.runtime.sendMessage(message).catch(() => {
+        // ignore if no listeners
       });
-    } else if (this.appType === "popup") {
-      // Popup sends to background
+    } else if (this.appType === "popup" || this.appType === "sidepanel") {
+      // Popup and sidepanel send to background
       chrome.runtime.sendMessage(message).catch((err) => {
-        this.logger.info("Failed to send message from popup", { error: err });
+        this.logger.info("Failed to send message from UI", { error: err });
       });
     }
   }
