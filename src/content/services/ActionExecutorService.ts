@@ -46,9 +46,32 @@ export class ActionExecutorService extends BaseService {
 
     this.logger.info("Clicking element", { selector: step.target });
 
+    // Only scroll if element is not in view
+    const isInView = await this.isElementInView(element);
+    if (!isInView) {
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
+      await this.sleep(300);
+    }
+
     await this.highlightElement(element);
 
     element.click();
+  }
+
+  private isElementInView(element: HTMLElement): Promise<boolean> {
+    return new Promise((resolve) => {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          observer.disconnect();
+          resolve(entry.isIntersecting);
+        },
+        {
+          threshold: 0.8, // Element must be at least 80% visible
+        }
+      );
+
+      observer.observe(element);
+    });
   }
 
   private findElement(target: ClickStep["target"]): Element | null {

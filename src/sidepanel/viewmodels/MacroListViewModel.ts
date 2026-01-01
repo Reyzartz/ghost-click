@@ -79,9 +79,10 @@ export class MacroListViewModel extends BaseViewModel {
     this.logger.info("Loading macros", { domain: this.state.currentDomain });
     this.setState({ loading: true, error: null });
     try {
-      const macros = this.state.currentDomain
-        ? await this.macroRepository.loadByDomain(this.state.currentDomain)
-        : await this.macroRepository.loadAll();
+      const macros = await this.macroRepository.loadByDomain(
+        this.state.currentDomain
+      );
+
       this.logger.info("Loaded macros", { count: macros.length });
       this.setState({ macros, loading: false });
     } catch (err) {
