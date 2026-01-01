@@ -1,9 +1,13 @@
 import { BaseService } from "@/utils/BaseService";
 import { Emitter } from "@/utils/Emitter";
 import { ClickStep } from "@/models/MacroStep";
+import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
 
 export class ActionExecutorService extends BaseService {
-  constructor(protected readonly emitter: Emitter) {
+  constructor(
+    protected readonly emitter: Emitter,
+    protected readonly playbackStateRepository: PlaybackStateRepository
+  ) {
     super("ActionExecutorService", emitter);
   }
 
@@ -27,7 +31,21 @@ export class ActionExecutorService extends BaseService {
           this.logger.warn("Unknown action type", { type: step.type });
       }
     } catch (err) {
+      const macroId = await this.playbackStateRepository.getMacroId();
+
       this.logger.error("Action execution failed", { error: err, step });
+
+      if (!macroId) {
+        this.logger.error(
+          "No macroId found in playback state during error handling"
+        );
+        return;
+      }
+
+      this.emitter.emit("PLAYBACK_ERROR", {
+        macroId,
+        error: (err as Error).message,
+      });
     }
   }
 

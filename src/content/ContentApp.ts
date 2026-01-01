@@ -32,7 +32,7 @@ export class ContentApp extends BaseApp {
 
     const services: Array<BaseService> = [
       new UserInputService(emitter, recordingStateRepository),
-      new ActionExecutorService(emitter),
+      new ActionExecutorService(emitter, playbackStateRepository),
     ];
 
     super(emitter, logger, services, viewModels);
