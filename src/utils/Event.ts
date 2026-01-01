@@ -20,6 +20,7 @@ export interface StartRecordingEvent extends BaseEvent {
   data: {
     sessionId: string;
     initialUrl: string;
+    tabId: number;
   };
 }
 

@@ -31,6 +31,7 @@ export class RecordingStateRepository {
       isRecording: current?.isRecording ?? false,
       sessionId: current?.sessionId ?? null,
       initialUrl: current?.initialUrl ?? "",
+      tabId: current?.tabId ?? null,
       macroSteps: current?.macroSteps ?? [],
       ...partial,
     };

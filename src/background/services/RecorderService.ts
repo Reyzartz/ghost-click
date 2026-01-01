@@ -9,6 +9,7 @@ export class RecorderService extends BaseService {
   private isRecording = false;
   private currentSessionId: string | null = null;
   private initialUrl: string = "";
+  private recordingTabId: number | null = null;
   private macroSteps: MacroStep[] = [];
 
   constructor(
@@ -25,7 +26,7 @@ export class RecorderService extends BaseService {
     this.setInitialRecordingState();
 
     this.emitter.on("START_RECORDING", (data) => {
-      this.startRecording(data.sessionId, data.initialUrl);
+      this.startRecording(data.sessionId, data.initialUrl, data.tabId);
     });
 
     this.emitter.on("STOP_RECORDING", () => {
@@ -34,6 +35,14 @@ export class RecorderService extends BaseService {
 
     this.emitter.on("USER_ACTION", (data) => {
       this.recordUserAction(data);
+    });
+
+    // Listen for tab close to stop recording
+    chrome.tabs.onRemoved.addListener((tabId) => {
+      if (this.isRecording && this.recordingTabId === tabId) {
+        this.logger.info("Recording tab closed, stopping recording", { tabId });
+        void this.stopRecording();
+      }
     });
   }
 
@@ -44,15 +53,21 @@ export class RecorderService extends BaseService {
       this.isRecording = true;
       this.currentSessionId = recordingState.sessionId;
       this.initialUrl = recordingState.initialUrl;
+      this.recordingTabId = recordingState.tabId;
       this.macroSteps = recordingState.macroSteps || [];
       this.logger.info("Restored recording state from repository", {
         sessionId: this.currentSessionId,
+        tabId: this.recordingTabId,
         stepsCount: this.macroSteps.length,
       });
     }
   }
 
-  private startRecording(sessionId: string, initialUrl: string): void {
+  private startRecording(
+    sessionId: string,
+    initialUrl: string,
+    tabId?: number
+  ): void {
     if (this.isRecording) {
       this.logger.warn("Recording already in progress", {
         currentSessionId: this.currentSessionId,
@@ -63,15 +78,17 @@ export class RecorderService extends BaseService {
     this.isRecording = true;
     this.currentSessionId = sessionId;
     this.initialUrl = initialUrl;
+    this.recordingTabId = tabId ?? null;
     this.macroSteps = [];
 
-    this.logger.info("Recording started", { sessionId, initialUrl });
+    this.logger.info("Recording started", { sessionId, initialUrl, tabId });
 
     // Save recording state to repository
     void this.recordingStateRepository.save({
       isRecording: true,
       sessionId,
       initialUrl,
+      tabId: this.recordingTabId,
       macroSteps: [],
     });
   }
@@ -87,6 +104,7 @@ export class RecorderService extends BaseService {
       this.isRecording = false;
       this.macroSteps = [];
       this.initialUrl = "";
+      this.recordingTabId = null;
       await this.recordingStateRepository.clear();
       return;
     }
@@ -97,6 +115,7 @@ export class RecorderService extends BaseService {
     const initialUrl = this.initialUrl;
     this.currentSessionId = null;
     this.initialUrl = "";
+    this.recordingTabId = null;
 
     await this.saveMacro(sessionId, initialUrl, this.macroSteps);
     this.macroSteps = [];

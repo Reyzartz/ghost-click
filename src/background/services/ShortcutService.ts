@@ -23,16 +23,7 @@ export class ShortcutService extends BaseService {
   onCommandListener(command: string): void {
     switch (command) {
       case ShortcutService.commands.START_RECORDING:
-        const sessionId = crypto.randomUUID();
-
-        // Get the active tab URL
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-          const initialUrl = tabs[0]?.url || "";
-          this.emitter.emit("START_RECORDING", {
-            sessionId,
-            initialUrl,
-          });
-        });
+        this.startRecording();
         break;
 
       case ShortcutService.commands.STOP_RECORDING:
@@ -44,6 +35,28 @@ export class ShortcutService extends BaseService {
       default:
         this.logger.warn(`Unhandled command: ${command}`);
     }
+  }
+
+  private startRecording(): void {
+    const sessionId = crypto.randomUUID();
+
+    // Get the active tab URL and tabId
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const currTab = tabs[0];
+      const initialUrl = currTab.url;
+      const tabId = currTab.id;
+
+      if (initialUrl === undefined || tabId === undefined) {
+        this.logger.error("Cannot start recording: no active tab found");
+        return;
+      }
+
+      this.emitter.emit("START_RECORDING", {
+        sessionId,
+        initialUrl,
+        tabId,
+      });
+    });
   }
 
   static toggleSidePanel(): void {
