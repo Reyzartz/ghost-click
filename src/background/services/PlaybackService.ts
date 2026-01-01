@@ -2,19 +2,23 @@ import { BaseService } from "@/utils/BaseService";
 import { Emitter } from "@/utils/Emitter";
 import { Storage } from "@/utils/Storage";
 import { MacroRepository } from "@/repositories/MacroRepository";
+import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
 import { PlaybackEngine } from "./PlaybackEngine";
 
 export class PlaybackService extends BaseService {
   private readonly playbackEngine: PlaybackEngine;
   private readonly macroRepository: MacroRepository;
+  private readonly playbackStateRepository: PlaybackStateRepository;
 
   constructor(protected readonly emitter: Emitter) {
     super("PlaybackService", emitter);
-    this.playbackEngine = new PlaybackEngine(emitter);
-    this.macroRepository = new MacroRepository(
+    const storage = new Storage(chrome.storage.local);
+    this.playbackStateRepository = new PlaybackStateRepository(storage);
+    this.playbackEngine = new PlaybackEngine(
       emitter,
-      new Storage(chrome.storage.local)
+      this.playbackStateRepository
     );
+    this.macroRepository = new MacroRepository(emitter, storage);
   }
 
   async init(): Promise<void> {

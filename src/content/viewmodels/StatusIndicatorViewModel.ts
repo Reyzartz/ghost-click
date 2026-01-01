@@ -1,6 +1,7 @@
 import { BaseViewModel } from "@/utils/BaseViewModel";
 import { Emitter } from "@/utils/Emitter";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
+import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
 
 export type AppStatus = "idle" | "recording" | "playing";
 
@@ -14,7 +15,8 @@ export class StatusIndicatorViewModel extends BaseViewModel {
 
   constructor(
     protected readonly emitter: Emitter,
-    private readonly recordingStateRepository: RecordingStateRepository
+    private readonly recordingStateRepository: RecordingStateRepository,
+    private readonly playbackStateRepository: PlaybackStateRepository
   ) {
     super("StatusIndicatorViewModel", emitter);
   }
@@ -22,10 +24,18 @@ export class StatusIndicatorViewModel extends BaseViewModel {
   async init(): Promise<void> {
     this.logger.info("Initializing status indicator view model");
 
+    // Restore status from recording state
     const recordingState = await this.recordingStateRepository.get();
     if (recordingState?.isRecording) {
       this.logger.info("Restoring recording status");
       this.updateStatus("recording");
+    }
+
+    // Restore status from playback state
+    const playbackState = await this.playbackStateRepository.get();
+    if (playbackState?.isPlaying) {
+      this.logger.info("Restoring playback status");
+      this.updateStatus("playing");
     }
 
     this.emitter.on("START_RECORDING", () => {

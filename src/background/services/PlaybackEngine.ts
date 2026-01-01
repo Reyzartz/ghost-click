@@ -2,12 +2,16 @@ import { Macro } from "@/models";
 import { ClickStep } from "@/models/MacroStep";
 import { Emitter } from "@/utils/Emitter";
 import { Logger } from "@/utils/Logger";
+import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
 
 export class PlaybackEngine {
   private readonly logger: Logger;
   private isPlaying = false;
 
-  constructor(private readonly emitter: Emitter) {
+  constructor(
+    private readonly emitter: Emitter,
+    private readonly playbackStateRepository: PlaybackStateRepository
+  ) {
     this.logger = new Logger("PlaybackEngine");
   }
 
@@ -22,6 +26,12 @@ export class PlaybackEngine {
       macroId: macro.id,
       initialUrl: macro.initialUrl,
       steps: macro.steps.length,
+    });
+
+    // Save playback state
+    await this.playbackStateRepository.save({
+      isPlaying: true,
+      macroId: macro.id,
     });
 
     try {
@@ -60,6 +70,7 @@ export class PlaybackEngine {
       this.emitter.emit("PLAYBACK_ERROR", { macroId: macro.id, error: err });
     } finally {
       this.isPlaying = false;
+      await this.playbackStateRepository.clear();
     }
   }
 

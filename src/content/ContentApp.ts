@@ -7,6 +7,7 @@ import { ActionExecutorService } from "./services/ActionExecutorService";
 import { StatusIndicatorViewModel } from "./viewmodels/StatusIndicatorViewModel";
 import { NotificationViewModel } from "./viewmodels/NotificationViewModel";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
+import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
 import { Storage } from "@/utils/Storage";
 
 export class ContentApp extends BaseApp {
@@ -19,10 +20,12 @@ export class ContentApp extends BaseApp {
 
     const storage = new Storage(chrome.storage.local);
     const recordingStateRepository = new RecordingStateRepository(storage);
+    const playbackStateRepository = new PlaybackStateRepository(storage);
 
     const statusIndicatorViewModel = new StatusIndicatorViewModel(
       emitter,
-      recordingStateRepository
+      recordingStateRepository,
+      playbackStateRepository
     );
     const notificationViewModel = new NotificationViewModel(emitter);
     const viewModels = [statusIndicatorViewModel, notificationViewModel];
