@@ -9,7 +9,7 @@ import tailwindCss from "../styles/tailwind.css?inline";
 console.log("[CRXJS] Hello world from content script!");
 
 const contentApp = new ContentApp();
-contentApp.init();
+void contentApp.init();
 
 // Create shadow host and attach shadow root
 const host = document.createElement("div");

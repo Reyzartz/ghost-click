@@ -6,6 +6,8 @@ import { UserInputService } from "./services/UserInputService";
 import { ActionExecutorService } from "./services/ActionExecutorService";
 import { StatusIndicatorViewModel } from "./viewmodels/StatusIndicatorViewModel";
 import { NotificationViewModel } from "./viewmodels/NotificationViewModel";
+import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
+import { Storage } from "@/utils/Storage";
 
 export class ContentApp extends BaseApp {
   readonly statusIndicatorViewModel: StatusIndicatorViewModel;
@@ -14,12 +16,19 @@ export class ContentApp extends BaseApp {
   constructor() {
     const emitter = new Emitter("content");
     const logger = new Logger("ContentApp");
-    const statusIndicatorViewModel = new StatusIndicatorViewModel(emitter);
+
+    const storage = new Storage(chrome.storage.local);
+    const recordingStateRepository = new RecordingStateRepository(storage);
+
+    const statusIndicatorViewModel = new StatusIndicatorViewModel(
+      emitter,
+      recordingStateRepository
+    );
     const notificationViewModel = new NotificationViewModel(emitter);
     const viewModels = [statusIndicatorViewModel, notificationViewModel];
 
     const services: Array<BaseService> = [
-      new UserInputService(emitter),
+      new UserInputService(emitter, recordingStateRepository),
       new ActionExecutorService(emitter),
     ];
 
@@ -29,9 +38,9 @@ export class ContentApp extends BaseApp {
     this.notificationViewModel = notificationViewModel;
   }
 
-  init(): void {
+  async init(): Promise<void> {
     this.logger.info("ContentApp initialized");
 
-    super.init();
+    await super.init();
   }
 }

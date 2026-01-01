@@ -8,5 +8,5 @@ export class BaseService {
     this.logger = new Logger(serviceName);
   }
 
-  init(): void {}
+  async init(): Promise<void> {}
 }

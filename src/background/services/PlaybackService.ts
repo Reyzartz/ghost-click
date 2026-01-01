@@ -17,7 +17,7 @@ export class PlaybackService extends BaseService {
     );
   }
 
-  init(): void {
+  async init(): Promise<void> {
     this.logger.info("PlaybackService initialized");
 
     this.emitter.on("PLAY_MACRO", async (data) => {

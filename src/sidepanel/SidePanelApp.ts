@@ -22,8 +22,8 @@ export class SidePanelApp extends BaseApp {
     this.macroListViewModel = macroListViewModel;
   }
 
-  init(): void {
+  async init(): Promise<void> {
     this.logger.info("SidePanelApp initialized");
-    this.macroListViewModel.init();
+    await this.macroListViewModel.init();
   }
 }

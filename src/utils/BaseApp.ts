@@ -21,8 +21,12 @@ export class BaseApp {
     this.viewModels = viewModels;
   }
 
-  init(): void {
-    this.services.forEach((service) => service.init());
-    this.viewModels.forEach((vm) => vm.init());
+  async init(): Promise<void> {
+    for (const service of this.services) {
+      await service.init();
+    }
+    for (const vm of this.viewModels) {
+      await vm.init();
+    }
   }
 }

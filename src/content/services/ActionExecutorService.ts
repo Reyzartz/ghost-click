@@ -7,7 +7,7 @@ export class ActionExecutorService extends BaseService {
     super("ActionExecutorService", emitter);
   }
 
-  init(): void {
+  async init(): Promise<void> {
     this.logger.info("ActionExecutorService initialized");
 
     this.emitter.on("EXECUTE_ACTION", (data) => {

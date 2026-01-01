@@ -26,7 +26,7 @@ export class MacroListViewModel extends BaseViewModel {
     super("MacroListViewModel", emitter);
   }
 
-  init(): void {
+  async init(): Promise<void> {
     this.logger.info("Initializing macro list view model");
     this.loadCurrentDomain();
 
@@ -42,7 +42,7 @@ export class MacroListViewModel extends BaseViewModel {
     });
 
     // Listen for tab updates (navigation)
-    chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    chrome.tabs.onUpdated.addListener((_tabId, changeInfo, tab) => {
       if (changeInfo.status === "complete" && tab.active) {
         this.logger.info("Tab updated and complete, checking domain");
         this.loadCurrentDomain();

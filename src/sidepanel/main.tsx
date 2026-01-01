@@ -5,7 +5,7 @@ import { SidePanelApp } from "./SidePanelApp";
 import "../styles/tailwind.css";
 
 const sidePanelApp = new SidePanelApp();
-sidePanelApp.init();
+void sidePanelApp.init();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

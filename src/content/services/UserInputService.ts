@@ -1,18 +1,24 @@
 import { BaseService } from "@/utils/BaseService";
 import { Emitter } from "@/utils/Emitter";
 import { UserClickEventData } from "@/utils/Event";
+import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
 
 export class UserInputService extends BaseService {
   private isRecording = false;
   private currentSessionId: string | null = null;
   private clickHandler: ((event: MouseEvent) => void) | null = null;
 
-  constructor(protected readonly emitter: Emitter) {
+  constructor(
+    protected readonly emitter: Emitter,
+    private readonly recordingStateRepository: RecordingStateRepository
+  ) {
     super("UserInputService", emitter);
   }
 
-  init(): void {
+  async init(): Promise<void> {
     this.logger.info("UserInputService initialized");
+
+    await this.setInitialRecordingState();
 
     this.emitter.on("START_RECORDING", (data) => {
       this.startCapture(data.sessionId);
@@ -21,6 +27,19 @@ export class UserInputService extends BaseService {
     this.emitter.on("STOP_RECORDING", () => {
       this.stopCapture();
     });
+  }
+
+  private async setInitialRecordingState(): Promise<void> {
+    const recordingState = await this.recordingStateRepository.get();
+
+    if (recordingState?.isRecording && recordingState.sessionId) {
+      this.isRecording = true;
+      this.currentSessionId = recordingState.sessionId;
+      this.logger.info("Restored recording state, starting capture", {
+        sessionId: this.currentSessionId,
+      });
+      this.addClickHandlers();
+    }
   }
 
   private startCapture(sessionId: string): void {
@@ -33,12 +52,23 @@ export class UserInputService extends BaseService {
     this.currentSessionId = sessionId;
     this.logger.info("Started capturing user input", { sessionId });
 
+    this.addClickHandlers();
+  }
+
+  private readonly addClickHandlers = (): void => {
     this.clickHandler = (event: MouseEvent) => {
       this.captureClick(event);
     };
 
     document.addEventListener("click", this.clickHandler, true);
-  }
+  };
+
+  private readonly removeClickHandlers = (): void => {
+    if (this.clickHandler) {
+      document.removeEventListener("click", this.clickHandler, true);
+      this.clickHandler = null;
+    }
+  };
 
   private stopCapture(): void {
     if (!this.isRecording) {
@@ -50,10 +80,7 @@ export class UserInputService extends BaseService {
       sessionId: this.currentSessionId,
     });
 
-    if (this.clickHandler) {
-      document.removeEventListener("click", this.clickHandler, true);
-      this.clickHandler = null;
-    }
+    this.removeClickHandlers();
 
     this.isRecording = false;
     this.currentSessionId = null;

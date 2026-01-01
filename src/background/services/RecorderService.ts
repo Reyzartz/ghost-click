@@ -1,5 +1,6 @@
 import { Macro, MacroStep } from "@/models";
 import { MacroRepository } from "@/repositories/MacroRepository";
+import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
 import { BaseService } from "../../utils/BaseService";
 import { Emitter } from "@/utils/Emitter";
 import { UserActionEvent } from "@/utils/Event";
@@ -12,13 +13,16 @@ export class RecorderService extends BaseService {
 
   constructor(
     protected readonly emitter: Emitter,
-    private readonly macroRepository: MacroRepository
+    private readonly macroRepository: MacroRepository,
+    private readonly recordingStateRepository: RecordingStateRepository
   ) {
     super("RecorderService", emitter);
   }
 
-  init(): void {
+  async init(): Promise<void> {
     this.logger.info("RecorderService initialized");
+
+    this.setInitialRecordingState();
 
     this.emitter.on("START_RECORDING", (data) => {
       this.startRecording(data.sessionId, data.initialUrl);
@@ -33,6 +37,21 @@ export class RecorderService extends BaseService {
     });
   }
 
+  private async setInitialRecordingState(): Promise<void> {
+    const recordingState = await this.recordingStateRepository.get();
+
+    if (recordingState?.isRecording) {
+      this.isRecording = true;
+      this.currentSessionId = recordingState.sessionId;
+      this.initialUrl = recordingState.initialUrl;
+      this.macroSteps = recordingState.macroSteps || [];
+      this.logger.info("Restored recording state from repository", {
+        sessionId: this.currentSessionId,
+        stepsCount: this.macroSteps.length,
+      });
+    }
+  }
+
   private startRecording(sessionId: string, initialUrl: string): void {
     if (this.isRecording) {
       this.logger.warn("Recording already in progress", {
@@ -44,9 +63,17 @@ export class RecorderService extends BaseService {
     this.isRecording = true;
     this.currentSessionId = sessionId;
     this.initialUrl = initialUrl;
+    this.macroSteps = [];
+
     this.logger.info("Recording started", { sessionId, initialUrl });
 
-    this.macroSteps = [];
+    // Save recording state to repository
+    void this.recordingStateRepository.save({
+      isRecording: true,
+      sessionId,
+      initialUrl,
+      macroSteps: [],
+    });
   }
 
   private async stopRecording(): Promise<void> {
@@ -60,6 +87,7 @@ export class RecorderService extends BaseService {
       this.isRecording = false;
       this.macroSteps = [];
       this.initialUrl = "";
+      await this.recordingStateRepository.clear();
       return;
     }
 
@@ -72,6 +100,9 @@ export class RecorderService extends BaseService {
 
     await this.saveMacro(sessionId, initialUrl, this.macroSteps);
     this.macroSteps = [];
+
+    // Clear recording state from repository
+    await this.recordingStateRepository.clear();
   }
 
   private async saveMacro(
@@ -139,6 +170,7 @@ export class RecorderService extends BaseService {
     this.macroSteps.push(step);
     this.logger.info("Recorded click action", { step });
 
-    // TODO: Optionally emit an event or save the step immediately
+    // Save updated state to repository
+    void this.recordingStateRepository.addStep(step);
   }
 }

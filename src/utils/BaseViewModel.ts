@@ -8,5 +8,5 @@ export class BaseViewModel {
     this.logger = new Logger(viewModelName);
   }
 
-  init(): void {}
+  async init(): Promise<void> {}
 }

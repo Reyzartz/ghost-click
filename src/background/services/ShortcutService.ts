@@ -12,7 +12,7 @@ export class ShortcutService extends BaseService {
     super("ShortcutService", emitter);
   }
 
-  init(): void {
+  async init(): Promise<void> {
     this.logger.info("ShortcutService initialized");
 
     chrome.commands.onCommand.addListener((command) => {

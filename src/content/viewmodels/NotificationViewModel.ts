@@ -19,7 +19,7 @@ export class NotificationViewModel extends BaseViewModel {
     super("NotificationViewModel", emitter);
   }
 
-  init(): void {
+  async init(): Promise<void> {
     this.logger.info("Initializing notification view model");
 
     this.emitter.on("START_RECORDING", () => {
