@@ -47,5 +47,12 @@ export default defineManifest({
         mac: "Alt+W",
       },
     },
+    "open-side-panel": {
+      description: "Open Ghost Click side panel",
+      suggested_key: {
+        default: "Alt+S",
+        mac: "Alt+S",
+      },
+    },
   },
 });
