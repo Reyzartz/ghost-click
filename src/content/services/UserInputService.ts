@@ -122,12 +122,20 @@ export class UserInputService extends BaseService {
         case Node.ELEMENT_NODE: {
           const nodeName: string = nodeNameEscaped.toLowerCase();
           const isSVG =
+            element instanceof SVGElement &&
             (element as Element).namespaceURI === "http://www.w3.org/2000/svg";
-          const name: string = isSVG ? `*[name()='${nodeName}']` : nodeName;
+
+          if (isSVG) {
+            break;
+          }
+
           const sameNodesCount: string = `[${
             [].indexOf.call(sames, element as never) + 1
           }]`;
-          result = `/${name}${sames.length > 1 ? sameNodesCount : ""}${result}`;
+
+          result = `/${nodeName}${
+            sames.length > 1 ? sameNodesCount : ""
+          }${result}`;
           break;
         }
 

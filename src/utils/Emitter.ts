@@ -1,5 +1,6 @@
 import {
   EventType,
+  ExecuteActionEvent,
   PlaybackCompletedEvent,
   PlaybackErrorEvent,
   PlayMacroEvent,
@@ -16,6 +17,7 @@ type Events =
   | UserActionEvent
   | SavedMacroEvent
   | PlayMacroEvent
+  | ExecuteActionEvent
   | PlaybackCompletedEvent
   | PlaybackErrorEvent;
 

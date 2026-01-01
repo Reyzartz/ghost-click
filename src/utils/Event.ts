@@ -1,4 +1,4 @@
-import { Macro } from "@/models";
+import { Macro, MacroStep } from "@/models";
 
 export type EventType =
   | "START_RECORDING"
@@ -6,6 +6,7 @@ export type EventType =
   | "USER_ACTION"
   | "SAVED_MACRO"
   | "PLAY_MACRO"
+  | "EXECUTE_ACTION"
   | "PLAYBACK_COMPLETED"
   | "PLAYBACK_ERROR";
 
@@ -73,5 +74,12 @@ export interface PlaybackErrorEvent extends BaseEvent {
   data: {
     macroId: string;
     error: any;
+  };
+}
+
+export interface ExecuteActionEvent extends BaseEvent {
+  name: "EXECUTE_ACTION";
+  data: {
+    step: MacroStep;
   };
 }

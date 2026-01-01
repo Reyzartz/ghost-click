@@ -3,8 +3,6 @@ import { ClickStep } from "@/models/MacroStep";
 import { Emitter } from "@/utils/Emitter";
 import { Logger } from "@/utils/Logger";
 
-// TODO:
-// Move this to Background and communicate via messages
 export class PlaybackEngine {
   private readonly logger: Logger;
   private isPlaying = false;
@@ -62,64 +60,16 @@ export class PlaybackEngine {
   }
 
   private async executeClickStep(step: ClickStep): Promise<void> {
-    const element = this.findElement(step.target);
+    this.logger.info("Sending EXECUTE_ACTION to content script", { step });
 
-    if (!element) {
-      throw new Error(
-        `Element not found for target: ${JSON.stringify(step.target)}`
-      );
-    }
+    // Send action to content script to execute
+    this.emitter.emit("EXECUTE_ACTION", { step });
 
-    if (!(element instanceof HTMLElement)) {
-      throw new Error("Found target is not an HTMLElement");
-    }
-
-    this.logger.info("Clicking element", { selector: step.target });
-
-    await PlaybackEngine.highlightElement(element);
-
-    element.click();
-  }
-
-  private findElement(target: ClickStep["target"]): Element | null {
-    if (target.xpath) {
-      const result = document.evaluate(
-        target.xpath,
-        document,
-        null,
-        XPathResult.FIRST_ORDERED_NODE_TYPE,
-        null
-      );
-      if (result.singleNodeValue) return result.singleNodeValue as Element;
-    }
-
-    if (target.id) {
-      const byId = document.getElementById(target.id);
-      if (byId) return byId;
-    }
-
-    if (target.className) {
-      const byClass = document.querySelector(`.${target.className}`);
-      if (byClass) return byClass;
-    }
-
-    return null;
+    // Wait a bit for the action to complete
+    await PlaybackEngine.sleep(100);
   }
 
   private static sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
-  private static async highlightElement(element: Element): Promise<void> {
-    if (!(element instanceof HTMLElement)) {
-      return;
-    }
-
-    const originalOutline = element.style.outline;
-    element.style.outline = "4px solid red";
-
-    await PlaybackEngine.sleep(300);
-
-    element.style.outline = originalOutline;
   }
 }
