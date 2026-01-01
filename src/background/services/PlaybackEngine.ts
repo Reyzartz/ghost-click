@@ -20,10 +20,14 @@ export class PlaybackEngine {
     this.isPlaying = true;
     this.logger.info("Starting playback", {
       macroId: macro.id,
+      initialUrl: macro.initialUrl,
       steps: macro.steps.length,
     });
 
     try {
+      // Navigate to initial URL before playback
+      await this.navigateToUrl(macro.initialUrl);
+
       let prevTimestamp = 0;
 
       for (const step of macro.steps) {
@@ -57,6 +61,22 @@ export class PlaybackEngine {
     } finally {
       this.isPlaying = false;
     }
+  }
+
+  private async navigateToUrl(url: string): Promise<void> {
+    return new Promise((resolve) => {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs[0]?.id) {
+          chrome.tabs.update(tabs[0].id, { url }, () => {
+            this.logger.info("Navigated to initial URL", { url });
+            // Wait for page to load
+            setTimeout(() => resolve(), 2000);
+          });
+        } else {
+          resolve();
+        }
+      });
+    });
   }
 
   private async executeClickStep(step: ClickStep): Promise<void> {

@@ -7,6 +7,7 @@ import { UserActionEvent } from "@/utils/Event";
 export class RecorderService extends BaseService {
   private isRecording = false;
   private currentSessionId: string | null = null;
+  private initialUrl: string = "";
   private macroSteps: MacroStep[] = [];
 
   constructor(
@@ -20,7 +21,7 @@ export class RecorderService extends BaseService {
     this.logger.info("RecorderService initialized");
 
     this.emitter.on("START_RECORDING", (data) => {
-      this.startRecording(data.sessionId);
+      this.startRecording(data.sessionId, data.initialUrl);
     });
 
     this.emitter.on("STOP_RECORDING", () => {
@@ -32,7 +33,7 @@ export class RecorderService extends BaseService {
     });
   }
 
-  private startRecording(sessionId: string): void {
+  private startRecording(sessionId: string, initialUrl: string): void {
     if (this.isRecording) {
       this.logger.warn("Recording already in progress", {
         currentSessionId: this.currentSessionId,
@@ -42,7 +43,8 @@ export class RecorderService extends BaseService {
 
     this.isRecording = true;
     this.currentSessionId = sessionId;
-    this.logger.info("Recording started", { sessionId });
+    this.initialUrl = initialUrl;
+    this.logger.info("Recording started", { sessionId, initialUrl });
 
     this.macroSteps = [];
   }
@@ -57,28 +59,37 @@ export class RecorderService extends BaseService {
       this.logger.warn("Missing session id while stopping recording");
       this.isRecording = false;
       this.macroSteps = [];
+      this.initialUrl = "";
       return;
     }
 
     this.logger.info("Recording stopped", { sessionId: this.currentSessionId });
     this.isRecording = false;
     const sessionId = this.currentSessionId;
+    const initialUrl = this.initialUrl;
     this.currentSessionId = null;
+    this.initialUrl = "";
 
-    await this.saveMacro(sessionId, this.macroSteps);
+    await this.saveMacro(sessionId, initialUrl, this.macroSteps);
     this.macroSteps = [];
   }
 
   private async saveMacro(
     sessionId: string,
+    initialUrl: string,
     steps: MacroStep[]
   ): Promise<void> {
     const now = Date.now();
     const existing = await this.macroRepository.findById(sessionId);
 
+    // Extract domain from URL
+    const domain = this.extractDomain(initialUrl);
+
     const macro: Macro = {
       id: sessionId,
       name: existing?.name ?? sessionId,
+      initialUrl,
+      domain,
       steps: [...steps],
       createdAt: existing?.createdAt ?? now,
       updatedAt: now,
@@ -87,8 +98,18 @@ export class RecorderService extends BaseService {
     await this.macroRepository.save(macro);
     this.logger.info("Saved macro after recording stop", {
       id: macro.id,
+      domain: macro.domain,
       steps: macro.steps.length,
     });
+  }
+
+  private extractDomain(url: string): string {
+    try {
+      const urlObj = new URL(url);
+      return urlObj.hostname;
+    } catch {
+      return "unknown";
+    }
   }
 
   private recordUserAction(data: UserActionEvent["data"]): void {

@@ -23,8 +23,13 @@ export class ShortcutService extends BaseService {
       case ShortcutService.commands.START_RECORDING:
         const sessionId = crypto.randomUUID();
 
-        this.emitter.emit("START_RECORDING", {
-          sessionId,
+        // Get the active tab URL
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          const initialUrl = tabs[0]?.url || "";
+          this.emitter.emit("START_RECORDING", {
+            sessionId,
+            initialUrl,
+          });
         });
         break;
 

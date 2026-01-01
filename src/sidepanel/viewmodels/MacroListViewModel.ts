@@ -6,11 +6,17 @@ import { Emitter } from "@/utils/Emitter";
 export interface MacroListState {
   loading: boolean;
   macros: Macro[];
+  currentDomain: string;
   error?: string | null;
 }
 
 export class MacroListViewModel extends BaseViewModel {
-  private state: MacroListState = { loading: true, macros: [], error: null };
+  private state: MacroListState = {
+    loading: true,
+    macros: [],
+    currentDomain: "",
+    error: null,
+  };
   private listeners: Array<(state: MacroListState) => void> = [];
 
   constructor(
@@ -21,11 +27,26 @@ export class MacroListViewModel extends BaseViewModel {
   }
 
   init(): void {
-    this.logger.info("MacroListViewModel initialized");
+    this.logger.info("Initializing macro list view model");
+    this.loadCurrentDomain();
 
-    this.loadMacros();
     this.emitter.on("SAVED_MACRO", () => {
+      this.logger.info("Detected SAVED_MACRO event; reloading list");
       void this.loadMacros();
+    });
+
+    // Listen for tab changes
+    chrome.tabs.onActivated.addListener(() => {
+      this.logger.info("Tab activated, checking domain");
+      this.loadCurrentDomain();
+    });
+
+    // Listen for tab updates (navigation)
+    chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+      if (changeInfo.status === "complete" && tab.active) {
+        this.logger.info("Tab updated and complete, checking domain");
+        this.loadCurrentDomain();
+      }
     });
   }
 
@@ -55,15 +76,36 @@ export class MacroListViewModel extends BaseViewModel {
   }
 
   private async loadMacros(): Promise<void> {
-    this.logger.info("Loading macros");
+    this.logger.info("Loading macros", { domain: this.state.currentDomain });
     this.setState({ loading: true, error: null });
     try {
-      const macros = await this.macroRepository.loadAll();
+      const macros = this.state.currentDomain
+        ? await this.macroRepository.loadByDomain(this.state.currentDomain)
+        : await this.macroRepository.loadAll();
       this.logger.info("Loaded macros", { count: macros.length });
       this.setState({ macros, loading: false });
     } catch (err) {
       this.logger.error("Failed to load macros", { err });
       this.setState({ error: "Failed to load macros", loading: false });
+    }
+  }
+
+  private loadCurrentDomain(): void {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const url = tabs[0]?.url || "";
+      const domain = this.extractDomain(url);
+      this.logger.info("Current domain detected", { domain });
+      this.setState({ currentDomain: domain });
+      void this.loadMacros();
+    });
+  }
+
+  private extractDomain(url: string): string {
+    try {
+      const urlObj = new URL(url);
+      return urlObj.hostname;
+    } catch {
+      return "";
     }
   }
 }

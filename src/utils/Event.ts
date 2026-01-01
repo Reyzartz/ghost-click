@@ -19,6 +19,7 @@ export interface StartRecordingEvent extends BaseEvent {
   name: "START_RECORDING";
   data: {
     sessionId: string;
+    initialUrl: string;
   };
 }
 

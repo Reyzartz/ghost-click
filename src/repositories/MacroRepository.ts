@@ -38,6 +38,11 @@ export class MacroRepository {
     return macros ?? [];
   }
 
+  async loadByDomain(domain: string): Promise<Macro[]> {
+    const macros = await this.loadAll();
+    return macros.filter((m) => m.domain === domain);
+  }
+
   async findById(id: string): Promise<Macro | null> {
     const macros = await this.loadAll();
     return macros.find((m) => m.id === id) ?? null;
