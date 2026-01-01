@@ -5,15 +5,18 @@ import { BaseService } from "@/utils/BaseService";
 import { UserInputService } from "./services/UserInputService";
 import { ActionExecutorService } from "./services/ActionExecutorService";
 import { StatusIndicatorViewModel } from "./viewmodels/StatusIndicatorViewModel";
+import { NotificationViewModel } from "./viewmodels/NotificationViewModel";
 
 export class ContentApp extends BaseApp {
   readonly statusIndicatorViewModel: StatusIndicatorViewModel;
+  readonly notificationViewModel: NotificationViewModel;
 
   constructor() {
     const emitter = new Emitter("content");
     const logger = new Logger("ContentApp");
     const statusIndicatorViewModel = new StatusIndicatorViewModel(emitter);
-    const viewModels = [statusIndicatorViewModel];
+    const notificationViewModel = new NotificationViewModel(emitter);
+    const viewModels = [statusIndicatorViewModel, notificationViewModel];
 
     const services: Array<BaseService> = [
       new UserInputService(emitter),
@@ -23,6 +26,7 @@ export class ContentApp extends BaseApp {
     super(emitter, logger, services, viewModels);
 
     this.statusIndicatorViewModel = statusIndicatorViewModel;
+    this.notificationViewModel = notificationViewModel;
   }
 
   init(): void {

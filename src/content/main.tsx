@@ -20,7 +20,19 @@ const shadowRoot = host.attachShadow({ mode: "open" });
 
 // Inject compiled Tailwind CSS into shadow root to style isolated UI
 const styleEl = document.createElement("style");
-styleEl.textContent = tailwindCss as unknown as string;
+styleEl.textContent = `
+${tailwindCss as unknown as string}
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+`;
 shadowRoot.appendChild(styleEl);
 
 // Mount point inside shadow root
