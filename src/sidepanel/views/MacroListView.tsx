@@ -5,13 +5,15 @@ import { SidePanelApp } from "../SidePanelApp";
 type MacroListState = {
   loading: boolean;
   macros: Macro[];
+  currentDomain: string;
   error?: string | null;
 };
 
-export default function App({ app }: { app: SidePanelApp }) {
+export default function MacroListView({ app }: { app: SidePanelApp }) {
   const [state, setState] = useState<MacroListState>({
     loading: true,
     macros: [],
+    currentDomain: "",
     error: null,
   });
 
@@ -27,6 +29,11 @@ export default function App({ app }: { app: SidePanelApp }) {
           <p className="text-xs uppercase tracking-wide text-slate-500">
             Side Panel
           </p>
+          {state.currentDomain && (
+            <p className="text-xs text-slate-500">
+              Domain: {state.currentDomain}
+            </p>
+          )}
           <h2 className="text-lg font-semibold">Macros</h2>
         </div>
         <span className="text-xs text-slate-500">
@@ -55,9 +62,17 @@ export default function App({ app }: { app: SidePanelApp }) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-medium text-slate-900">{macro.name}</p>
-                <span className="text-xs text-slate-600">
-                  {macro.steps.length} step{macro.steps.length === 1 ? "" : "s"}
-                </span>
+                <div className="flex gap-2 items-center">
+                  <span className="text-xs text-slate-600">
+                    {macro.steps.length} step
+                    {macro.steps.length === 1 ? "" : "s"}
+                  </span>
+                  {macro.domain && (
+                    <span className="text-xs text-slate-400">
+                      • {macro.domain}
+                    </span>
+                  )}
+                </div>
               </div>
 
               <div className="flex items-end gap-2 flex-col ">
