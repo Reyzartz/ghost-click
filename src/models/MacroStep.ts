@@ -1,4 +1,4 @@
-export type StepType = "CLICK";
+export type StepType = "CLICK" | "INPUT" | "KEYPRESS";
 
 export interface BaseMacroStep {
   type: StepType;
@@ -16,4 +16,21 @@ export interface ClickStep extends BaseMacroStep {
   target: TargetElementSelector;
 }
 
-export type MacroStep = ClickStep;
+export interface InputStep extends BaseMacroStep {
+  type: "INPUT";
+  target: TargetElementSelector;
+  value: string;
+}
+
+export interface KeyPressStep extends BaseMacroStep {
+  type: "KEYPRESS";
+  target: TargetElementSelector;
+  key: string;
+  code: string;
+  ctrlKey: boolean;
+  shiftKey: boolean;
+  altKey: boolean;
+  metaKey: boolean;
+}
+
+export type MacroStep = ClickStep | InputStep | KeyPressStep;

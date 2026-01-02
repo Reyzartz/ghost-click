@@ -117,11 +117,56 @@ export class RecorderService extends BaseService {
     this.initialUrl = "";
     this.recordingTabId = null;
 
-    await this.saveMacro(sessionId, initialUrl, this.macroSteps);
+    // Post-process steps to combine adjacent input events
+    const processedSteps = this.postProcessSteps(this.macroSteps);
+
+    await this.saveMacro(sessionId, initialUrl, processedSteps);
     this.macroSteps = [];
 
     // Clear recording state from repository
     await this.recordingStateRepository.clear();
+  }
+
+  private postProcessSteps(steps: MacroStep[]): MacroStep[] {
+    if (steps.length === 0) return steps;
+
+    const processed: MacroStep[] = [];
+    let i = 0;
+
+    while (i < steps.length) {
+      const currentStep = steps[i];
+
+      // If it's an INPUT step, look for adjacent INPUT steps with same xpath
+      if (currentStep.type === "INPUT") {
+        let lastInputStep = currentStep;
+        let j = i + 1;
+
+        // Find all adjacent INPUT steps with the same xpath
+        while (
+          j < steps.length &&
+          steps[j].type === "INPUT" &&
+          steps[j].target.xpath === currentStep.target.xpath
+        ) {
+          lastInputStep = steps[j] as typeof currentStep;
+          j++;
+        }
+
+        // Add only the last input step (which has the final value)
+        processed.push(lastInputStep);
+        i = j;
+      } else {
+        // For non-INPUT steps, add as-is
+        processed.push(currentStep);
+        i++;
+      }
+    }
+
+    this.logger.info("Post-processed steps", {
+      original: steps.length,
+      processed: processed.length,
+    });
+
+    return processed;
   }
 
   private async saveMacro(
@@ -174,12 +219,20 @@ export class RecorderService extends BaseService {
       case "CLICK":
         this.recordClickAction(data);
         break;
+      case "INPUT":
+        this.recordInputAction(data);
+        break;
+      case "KEYPRESS":
+        this.recordKeyPressAction(data);
+        break;
       default:
-        this.logger.warn("Unknown user action type", { type: data.type });
+        this.logger.warn("Unknown user action type");
     }
   }
 
   private recordClickAction(data: UserActionEvent["data"]): void {
+    if (data.type !== "CLICK") return;
+
     const step: MacroStep = {
       type: "CLICK",
       target: data.target,
@@ -188,6 +241,45 @@ export class RecorderService extends BaseService {
 
     this.macroSteps.push(step);
     this.logger.info("Recorded click action", { step });
+
+    // Save updated state to repository
+    void this.recordingStateRepository.addStep(step);
+  }
+
+  private recordInputAction(data: UserActionEvent["data"]): void {
+    if (data.type !== "INPUT") return;
+
+    const step: MacroStep = {
+      type: "INPUT",
+      target: data.target,
+      value: data.value,
+      timestamp: data.timestamp,
+    };
+
+    this.macroSteps.push(step);
+    this.logger.info("Recorded input action", { step });
+
+    // Save updated state to repository
+    void this.recordingStateRepository.addStep(step);
+  }
+
+  private recordKeyPressAction(data: UserActionEvent["data"]): void {
+    if (data.type !== "KEYPRESS") return;
+
+    const step: MacroStep = {
+      type: "KEYPRESS",
+      target: data.target,
+      key: data.key,
+      code: data.code,
+      ctrlKey: data.ctrlKey,
+      shiftKey: data.shiftKey,
+      altKey: data.altKey,
+      metaKey: data.metaKey,
+      timestamp: data.timestamp,
+    };
+
+    this.macroSteps.push(step);
+    this.logger.info("Recorded keypress action", { step });
 
     // Save updated state to repository
     void this.recordingStateRepository.addStep(step);

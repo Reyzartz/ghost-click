@@ -1,6 +1,6 @@
 import { BaseService } from "@/utils/BaseService";
 import { Emitter } from "@/utils/Emitter";
-import { ClickStep } from "@/models/MacroStep";
+import { ClickStep, InputStep, KeyPressStep } from "@/models/MacroStep";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
 
 export class ActionExecutorService extends BaseService {
@@ -26,6 +26,12 @@ export class ActionExecutorService extends BaseService {
       switch (step.type) {
         case "CLICK":
           await this.executeClickStep(step as ClickStep);
+          break;
+        case "INPUT":
+          await this.executeInputStep(step as InputStep);
+          break;
+        case "KEYPRESS":
+          await this.executeKeyPressStep(step as KeyPressStep);
           break;
         default:
           this.logger.warn("Unknown action type", { type: step.type });
@@ -115,6 +121,103 @@ export class ActionExecutorService extends BaseService {
     }
 
     return null;
+  }
+
+  private async executeInputStep(step: InputStep): Promise<void> {
+    const element = this.findElement(step.target);
+
+    if (!element) {
+      throw new Error(
+        `Element not found for target: ${JSON.stringify(step.target)}`
+      );
+    }
+
+    if (
+      !(
+        element instanceof HTMLInputElement ||
+        element instanceof HTMLTextAreaElement
+      )
+    ) {
+      throw new Error("Found target is not an input or textarea element");
+    }
+
+    this.logger.info("Setting input value", {
+      selector: step.target,
+      value: step.value,
+    });
+
+    // Only scroll if element is not in view
+    const isInView = await this.isElementInView(element);
+    if (!isInView) {
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
+      await this.sleep(300);
+    }
+
+    await this.highlightElement(element);
+
+    // Focus the element
+    element.focus();
+
+    // Set the value
+    element.value = step.value;
+
+    // Trigger input event to notify frameworks (React, Vue, etc.)
+    element.dispatchEvent(new Event("input", { bubbles: true }));
+    element.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  private async executeKeyPressStep(step: KeyPressStep): Promise<void> {
+    const element = this.findElement(step.target);
+
+    if (!element) {
+      throw new Error(
+        `Element not found for target: ${JSON.stringify(step.target)}`
+      );
+    }
+
+    if (!(element instanceof HTMLElement)) {
+      throw new Error("Found target is not an HTMLElement");
+    }
+
+    this.logger.info("Pressing key", { selector: step.target, key: step.key });
+
+    // Only scroll if element is not in view
+    const isInView = await this.isElementInView(element);
+    if (!isInView) {
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
+      await this.sleep(300);
+    }
+
+    await this.highlightElement(element);
+
+    // Focus the element
+    element.focus();
+
+    // Dispatch keyboard events
+    const keyboardEventInit: KeyboardEventInit = {
+      key: step.key,
+      code: step.code,
+      ctrlKey: step.ctrlKey,
+      shiftKey: step.shiftKey,
+      altKey: step.altKey,
+      metaKey: step.metaKey,
+      bubbles: true,
+      cancelable: true,
+    };
+
+    element.dispatchEvent(new KeyboardEvent("keydown", keyboardEventInit));
+    element.dispatchEvent(new KeyboardEvent("keypress", keyboardEventInit));
+    element.dispatchEvent(new KeyboardEvent("keyup", keyboardEventInit));
+
+    // If Enter key is pressed and element is inside a form, submit the form
+    if (step.key === "Enter") {
+      const form = element.closest("form");
+      if (form) {
+        this.logger.info("Submitting form", { form });
+        await this.sleep(100);
+        form.submit();
+      }
+    }
   }
 
   private async highlightElement(element: HTMLElement): Promise<void> {

@@ -28,7 +28,7 @@ export interface StopRecordingEvent extends BaseEvent {
   name: "STOP_RECORDING";
 }
 
-export type UserEventType = "CLICK";
+export type UserEventType = "CLICK" | "INPUT" | "KEYPRESS";
 
 export type UserEventTarget = {
   id: string;
@@ -47,9 +47,26 @@ export interface UserClickEventData extends BaseUserEventData {
   target: UserEventTarget;
 }
 
+export interface UserInputEventData extends BaseUserEventData {
+  type: "INPUT";
+  target: UserEventTarget;
+  value: string;
+}
+
+export interface UserKeyPressEventData extends BaseUserEventData {
+  type: "KEYPRESS";
+  target: UserEventTarget;
+  key: string;
+  code: string;
+  ctrlKey: boolean;
+  shiftKey: boolean;
+  altKey: boolean;
+  metaKey: boolean;
+}
+
 export interface UserActionEvent extends BaseEvent {
   name: "USER_ACTION";
-  data: UserClickEventData;
+  data: UserClickEventData | UserInputEventData | UserKeyPressEventData;
 }
 
 export interface SavedMacroEvent extends BaseEvent {

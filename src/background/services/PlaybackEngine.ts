@@ -1,5 +1,5 @@
 import { Macro } from "@/models";
-import { ClickStep } from "@/models/MacroStep";
+import { ClickStep, InputStep, KeyPressStep } from "@/models/MacroStep";
 import { Emitter } from "@/utils/Emitter";
 import { Logger } from "@/utils/Logger";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
@@ -54,8 +54,14 @@ export class PlaybackEngine {
           case "CLICK":
             await this.executeClickStep(step as ClickStep);
             break;
+          case "INPUT":
+            await this.executeInputStep(step as InputStep);
+            break;
+          case "KEYPRESS":
+            await this.executeKeyPressStep(step as KeyPressStep);
+            break;
           default:
-            this.logger.warn("Unknown step type", { type: step.type });
+            this.logger.warn("Unknown step type");
         }
 
         prevTimestamp = step.timestamp;
@@ -91,6 +97,26 @@ export class PlaybackEngine {
   }
 
   private async executeClickStep(step: ClickStep): Promise<void> {
+    this.logger.info("Sending EXECUTE_ACTION to content script", { step });
+
+    // Send action to content script to execute
+    this.emitter.emit("EXECUTE_ACTION", { step });
+
+    // Wait a bit for the action to complete
+    await PlaybackEngine.sleep(100);
+  }
+
+  private async executeInputStep(step: InputStep): Promise<void> {
+    this.logger.info("Sending EXECUTE_ACTION to content script", { step });
+
+    // Send action to content script to execute
+    this.emitter.emit("EXECUTE_ACTION", { step });
+
+    // Wait a bit for the action to complete
+    await PlaybackEngine.sleep(100);
+  }
+
+  private async executeKeyPressStep(step: KeyPressStep): Promise<void> {
     this.logger.info("Sending EXECUTE_ACTION to content script", { step });
 
     // Send action to content script to execute

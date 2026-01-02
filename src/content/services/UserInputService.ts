@@ -7,6 +7,8 @@ export class UserInputService extends BaseService {
   private isRecording = false;
   private currentSessionId: string | null = null;
   private clickHandler: ((event: MouseEvent) => void) | null = null;
+  private inputHandler: ((event: Event) => void) | null = null;
+  private keydownHandler: ((event: KeyboardEvent) => void) | null = null;
 
   constructor(
     protected readonly emitter: Emitter,
@@ -60,13 +62,31 @@ export class UserInputService extends BaseService {
       this.captureClick(event);
     };
 
+    this.inputHandler = (event: Event) => {
+      this.captureInput(event);
+    };
+
+    this.keydownHandler = (event: KeyboardEvent) => {
+      this.captureKeyPress(event);
+    };
+
     document.addEventListener("click", this.clickHandler, true);
+    document.addEventListener("input", this.inputHandler, true);
+    document.addEventListener("keydown", this.keydownHandler, true);
   };
 
   private readonly removeClickHandlers = (): void => {
     if (this.clickHandler) {
       document.removeEventListener("click", this.clickHandler, true);
       this.clickHandler = null;
+    }
+    if (this.inputHandler) {
+      document.removeEventListener("input", this.inputHandler, true);
+      this.inputHandler = null;
+    }
+    if (this.keydownHandler) {
+      document.removeEventListener("keydown", this.keydownHandler, true);
+      this.keydownHandler = null;
     }
   };
 
@@ -109,6 +129,86 @@ export class UserInputService extends BaseService {
 
     // Emit USER_ACTION event
     this.emitter.emit("USER_ACTION", clickData);
+  }
+
+  private captureInput(event: Event): void {
+    if (!this.isRecording || !this.currentSessionId) {
+      return;
+    }
+
+    const target = event.target as HTMLInputElement | HTMLTextAreaElement;
+
+    // Only capture input from input and textarea elements
+    if (
+      !target ||
+      (target.tagName !== "INPUT" && target.tagName !== "TEXTAREA")
+    ) {
+      return;
+    }
+
+    const inputData = {
+      sessionId: this.currentSessionId,
+      timestamp: Date.now(),
+      type: "INPUT" as const,
+      target: {
+        id: target.id || "",
+        className: target.className || "",
+        xpath: UserInputService.getXPath(target),
+      },
+      value: target.value,
+    };
+
+    this.logger.info("Input captured", inputData);
+
+    // Emit USER_ACTION event
+    this.emitter.emit("USER_ACTION", inputData);
+  }
+
+  private captureKeyPress(event: KeyboardEvent): void {
+    if (!this.isRecording || !this.currentSessionId) {
+      return;
+    }
+
+    // Only capture special keys (Enter, Backspace, Escape, Tab, etc.)
+    const specialKeys = [
+      "Enter",
+      "Backspace",
+      "Delete",
+      "Escape",
+      "Tab",
+      "ArrowUp",
+      "ArrowDown",
+      "ArrowLeft",
+      "ArrowRight",
+    ];
+
+    if (!specialKeys.includes(event.key)) {
+      return;
+    }
+
+    const target = event.target as HTMLElement;
+
+    const keyPressData = {
+      sessionId: this.currentSessionId,
+      timestamp: Date.now(),
+      type: "KEYPRESS" as const,
+      target: {
+        id: target.id || "",
+        className: target.className || "",
+        xpath: UserInputService.getXPath(target),
+      },
+      key: event.key,
+      code: event.code,
+      ctrlKey: event.ctrlKey,
+      shiftKey: event.shiftKey,
+      altKey: event.altKey,
+      metaKey: event.metaKey,
+    };
+
+    this.logger.info("KeyPress captured", keyPressData);
+
+    // Emit USER_ACTION event
+    this.emitter.emit("USER_ACTION", keyPressData);
   }
 
   private static getXPath(el: Document | Element | DocumentFragment) {
