@@ -32,6 +32,10 @@ interface ChromeMessage<T extends EventType = EventType> {
   source: "background" | "content" | "popup" | "sidepanel";
 }
 
+interface EmitOptions {
+  currentTab?: boolean;
+}
+
 export class Emitter {
   logger: Logger;
   private events: { [K in EventType]?: Array<EventDispatcher<K>> } = {};
@@ -90,12 +94,16 @@ export class Emitter {
     }
   }
 
-  emit<T extends EventType>(event: T, data?: EventOf<T>["data"]): void {
+  emit<T extends EventType>(
+    event: T,
+    data?: EventOf<T>["data"],
+    options?: EmitOptions
+  ): void {
     this.logger.info(`Emitting event: ${event}`, { data });
 
     this.emitLocally(event, data);
 
-    this.bridgeToOtherContexts(event, data);
+    this.bridgeToOtherContexts(event, data, options);
   }
 
   private emitLocally<T extends EventType>(
@@ -114,7 +122,8 @@ export class Emitter {
    */
   private bridgeToOtherContexts<T extends EventType>(
     event: T,
-    data?: EventOf<T>["data"]
+    data?: EventOf<T>["data"],
+    { currentTab = true }: EmitOptions = {}
   ): void {
     const message: ChromeMessage<T> = {
       type: "EMIT_EVENT",
@@ -131,8 +140,30 @@ export class Emitter {
         });
       });
     } else {
-      // Background script sends to all content scripts in current tab
-      chrome.tabs.query({},  (tabs) => {
+      if (currentTab) {
+        this.sendMessageToCurrentTab(message);
+      } else {
+        this.sendMessageToAllTabs(message);
+      }
+
+      // Also notify extension pages (popup/sidepanel/options)
+      chrome.runtime.sendMessage(message).catch((err) => {
+        this.logger.info(`Failed to send message from ${this.appType}`, {
+          error: err,
+        });
+      });
+    }
+  }
+
+  private sendMessageToCurrentTab<T extends EventType>(
+    message: ChromeMessage<T>
+  ): void {
+    chrome.tabs.query(
+      {
+        active: true,
+        currentWindow: true,
+      },
+      (tabs) => {
         tabs.forEach((tab) => {
           if (tab.id === undefined) return;
 
@@ -143,14 +174,24 @@ export class Emitter {
             );
           });
         });
-      });
+      }
+    );
+  }
 
-      // Also notify extension pages (popup/sidepanel/options)
-      chrome.runtime.sendMessage(message).catch((err) => {
-        this.logger.info(`Failed to send message from ${this.appType}`, {
-          error: err,
+  private sendMessageToAllTabs<T extends EventType>(
+    message: ChromeMessage<T>
+  ): void {
+    chrome.tabs.query({}, (tabs) => {
+      tabs.forEach((tab) => {
+        if (tab.id === undefined) return;
+
+        chrome.tabs.sendMessage(tab.id, message).catch((err) => {
+          this.logger.info(
+            `Failed to send message to content script in tab ${tab.id}`,
+            { error: err }
+          );
         });
       });
-    }
+    });
   }
 }

@@ -8,7 +8,8 @@ export type EventType =
   | "PLAY_MACRO"
   | "EXECUTE_ACTION"
   | "PLAYBACK_COMPLETED"
-  | "PLAYBACK_ERROR";
+  | "PLAYBACK_ERROR"
+  | "STOP_PLAYBACK";
 
 export interface BaseEvent {
   name: EventType;
@@ -83,6 +84,10 @@ export interface PlayMacroEvent extends BaseEvent {
   };
 }
 
+export interface StopPlaybackEvent extends BaseEvent {
+  name: "STOP_PLAYBACK";
+}
+
 export interface PlaybackCompletedEvent extends BaseEvent {
   name: "PLAYBACK_COMPLETED";
   data: {
@@ -94,6 +99,7 @@ export interface PlaybackErrorEvent extends BaseEvent {
   name: "PLAYBACK_ERROR";
   data: {
     macroId: string;
+    stepId: string | null;
     error: any;
   };
 }
