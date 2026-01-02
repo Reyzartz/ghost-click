@@ -50,6 +50,7 @@ export class ActionExecutorService extends BaseService {
 
       this.emitter.emit("PLAYBACK_ERROR", {
         macroId,
+        stepId: step.id,
         error: (err as Error).message,
       });
     }
@@ -80,6 +81,7 @@ export class ActionExecutorService extends BaseService {
     await this.highlightElement(element);
 
     element.click();
+    element.focus();
   }
 
   private isElementInView(element: HTMLElement): Promise<boolean> {

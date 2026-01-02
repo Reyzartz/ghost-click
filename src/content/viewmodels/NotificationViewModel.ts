@@ -41,6 +41,10 @@ export class NotificationViewModel extends BaseViewModel {
     this.emitter.on("PLAYBACK_ERROR", () => {
       this.showNotification("Playback errored", "error");
     });
+
+    this.emitter.on("STOP_PLAYBACK", () => {
+      this.showNotification("Playback stopped", "info");
+    });
   }
 
   subscribe(listener: (state: NotificationState) => void): () => void {

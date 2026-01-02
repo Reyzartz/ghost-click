@@ -57,6 +57,10 @@ export class StatusIndicatorViewModel extends BaseViewModel {
     this.emitter.on("PLAYBACK_ERROR", () => {
       this.updateStatus("idle");
     });
+
+    this.emitter.on("STOP_PLAYBACK", () => {
+      this.updateStatus("idle");
+    });
   }
 
   subscribe(listener: (state: StatusIndicatorState) => void): () => void {
