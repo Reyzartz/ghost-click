@@ -37,6 +37,8 @@ export type UserEventTarget = {
 };
 
 interface BaseUserEventData {
+  id: string;
+  name: string;
   sessionId: string;
   timestamp: number;
   type: UserEventType;

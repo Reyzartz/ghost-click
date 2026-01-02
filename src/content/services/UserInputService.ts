@@ -106,6 +106,19 @@ export class UserInputService extends BaseService {
     this.currentSessionId = null;
   }
 
+  private generateStepId(): string {
+    return crypto.randomUUID();
+  }
+
+  private getElementName(element: HTMLElement): string {
+    const text = element.textContent;
+    if (text) {
+      return text;
+    }
+
+    return element.tagName.toLowerCase();
+  }
+
   private captureClick(event: MouseEvent): void {
     if (!this.isRecording || !this.currentSessionId) {
       return;
@@ -114,7 +127,10 @@ export class UserInputService extends BaseService {
     // TODO: Capture click on element in which the click handler is attached
     const target = event.target as HTMLElement;
     console.log("Captured click on element:", target);
+
     const clickData: UserClickEventData = {
+      id: this.generateStepId(),
+      name: this.getElementName(target),
       sessionId: this.currentSessionId,
       timestamp: Date.now(),
       type: "CLICK",
@@ -147,6 +163,8 @@ export class UserInputService extends BaseService {
     }
 
     const inputData = {
+      id: this.generateStepId(),
+      name: target.value,
       sessionId: this.currentSessionId,
       timestamp: Date.now(),
       type: "INPUT" as const,
@@ -189,6 +207,8 @@ export class UserInputService extends BaseService {
     const target = event.target as HTMLElement;
 
     const keyPressData = {
+      id: this.generateStepId(),
+      name: event.key,
       sessionId: this.currentSessionId,
       timestamp: Date.now(),
       type: "KEYPRESS" as const,

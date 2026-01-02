@@ -1,4 +1,4 @@
-import { Macro, MacroStep } from "@/models";
+import { Macro, MacroStep, StepType } from "@/models";
 import { MacroRepository } from "@/repositories/MacroRepository";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
 import { BaseService } from "../../utils/BaseService";
@@ -234,6 +234,8 @@ export class RecorderService extends BaseService {
     if (data.type !== "CLICK") return;
 
     const step: MacroStep = {
+      id: data.id,
+      name: RecorderService.getStepName(data.name, "CLICK"),
       type: "CLICK",
       target: data.target,
       timestamp: data.timestamp,
@@ -250,6 +252,8 @@ export class RecorderService extends BaseService {
     if (data.type !== "INPUT") return;
 
     const step: MacroStep = {
+      id: data.id,
+      name: RecorderService.getStepName(data.value, "INPUT"),
       type: "INPUT",
       target: data.target,
       value: data.value,
@@ -267,6 +271,8 @@ export class RecorderService extends BaseService {
     if (data.type !== "KEYPRESS") return;
 
     const step: MacroStep = {
+      id: data.id,
+      name: RecorderService.getStepName(data.key, "KEYPRESS"),
       type: "KEYPRESS",
       target: data.target,
       key: data.key,
@@ -283,5 +289,23 @@ export class RecorderService extends BaseService {
 
     // Save updated state to repository
     void this.recordingStateRepository.addStep(step);
+  }
+
+  private static getStepName(name: string, type: StepType): string {
+    let displayName = "";
+    switch (type) {
+      case "CLICK":
+        displayName = `Clicked "${name}"`;
+        break;
+      case "INPUT":
+        displayName = `Typed "${name}"`;
+        break;
+      case "KEYPRESS":
+        displayName = `Pressed "${name}"`;
+        break;
+    }
+    return displayName.length > 30
+      ? `${displayName.substring(0, 27)}...`
+      : displayName;
   }
 }

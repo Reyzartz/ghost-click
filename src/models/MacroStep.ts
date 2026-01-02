@@ -1,6 +1,8 @@
 export type StepType = "CLICK" | "INPUT" | "KEYPRESS";
 
 export interface BaseMacroStep {
+  id: string;
+  name: string;
   type: StepType;
   timestamp: number;
 }

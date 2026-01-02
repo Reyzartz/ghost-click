@@ -132,19 +132,18 @@ export class Emitter {
       });
     } else {
       // Background script sends to all content scripts in current tab
-      chrome.tabs.query(
-        {
-          active: true,
-          currentWindow: true,
-        },
-        (tabs) => {
-          if (tabs[0]?.id) {
-            chrome.tabs.sendMessage(tabs[0].id, message).catch(() => {
-              // ignore if no listeners
-            });
-          }
-        }
-      );
+      chrome.tabs.query({},  (tabs) => {
+        tabs.forEach((tab) => {
+          if (tab.id === undefined) return;
+
+          chrome.tabs.sendMessage(tab.id, message).catch((err) => {
+            this.logger.info(
+              `Failed to send message to content script in tab ${tab.id}`,
+              { error: err }
+            );
+          });
+        });
+      });
 
       // Also notify extension pages (popup/sidepanel/options)
       chrome.runtime.sendMessage(message).catch((err) => {

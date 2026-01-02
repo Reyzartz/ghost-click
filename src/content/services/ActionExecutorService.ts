@@ -224,9 +224,11 @@ export class ActionExecutorService extends BaseService {
     const originalOutline = element.style.outline;
     element.style.outline = "4px solid red";
 
-    await this.sleep(300);
+    setTimeout(function () {
+      element.style.outline = originalOutline;
+    }, 250);
 
-    element.style.outline = originalOutline;
+    await this.sleep(300);
   }
 
   private sleep(ms: number): Promise<void> {
