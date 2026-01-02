@@ -27,6 +27,11 @@ export class PlaybackService extends BaseService {
     this.emitter.on("PLAY_MACRO", async (data) => {
       await this.handlePlayMacro(data.macroId);
     });
+
+    this.emitter.on("STOP_PLAYBACK", () => {
+      this.logger.info("Stop playback event received");
+      this.playbackEngine.stop();
+    });
   }
 
   private async handlePlayMacro(macroId: string): Promise<void> {

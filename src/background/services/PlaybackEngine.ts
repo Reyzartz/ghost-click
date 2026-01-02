@@ -7,12 +7,18 @@ import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository"
 export class PlaybackEngine {
   private readonly logger: Logger;
   private isPlaying = false;
+  private shouldStop = false;
 
   constructor(
     private readonly emitter: Emitter,
     private readonly playbackStateRepository: PlaybackStateRepository
   ) {
     this.logger = new Logger("PlaybackEngine");
+  }
+
+  stop(): void {
+    this.logger.info("Stop playback requested");
+    this.shouldStop = true;
   }
 
   async playMacro(macro: Macro): Promise<void> {
@@ -22,6 +28,7 @@ export class PlaybackEngine {
     }
 
     this.isPlaying = true;
+    this.shouldStop = false;
     this.logger.info("Starting playback", {
       macroId: macro.id,
       initialUrl: macro.initialUrl,
@@ -42,6 +49,12 @@ export class PlaybackEngine {
       let prevTimestamp = 0;
 
       for (const step of macro.steps) {
+        // Check if stop was requested
+        if (this.shouldStop) {
+          this.logger.info("Playback stopped by user");
+          break;
+        }
+
         if (prevTimestamp > 0) {
           const delay = step.timestamp - prevTimestamp;
           if (delay > 0) {
@@ -51,30 +64,61 @@ export class PlaybackEngine {
 
         this.logger.info(`Executing step ${step.type}`, { step });
 
-        switch (step.type) {
-          case "CLICK":
-            await this.executeClickStep(step as ClickStep);
-            break;
-          case "INPUT":
-            await this.executeInputStep(step as InputStep);
-            break;
-          case "KEYPRESS":
-            await this.executeKeyPressStep(step as KeyPressStep);
-            break;
-          default:
-            this.logger.warn("Unknown step type");
-        }
+        try {
+          switch (step.type) {
+            case "CLICK":
+              await this.executeClickStep(step as ClickStep);
+              break;
+            case "INPUT":
+              await this.executeInputStep(step as InputStep);
+              break;
+            case "KEYPRESS":
+              await this.executeKeyPressStep(step as KeyPressStep);
+              break;
+            default:
+              this.logger.warn("Unknown step type");
+          }
+        } catch (err) {
+          this.logger.error("Step execution failed, continuing", {
+            error: err,
+            stepId: step.id,
+            stepType: step.type,
+          });
 
-        prevTimestamp = step.timestamp;
+          this.emitter.emit("PLAYBACK_ERROR", {
+            macroId: macro.id,
+            stepId: step.id,
+            error: (err as Error)?.message,
+          });
+        } finally {
+          prevTimestamp = step.timestamp;
+        }
       }
 
-      this.logger.info("Playback completed", { macroId: macro.id });
-
-      this.emitter.emit("PLAYBACK_COMPLETED", { macroId: macro.id });
+      if (this.shouldStop) {
+        this.logger.info("Playback stopped", { macroId: macro.id });
+      } else {
+        this.logger.info("Playback completed", { macroId: macro.id });
+        this.emitter.emit(
+          "PLAYBACK_COMPLETED",
+          { macroId: macro.id },
+          {
+            currentTab: false,
+          }
+        );
+      }
     } catch (err) {
       this.logger.error("Playback failed", { error: err, macroId: macro.id });
 
-      this.emitter.emit("PLAYBACK_ERROR", { macroId: macro.id, error: err });
+      this.emitter.emit("PLAYBACK_ERROR", {
+        macroId: macro.id,
+        stepId: null,
+        error: err,
+      });
+
+      this.emitter.emit("STOP_PLAYBACK", undefined, {
+        currentTab: false,
+      });
     } finally {
       this.isPlaying = false;
       await this.playbackStateRepository.clear();

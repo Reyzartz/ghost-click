@@ -27,7 +27,7 @@ export class ShortcutService extends BaseService {
         break;
 
       case ShortcutService.commands.STOP_RECORDING:
-        this.emitter.emit("STOP_RECORDING");
+        this.emitter.emit("STOP_RECORDING", {}, { currentTab: false });
         break;
       case ShortcutService.commands.OPEN_SIDE_PANEL:
         ShortcutService.toggleSidePanel();
