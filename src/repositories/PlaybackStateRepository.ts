@@ -29,6 +29,7 @@ export class PlaybackStateRepository {
     const updated: PlaybackState = {
       isPlaying: current?.isPlaying ?? false,
       macroId: current?.macroId ?? null,
+      currentStepId: current?.currentStepId ?? null,
       ...partial,
     };
     await this.save(updated);
@@ -47,5 +48,10 @@ export class PlaybackStateRepository {
   async getMacroId(): Promise<string | null> {
     const state = await this.get();
     return state?.macroId ?? null;
+  }
+
+  async getCurrentStepId(): Promise<string | null> {
+    const state = await this.get();
+    return state?.currentStepId ?? null;
   }
 }

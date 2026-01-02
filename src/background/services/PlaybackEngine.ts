@@ -32,6 +32,7 @@ export class PlaybackEngine {
     await this.playbackStateRepository.save({
       isPlaying: true,
       macroId: macro.id,
+      currentStepId: null,
     });
 
     try {
@@ -99,6 +100,9 @@ export class PlaybackEngine {
   private async executeClickStep(step: ClickStep): Promise<void> {
     this.logger.info("Sending EXECUTE_ACTION to content script", { step });
 
+    // Update current step id
+    await this.playbackStateRepository.update({ currentStepId: step.id });
+
     // Send action to content script to execute
     this.emitter.emit("EXECUTE_ACTION", { step });
 
@@ -109,6 +113,9 @@ export class PlaybackEngine {
   private async executeInputStep(step: InputStep): Promise<void> {
     this.logger.info("Sending EXECUTE_ACTION to content script", { step });
 
+    // Update current step id
+    await this.playbackStateRepository.update({ currentStepId: step.id });
+
     // Send action to content script to execute
     this.emitter.emit("EXECUTE_ACTION", { step });
 
@@ -118,6 +125,9 @@ export class PlaybackEngine {
 
   private async executeKeyPressStep(step: KeyPressStep): Promise<void> {
     this.logger.info("Sending EXECUTE_ACTION to content script", { step });
+
+    // Update current step id
+    await this.playbackStateRepository.update({ currentStepId: step.id });
 
     // Send action to content script to execute
     this.emitter.emit("EXECUTE_ACTION", { step });
