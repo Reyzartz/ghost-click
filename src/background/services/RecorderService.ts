@@ -182,7 +182,7 @@ export class RecorderService extends BaseService {
 
     const macro: Macro = {
       id: sessionId,
-      name: existing?.name ?? sessionId,
+      name: existing?.name ?? `Untitled Macro ${new Date().toLocaleString()}`,
       initialUrl,
       domain,
       steps: [...steps],

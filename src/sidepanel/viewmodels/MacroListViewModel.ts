@@ -6,14 +6,19 @@ import { Emitter } from "@/utils/Emitter";
 export interface MacroListState {
   loading: boolean;
   macros: Macro[];
+  allMacros: Macro[];
   currentDomain: string;
   error?: string | null;
 }
+
+export type MacroSortBy = "createdAt" | "updatedAt";
+export type MacroSortOrder = "asc" | "desc";
 
 export class MacroListViewModel extends BaseViewModel {
   private state: MacroListState = {
     loading: true,
     macros: [],
+    allMacros: [],
     currentDomain: "",
     error: null,
   };
@@ -75,16 +80,32 @@ export class MacroListViewModel extends BaseViewModel {
     }
   }
 
-  private async loadMacros(): Promise<void> {
+  private async loadMacros(
+    sortBy: MacroSortBy = "updatedAt",
+    sortOrder: MacroSortOrder = "desc"
+  ): Promise<void> {
     this.logger.info("Loading macros", { domain: this.state.currentDomain });
     this.setState({ loading: true, error: null });
     try {
-      const macros = await this.macroRepository.loadByDomain(
-        this.state.currentDomain
+      const macros = MacroListViewModel.sortMacros(
+        await this.macroRepository.loadByDomain(this.state.currentDomain),
+        sortBy,
+        sortOrder
       );
 
-      this.logger.info("Loaded macros", { count: macros.length });
-      this.setState({ macros, loading: false });
+      const allMacros = MacroListViewModel.sortMacros(
+        await this.macroRepository.loadAll(),
+        sortBy,
+        sortOrder
+      );
+
+      this.logger.info("Loaded macros", {
+        sortBy,
+        sortOrder,
+        currentDomainCount: macros.length,
+        allCount: allMacros.length,
+      });
+      this.setState({ macros, allMacros, loading: false });
     } catch (err) {
       this.logger.error("Failed to load macros", { err });
       this.setState({ error: "Failed to load macros", loading: false });
@@ -108,5 +129,25 @@ export class MacroListViewModel extends BaseViewModel {
     } catch {
       return "";
     }
+  }
+
+  private static sortMacros(
+    macros: Macro[],
+    sortBy: MacroSortBy,
+    sortOrder: MacroSortOrder
+  ): Macro[] {
+    let res = macros;
+    switch (sortBy) {
+      case "createdAt":
+      case "updatedAt":
+        res.sort((a, b) => b.createdAt - a.createdAt);
+        break;
+    }
+
+    if (sortOrder === "asc") {
+      res = res.reverse();
+    }
+
+    return res;
   }
 }
