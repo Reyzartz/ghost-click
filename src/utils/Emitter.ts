@@ -7,6 +7,7 @@ import {
   SavedMacroEvent,
   StartRecordingEvent,
   StopRecordingEvent,
+  ToggleQuickActionsEvent,
   UserActionEvent,
 } from "./Event";
 import { Logger } from "./Logger";
@@ -19,7 +20,8 @@ type Events =
   | PlayMacroEvent
   | ExecuteActionEvent
   | PlaybackCompletedEvent
-  | PlaybackErrorEvent;
+  | PlaybackErrorEvent
+  | ToggleQuickActionsEvent;
 
 type EventOf<T extends EventType> = Extract<Events, { name: T }>;
 

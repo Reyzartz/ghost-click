@@ -9,7 +9,8 @@ export type EventType =
   | "EXECUTE_ACTION"
   | "PLAYBACK_COMPLETED"
   | "PLAYBACK_ERROR"
-  | "STOP_PLAYBACK";
+  | "STOP_PLAYBACK"
+  | "TOGGLE_QUICK_ACTIONS";
 
 export interface BaseEvent {
   name: EventType;
@@ -109,4 +110,8 @@ export interface ExecuteActionEvent extends BaseEvent {
   data: {
     step: MacroStep;
   };
+}
+
+export interface ToggleQuickActionsEvent extends BaseEvent {
+  name: "TOGGLE_QUICK_ACTIONS";
 }

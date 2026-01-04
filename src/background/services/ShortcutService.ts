@@ -6,6 +6,7 @@ export class ShortcutService extends BaseService {
     START_RECORDING: "start-recording",
     STOP_RECORDING: "stop-recording",
     OPEN_SIDE_PANEL: "open-side-panel",
+    TOGGLE_QUICK_ACTIONS: "toggle-quick-actions",
   };
 
   constructor(protected readonly emitter: Emitter) {
@@ -31,6 +32,9 @@ export class ShortcutService extends BaseService {
         break;
       case ShortcutService.commands.OPEN_SIDE_PANEL:
         ShortcutService.toggleSidePanel();
+        break;
+      case ShortcutService.commands.TOGGLE_QUICK_ACTIONS:
+        this.emitter.emit("TOGGLE_QUICK_ACTIONS");
         break;
       default:
         this.logger.warn(`Unhandled command: ${command}`);

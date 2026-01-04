@@ -6,13 +6,16 @@ import { UserInputService } from "./services/UserInputService";
 import { ActionExecutorService } from "./services/ActionExecutorService";
 import { StatusIndicatorViewModel } from "./viewmodels/StatusIndicatorViewModel";
 import { NotificationViewModel } from "./viewmodels/NotificationViewModel";
+import { QuickActionsViewModel } from "./viewmodels/QuickActionsViewModel";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
+import { MacroRepository } from "@/repositories/MacroRepository";
 import { Storage } from "@/utils/Storage";
 
 export class ContentApp extends BaseApp {
   readonly statusIndicatorViewModel: StatusIndicatorViewModel;
   readonly notificationViewModel: NotificationViewModel;
+  readonly quickActionsViewModel: QuickActionsViewModel;
 
   constructor() {
     const emitter = new Emitter("content");
@@ -21,6 +24,7 @@ export class ContentApp extends BaseApp {
     const storage = new Storage(chrome.storage.local);
     const recordingStateRepository = new RecordingStateRepository(storage);
     const playbackStateRepository = new PlaybackStateRepository(storage);
+    const macroRepository = new MacroRepository(emitter, storage);
 
     const statusIndicatorViewModel = new StatusIndicatorViewModel(
       emitter,
@@ -28,7 +32,15 @@ export class ContentApp extends BaseApp {
       playbackStateRepository
     );
     const notificationViewModel = new NotificationViewModel(emitter);
-    const viewModels = [statusIndicatorViewModel, notificationViewModel];
+    const quickActionsViewModel = new QuickActionsViewModel(
+      macroRepository,
+      emitter
+    );
+    const viewModels = [
+      statusIndicatorViewModel,
+      notificationViewModel,
+      quickActionsViewModel,
+    ];
 
     const services: Array<BaseService> = [
       new UserInputService(emitter, recordingStateRepository),
@@ -39,6 +51,7 @@ export class ContentApp extends BaseApp {
 
     this.statusIndicatorViewModel = statusIndicatorViewModel;
     this.notificationViewModel = notificationViewModel;
+    this.quickActionsViewModel = quickActionsViewModel;
   }
 
   async init(): Promise<void> {
