@@ -13,6 +13,7 @@ export interface StepError {
 
 export interface PlaybackProgressState {
   isPlaying: boolean;
+  isPaused: boolean;
   macro: Macro | null;
   currentStepId: string | null;
   currentStepIndex: number;
@@ -25,6 +26,7 @@ export interface PlaybackProgressState {
 export class PlaybackProgressViewModel extends BaseViewModel {
   private state: PlaybackProgressState = {
     isPlaying: false,
+    isPaused: false,
     macro: null,
     currentStepId: null,
     currentStepIndex: 0,
@@ -77,7 +79,17 @@ export class PlaybackProgressViewModel extends BaseViewModel {
 
     this.emitter.on("STOP_PLAYBACK", () => {
       this.logger.info("Stop playback event received");
-      this.setState({ isPlaying: false });
+      this.setState({ isPlaying: false, isPaused: false });
+    });
+
+    this.emitter.on("PAUSE_PLAYBACK", () => {
+      this.logger.info("Pause playback event received");
+      this.setState({ isPaused: true });
+    });
+
+    this.emitter.on("RESUME_PLAYBACK", () => {
+      this.logger.info("Resume playback event received");
+      this.setState({ isPaused: false });
     });
   }
 
@@ -111,6 +123,7 @@ export class PlaybackProgressViewModel extends BaseViewModel {
 
           this.setState({
             isPlaying: true,
+            isPaused: playbackState.isPaused || false,
             macro,
             currentStepId: playbackState.currentStepId,
             currentStepIndex,
@@ -129,6 +142,7 @@ export class PlaybackProgressViewModel extends BaseViewModel {
       } else {
         this.setState({
           isPlaying: false,
+          isPaused: false,
           macro: null,
           currentStepId: null,
           currentStepIndex: 0,

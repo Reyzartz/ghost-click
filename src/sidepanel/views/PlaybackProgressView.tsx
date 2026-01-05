@@ -9,6 +9,7 @@ import { StepListItem } from "@/components/StepListItem";
 export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<PlaybackProgressState>({
     isPlaying: false,
+    isPaused: false,
     macro: null,
     currentStepId: null,
     currentStepIndex: 0,
@@ -63,6 +64,18 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
     });
   };
 
+  const handlePause = (): void => {
+    app.emitter.emit("PAUSE_PLAYBACK", undefined, {
+      currentTab: false,
+    });
+  };
+
+  const handleResume = (): void => {
+    app.emitter.emit("RESUME_PLAYBACK", undefined, {
+      currentTab: false,
+    });
+  };
+
   return (
     <div className="p-4 space-y-4 text-sm text-slate-900">
       <header className="flex items-center justify-between">
@@ -74,6 +87,8 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
               ? "Playback Error"
               : isComplete
               ? "Playback Completed"
+              : state.isPaused
+              ? "Playback Paused"
               : "Playback In Progress"}
           </p>
           <h2 className="text-lg font-semibold">{state.macro?.name}</h2>
@@ -99,6 +114,22 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
 
       {state.isPlaying ? (
         <div className="flex gap-2">
+          {state.isPaused ? (
+            <button
+              className="cursor-pointer rounded bg-green-600 px-3 py-2 text-xs font-medium text-white hover:bg-green-700"
+              onClick={handleResume}
+            >
+              ▶ Resume Playback
+            </button>
+          ) : (
+            <button
+              className="cursor-pointer rounded bg-yellow-600 px-3 py-2 text-xs font-medium text-white hover:bg-yellow-700"
+              onClick={handlePause}
+            >
+              ⏸ Pause Playback
+            </button>
+          )}
+
           <button
             className="cursor-pointer rounded bg-red-600 px-3 py-2 text-xs font-medium text-white hover:bg-red-700"
             onClick={handleStop}

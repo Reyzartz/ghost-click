@@ -8,6 +8,7 @@ export class PlaybackEngine {
   private readonly logger: Logger;
   private isPlaying = false;
   private shouldStop = false;
+  private isPaused = false;
 
   constructor(
     private readonly emitter: Emitter,
@@ -19,6 +20,19 @@ export class PlaybackEngine {
   stop(): void {
     this.logger.info("Stop playback requested");
     this.shouldStop = true;
+    this.isPaused = false;
+  }
+
+  pause(): void {
+    this.logger.info("Pause playback requested");
+    this.isPaused = true;
+    void this.playbackStateRepository.update({ isPaused: true });
+  }
+
+  resume(): void {
+    this.logger.info("Resume playback requested");
+    this.isPaused = false;
+    void this.playbackStateRepository.update({ isPaused: false });
   }
 
   async playMacro(macro: Macro): Promise<void> {
@@ -29,6 +43,7 @@ export class PlaybackEngine {
 
     this.isPlaying = true;
     this.shouldStop = false;
+    this.isPaused = false;
     this.logger.info("Starting playback", {
       macroId: macro.id,
       initialUrl: macro.initialUrl,
@@ -38,6 +53,7 @@ export class PlaybackEngine {
     // Save playback state
     await this.playbackStateRepository.save({
       isPlaying: true,
+      isPaused: false,
       macroId: macro.id,
       currentStepId: null,
     });
@@ -50,6 +66,17 @@ export class PlaybackEngine {
 
       for (const step of macro.steps) {
         // Check if stop was requested
+        if (this.shouldStop) {
+          this.logger.info("Playback stopped by user");
+          break;
+        }
+
+        // Wait while paused
+        while (this.isPaused && !this.shouldStop) {
+          await PlaybackEngine.sleep(100);
+        }
+
+        // Check again if stop was requested during pause
         if (this.shouldStop) {
           this.logger.info("Playback stopped by user");
           break;

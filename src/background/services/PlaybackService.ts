@@ -32,6 +32,16 @@ export class PlaybackService extends BaseService {
       this.logger.info("Stop playback event received");
       this.playbackEngine.stop();
     });
+
+    this.emitter.on("PAUSE_PLAYBACK", () => {
+      this.logger.info("Pause playback event received");
+      this.playbackEngine.pause();
+    });
+
+    this.emitter.on("RESUME_PLAYBACK", () => {
+      this.logger.info("Resume playback event received");
+      this.playbackEngine.resume();
+    });
   }
 
   private async handlePlayMacro(macroId: string): Promise<void> {

@@ -10,6 +10,8 @@ export type EventType =
   | "PLAYBACK_COMPLETED"
   | "PLAYBACK_ERROR"
   | "STOP_PLAYBACK"
+  | "PAUSE_PLAYBACK"
+  | "RESUME_PLAYBACK"
   | "TOGGLE_QUICK_ACTIONS";
 
 export interface BaseEvent {
@@ -87,6 +89,14 @@ export interface PlayMacroEvent extends BaseEvent {
 
 export interface StopPlaybackEvent extends BaseEvent {
   name: "STOP_PLAYBACK";
+}
+
+export interface PausePlaybackEvent extends BaseEvent {
+  name: "PAUSE_PLAYBACK";
+}
+
+export interface ResumePlaybackEvent extends BaseEvent {
+  name: "RESUME_PLAYBACK";
 }
 
 export interface PlaybackCompletedEvent extends BaseEvent {
