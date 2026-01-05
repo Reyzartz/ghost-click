@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { ContentApp } from "../ContentApp";
+import { ContentApp } from "./ContentApp";
 import {
   AppStatus,
   StatusIndicatorState,
-} from "../viewmodels/StatusIndicatorViewModel";
-import { NotificationState } from "../viewmodels/NotificationViewModel";
-import QuickActionsView from "./QuickActionsView";
+} from "./viewmodels/StatusIndicatorViewModel";
+import { NotificationState } from "./viewmodels/NotificationViewModel";
+import { QuickActionsView } from "./views/QuickActionsView";
 
 const statusStyles: Record<AppStatus, string> = {
   idle: "",
@@ -54,7 +54,7 @@ function App({ app }: { app: ContentApp }) {
 
       <div
         style={{ zIndex: 10000 }}
-        className="fixed top-4 left-1/2 -translate-x-1/2 flex flex-col gap-2 pointer-events-none"
+        className="fixed top-4 mx-auto flex-col gap-2 pointer-events-none w-screen flex items-center"
       >
         {notificationState.notifications.map((notification) => (
           <div
@@ -62,7 +62,7 @@ function App({ app }: { app: ContentApp }) {
             style={{
               animation: "slideDown 0.3s ease-out",
             }}
-            className={`px-4 py-2 rounded shadow-lg text-sm font-medium pointer-events-auto ${
+            className={`px-4 py-2 rounded shadow-lg text-sm font-medium pointer-events-auto w-60 flex justify-center ${
               notificationTypeStyles[notification.type]
             }`}
           >

@@ -76,7 +76,7 @@ export class NotificationViewModel extends BaseViewModel {
     // Auto-dismiss after 3 seconds
     setTimeout(() => {
       this.dismissNotification(id);
-    }, 3000);
+    }, 300000);
   }
 
   dismissNotification(id: string): void {

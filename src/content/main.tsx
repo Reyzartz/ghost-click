@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./views/App.tsx";
+import App from "./App.tsx";
 import { ContentApp } from "./ContentApp";
 // Inline the compiled Tailwind CSS via Vite so it can be injected into the shadow root
 // This relies on @tailwindcss/vite to process the CSS before inlining

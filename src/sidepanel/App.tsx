@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { SidePanelApp } from "./SidePanelApp";
 import { ViewState } from "./services/ViewService";
-import MacroListView from "./views/MacroListView";
-import PlaybackProgressView from "./views/PlaybackProgressView";
+import { MacroListView } from "./views/MacroListView";
+import { PlaybackProgressView } from "./views/PlaybackProgressView";
 
 // Main App component that controls view switching
 export default function App({ app }: { app: SidePanelApp }) {

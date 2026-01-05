@@ -1,8 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import { QuickActionsState } from "../viewmodels/QuickActionsViewModel";
 import { ContentApp } from "../ContentApp";
+import { SearchInput } from "@/components/SearchInput";
+import { QuickActionItem } from "@/components/QuickActionItem";
 
-export default function QuickActionsView({ app }: { app: ContentApp }) {
+export const QuickActionsView = ({ app }: { app: ContentApp }) => {
   const [state, setState] = useState<QuickActionsState>({
     isOpen: false,
     macros: [],
@@ -71,27 +73,17 @@ export default function QuickActionsView({ app }: { app: ContentApp }) {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-
-        {/* Search Bar */}
-        <div className="px-6 py-2 border-solid border-b border-slate-600">
-          <input
-            ref={searchInputRef}
-            type="text"
-            placeholder="Search macros..."
-            value={state.searchQuery}
-            onChange={(e) =>
-              app.quickActionsViewModel.setSearchQuery(e.target.value)
-            }
-            className="w-full px-4 py-2 text-sm border border-solid border-slate-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent placeholder:text-slate-400 text-slate-900"
-          />
-        </div>
+        <SearchInput
+          value={state.searchQuery}
+          onChange={(value) => app.quickActionsViewModel.setSearchQuery(value)}
+          placeholder="Search macros..."
+          ref={searchInputRef}
+        />
 
         <p className="text-xs text-slate-500 mt-1 px-6 py-2">
           Use ↑↓ to navigate, Enter to select, Esc to close
         </p>
 
-        {/* Macro List */}
         <div className="overflow-y-auto" style={{ maxHeight: 400 }}>
           {state.loading && (
             <div className="px-6 py-8 text-center text-slate-500">
@@ -109,83 +101,20 @@ export default function QuickActionsView({ app }: { app: ContentApp }) {
 
           {!state.loading && state.filteredMacros.length > 0 && (
             <ul className="divide-y divide-slate-100">
-              {state.filteredMacros.map((macro, index) => {
-                const isSelected = index === state.selectedIndex;
-                return (
-                  <li
-                    key={macro.id}
-                    className={`px-6 py-4 cursor-pointer transition-colors ${
-                      isSelected
-                        ? "bg-slate-900 text-white"
-                        : "bg-white hover:bg-slate-50 text-slate-900"
-                    }`}
-                    onClick={() => {
-                      app.quickActionsViewModel.selectCurrentMacro();
-                    }}
-                    ref={(el) => {
-                      if (isSelected && el) {
-                        el.scrollIntoView({
-                          block: "nearest",
-                          behavior: "smooth",
-                        });
-                      }
-                    }}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1 min-w-0">
-                        <p
-                          className={`font-medium truncate ${
-                            isSelected ? "text-white" : "text-slate-900"
-                          }`}
-                        >
-                          {macro.name}
-                        </p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span
-                            className={`text-xs ${
-                              isSelected ? "text-slate-300" : "text-slate-500"
-                            }`}
-                          >
-                            {macro.steps.length} step
-                            {macro.steps.length === 1 ? "" : "s"}
-                          </span>
-                          {macro.domain && (
-                            <>
-                              <span
-                                className={`text-xs ${
-                                  isSelected
-                                    ? "text-slate-400"
-                                    : "text-slate-300"
-                                }`}
-                              >
-                                •
-                              </span>
-                              <span
-                                className={`text-xs ${
-                                  isSelected
-                                    ? "text-slate-300"
-                                    : "text-slate-500"
-                                }`}
-                              >
-                                {macro.domain}
-                              </span>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                      {isSelected && (
-                        <div className="ml-4">
-                          <span className="text-white text-lg">▶</span>
-                        </div>
-                      )}
-                    </div>
-                  </li>
-                );
-              })}
+              {state.filteredMacros.map((macro, index) => (
+                <QuickActionItem
+                  key={macro.id}
+                  macro={macro}
+                  isSelected={index === state.selectedIndex}
+                  onSelect={() =>
+                    app.quickActionsViewModel.selectCurrentMacro()
+                  }
+                />
+              ))}
             </ul>
           )}
         </div>
       </div>
     </div>
   );
-}
+};

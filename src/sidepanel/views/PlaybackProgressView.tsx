@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import { SidePanelApp } from "../SidePanelApp";
 import { PlaybackProgressState } from "../viewmodels/PlaybackProgressViewModel";
+import { ErrorDetailsPanel } from "@/components/ErrorDetailsPanel";
+import { ErrorAlert } from "@/components/ErrorAlert";
+import { ProgressBar } from "@/components/ProgressBar";
+import { StepListItem } from "@/components/StepListItem";
 
-export default function PlaybackProgressView({ app }: { app: SidePanelApp }) {
+export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<PlaybackProgressState>({
     isPlaying: false,
     macro: null,
@@ -13,7 +17,6 @@ export default function PlaybackProgressView({ app }: { app: SidePanelApp }) {
     erroredStepIds: [],
     errorDetails: [],
   });
-  const [showErrorDetails, setShowErrorDetails] = useState(false);
 
   useEffect(() => {
     const unsubscribe = app.playbackProgressViewModel.subscribe(setState);
@@ -78,55 +81,14 @@ export default function PlaybackProgressView({ app }: { app: SidePanelApp }) {
       </header>
 
       {state.error && state.errorDetails.length > 0 && (
-        <div className="rounded border border-red-300 bg-red-50 overflow-hidden">
-          <div
-            className="flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-red-100"
-            onClick={() => setShowErrorDetails(!showErrorDetails)}
-          >
-            <div className="flex items-center gap-2">
-              <span className="text-red-600 text-base">⚠</span>
-              <span className="text-red-900 font-medium">{state.error}</span>
-            </div>
-            <span className="text-red-600 text-xs">
-              {showErrorDetails ? "▼" : "▶"} Details
-            </span>
-          </div>
-          {showErrorDetails && (
-            <div className="border-t border-red-200 bg-red-50 overflow-auto max-h-48">
-              <ul className="divide-y divide-red-200">
-                {state.errorDetails.map((err, idx) => (
-                  <li key={idx} className="px-3 py-2">
-                    <div className="flex items-start gap-2">
-                      <span className="text-red-600 mt-0.5">•</span>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium text-red-900 text-xs">
-                            {err.stepName}
-                          </span>
-                          <span className="text-red-600 text-xs px-1.5 py-0.5 rounded bg-red-100">
-                            {err.stepType}
-                          </span>
-                        </div>
-                        <p className="text-xs text-red-800 mt-1 break-words">
-                          {err.error}
-                        </p>
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
+        <ErrorDetailsPanel
+          errorMessage={state.error}
+          errorDetails={state.errorDetails}
+        />
       )}
 
       {state.error && state.errorDetails.length === 0 && (
-        <div className="rounded border border-red-200 bg-red-50 px-3 py-2">
-          <div className="flex items-center gap-2">
-            <span className="text-red-600 text-base">⚠</span>
-            <span className="text-red-800">{state.error}</span>
-          </div>
-        </div>
+        <ErrorAlert message={state.error} simple />
       )}
 
       {isComplete && (
@@ -161,23 +123,12 @@ export default function PlaybackProgressView({ app }: { app: SidePanelApp }) {
         </div>
       )}
 
-      {/* Progress Bar */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between text-xs text-slate-600">
-          <span>
-            Step {displayStepNumber} of {state.totalSteps}
-          </span>
-          <span>{progress}%</span>
-        </div>
-        <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
-          <div
-            className="bg-green-600 h-2 rounded-full transition-all duration-300"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      </div>
+      <ProgressBar
+        current={displayStepNumber}
+        total={state.totalSteps}
+        percentage={progress}
+      />
 
-      {/* Current Step */}
       {currentStep && (
         <div className="rounded border border-slate-200 bg-slate-50 px-3 py-3 space-y-1">
           <p className="text-xs uppercase tracking-wide text-slate-500">
@@ -188,50 +139,23 @@ export default function PlaybackProgressView({ app }: { app: SidePanelApp }) {
         </div>
       )}
 
-      {/* Steps List */}
       <div className="space-y-2">
         <p className="text-xs uppercase tracking-wide text-slate-500">
           All Steps
         </p>
         <ul className="space-y-1 max-h-96 overflow-y-auto">
-          {state.macro?.steps.map((step, index) => {
-            const isCurrent = index === state.currentStepIndex;
-            const isCompleted = index < state.currentStepIndex;
-            const isErrored = erroredStepIds.includes(step.id);
-
-            return (
-              <li
-                key={step.id}
-                className={`rounded px-3 py-2 text-xs ${
-                  isCurrent
-                    ? "bg-green-100 border border-green-300 font-medium"
-                    : isCompleted
-                    ? "bg-slate-100 border border-slate-200 text-slate-500 line-through"
-                    : "bg-white border border-slate-200"
-                } ${isErrored ? "border-red-300 bg-red-50 text-red-700" : ""}`}
-                autoFocus={isCurrent}
-                ref={(el) => {
-                  if (isCurrent && el) {
-                    el.scrollIntoView({ behavior: "smooth", block: "nearest" });
-                  }
-                }}
-              >
-                <div className="flex items-center gap-2">
-                  <span className="text-slate-400">#{index + 1}</span>
-                  <span>{step.name}</span>
-                  {isCurrent && (
-                    <span className="ml-auto text-green-600">▶</span>
-                  )}
-                  {isCompleted && !isErrored && (
-                    <span className="ml-auto text-green-600">✓</span>
-                  )}
-                  {isErrored && <span className="ml-auto text-red-600">!</span>}
-                </div>
-              </li>
-            );
-          })}
+          {state.macro?.steps.map((step, index) => (
+            <StepListItem
+              key={step.id}
+              step={step}
+              index={index}
+              isCurrent={index === state.currentStepIndex}
+              isCompleted={index < state.currentStepIndex}
+              isErrored={erroredStepIds.includes(step.id)}
+            />
+          ))}
         </ul>
       </div>
     </div>
   );
-}
+};
