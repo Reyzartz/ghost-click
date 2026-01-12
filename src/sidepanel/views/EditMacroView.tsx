@@ -1,20 +1,13 @@
 import { useEffect, useState } from "react";
 import { SidePanelApp } from "../SidePanelApp";
 import { ErrorAlert } from "@/components/ErrorAlert";
-import { StepListItem } from "@/components/StepListItem";
 import { StepDelayItem } from "@/components/StepDelayItem";
-import { MacroStep } from "@/models/MacroStep";
 import { EditStepItem } from "@/components/EditStepItem";
+import { Macro } from "@/models";
 
 type EditMacroState = {
   loading: boolean;
-  macro: {
-    id: string;
-    name: string;
-    domain?: string;
-    stepsCount: number;
-    steps: MacroStep[];
-  } | null;
+  macro: Macro | null;
   error?: string | null;
   success?: boolean;
 };
@@ -27,32 +20,18 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
     success: false,
   });
 
-  const [nameInput, setNameInput] = useState("");
-
   useEffect(() => {
     const unsubscribe = app.editMacroViewModel.subscribe((vmState) => {
       setState({
         loading: vmState.loading,
-        macro: vmState.macro
-          ? {
-              id: vmState.macro.id,
-              name: vmState.macro.name,
-              domain: vmState.macro.domain,
-              stepsCount: vmState.macro.steps.length,
-              steps: vmState.macro.steps,
-            }
-          : null,
+        macro: vmState.macro,
         error: vmState.error,
         success: vmState.success,
       });
-
-      if (vmState.macro && nameInput === "") {
-        setNameInput(vmState.macro.name);
-      }
     });
 
     return () => unsubscribe();
-  }, [app, nameInput]);
+  }, [app]);
 
   const handleCancel = (): void => {
     app.viewService.navigateToView("macroList");
@@ -60,13 +39,18 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
   };
 
   const handleSave = async (): Promise<void> => {
-    await app.editMacroViewModel.updateMacroName(nameInput);
+    if (state.macro === null) return;
+    await app.editMacroViewModel.updateMacro(state.macro);
     app.viewService.navigateToView("macroList");
   };
 
   const handleBack = (): void => {
     app.viewService.navigateToView("macroList");
     app.editMacroViewModel.reset();
+  };
+
+  const handleUpdateStepName = (stepId: string, newName: string): void => {
+    void app.editMacroViewModel.updateStepName(stepId, newName);
   };
 
   return (
@@ -111,8 +95,10 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
             <input
               id="macro-name"
               type="text"
-              value={nameInput}
-              onChange={(e) => setNameInput(e.target.value)}
+              value={state.macro.name}
+              onChange={(e) =>
+                app.editMacroViewModel.updateMacroName(e.target.value)
+              }
               className="w-full rounded border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
               placeholder="Enter macro name"
               disabled={state.loading}
@@ -121,7 +107,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
-              Steps ({state.macro.stepsCount})
+              Steps ({state.macro.steps.length})
             </label>
             <div
               className="rounded border border-slate-200 bg-slate-50 overflow-y-auto"
@@ -138,7 +124,11 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                       key={step.id}
                       className="items-center flex flex-col group"
                     >
-                      <EditStepItem step={step} index={index} />
+                      <EditStepItem
+                        step={step}
+                        index={index}
+                        onUpdateStepName={handleUpdateStepName}
+                      />
                       <div className="text-slate-400 text-sm group-last:hidden">
                         |
                       </div>
@@ -154,7 +144,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
           <div className="flex gap-2 pt-2">
             <button
               onClick={handleSave}
-              disabled={state.loading || !nameInput.trim()}
+              disabled={state.loading || !state.macro?.name.trim()}
               className="flex-1 rounded bg-slate-900 px-4 py-2 text-sm text-white hover:bg-slate-800 disabled:bg-slate-300 disabled:cursor-not-allowed"
             >
               {state.loading ? "Saving..." : "Save"}

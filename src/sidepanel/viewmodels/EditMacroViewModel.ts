@@ -72,7 +72,7 @@ export class EditMacroViewModel extends BaseViewModel {
     }
   }
 
-  async updateMacroName(newName: string): Promise<void> {
+  updateMacroName(newName: string): void {
     if (!this.state.macro) {
       this.logger.error("Cannot update name: no macro loaded");
       this.setState({ error: "No macro loaded" });
@@ -97,47 +97,58 @@ export class EditMacroViewModel extends BaseViewModel {
       newName: trimmedName,
     });
 
+    const updatedMacro = { ...this.state.macro, name: trimmedName };
+
+    this.setState({ macro: updatedMacro });
+  }
+
+  updateStepName(stepId: string, newName: string): void {
+    if (!this.state.macro) {
+      this.logger.error("Cannot update step: no macro loaded");
+      return;
+    }
+
+    const trimmedName = newName.trim();
+
+    if (!trimmedName) {
+      this.logger.warn("Step name cannot be empty");
+      return;
+    }
+
+    this.logger.info("Updating step name", {
+      macroId: this.state.macro.id,
+      stepId,
+      newName: trimmedName,
+    });
+
+    const updatedSteps = this.state.macro.steps.map((step) =>
+      step.id === stepId ? { ...step, name: trimmedName } : step
+    );
+
+    const updatedMacro = { ...this.state.macro, steps: updatedSteps };
+    this.setState({ macro: updatedMacro });
+  }
+
+  async updateMacro(macro: Macro): Promise<void> {
+    this.logger.info("Updating macro", { macroId: macro.id });
     this.setState({ loading: true, error: null, success: false });
 
     try {
-      // Check if name is already taken
-      const existingMacro = await this.macroRepository.findByName(trimmedName);
-      if (existingMacro && existingMacro.id !== this.state.macro.id) {
-        this.setState({
-          loading: false,
-          error: "A macro with this name already exists",
-        });
-        return;
-      }
-
-      const updatedMacro: Macro = {
-        id: this.state.macro.id,
-        name: trimmedName,
-        initialUrl: this.state.macro.initialUrl,
-        domain: this.state.macro.domain,
-        steps: this.state.macro.steps,
-        createdAt: this.state.macro.createdAt,
-        updatedAt: Date.now(),
-      };
-
-      await this.macroRepository.save(updatedMacro);
+      await this.macroRepository.save(macro);
 
       this.setState({
         loading: false,
-        macro: updatedMacro,
+        macro,
         success: true,
         error: null,
       });
 
-      this.logger.info("Updated macro name", {
-        macroId: updatedMacro.id,
-        newName: trimmedName,
-      });
+      this.logger.info("Updated macro", { macroId: macro.id });
     } catch (err) {
-      this.logger.error("Failed to update macro name", { err });
+      this.logger.error("Failed to update macro", { macroId: macro.id, err });
       this.setState({
         loading: false,
-        error: "Failed to update macro name",
+        error: "Failed to update macro",
         success: false,
       });
     }
