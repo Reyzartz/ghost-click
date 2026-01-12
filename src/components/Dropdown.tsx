@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
-interface DropdownItem {
+export interface DropdownItem {
   label: string;
   onClick: () => void;
   variant?: "default" | "danger";
@@ -46,7 +46,14 @@ export const Dropdown = ({ items, trigger }: DropdownProps) => {
 
   return (
     <div className="relative shrink-0" ref={dropdownRef}>
-      <div onClick={() => setIsOpen(!isOpen)}>{trigger}</div>
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen(!isOpen);
+        }}
+      >
+        {trigger}
+      </div>
 
       {isOpen && (
         <div className="absolute right-0 top-full mt-1 z-10 min-w-30 rounded border border-slate-200 bg-white shadow-lg">
@@ -56,7 +63,9 @@ export const Dropdown = ({ items, trigger }: DropdownProps) => {
               className={`cursor-pointer w-full px-3 py-2 text-left text-sm hover:bg-slate-50 first:rounded-t last:rounded-b ${
                 variantStyles[item.variant || "default"]
               }`}
-              onClick={() => handleItemClick(item.onClick)}
+              onClick={() => {
+                handleItemClick(item.onClick);
+              }}
             >
               {item.label}
             </button>

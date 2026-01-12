@@ -37,25 +37,29 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
     app.emitter.emit("PLAY_MACRO", { macroId });
   };
 
+  const handleEdit = (macroId: string): void => {
+    void app.editMacroViewModel.loadMacro(macroId);
+    app.viewService.navigateToView("editMacro");
+  };
+
   const handleDelete = (macroId: string): void => {
     void app.macroListViewModel.deleteMacro(macroId);
   };
 
   return (
     <div className="p-4 space-y-3 text-sm text-slate-900">
-      <header className="flex items-center justify-between">
-        <div>
-          <p className="text-xs uppercase tracking-wide text-slate-500">
-            Side Panel
-          </p>
+      <header className="flex items-center justify-between gap-4">
+        <div className="grow overflow-hidden">
+          <h2 className="text-lg font-semibold">Macros</h2>
+
           {state.currentDomain && (
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 truncate">
               Domain: {state.currentDomain}
             </p>
           )}
-          <h2 className="text-lg font-semibold">Macros</h2>
         </div>
-        <span className="text-xs text-slate-500">
+
+        <span className="text-xs text-slate-500 shrink-0">
           {state.loading ? "Loading…" : `${state.macros.length} saved`}
         </span>
       </header>
@@ -68,6 +72,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
         loading={state.loading}
         emptyMessage="No macros saved for this domain."
         onPlay={handlePlay}
+        onEdit={handleEdit}
         onDelete={handleDelete}
       />
 
@@ -78,6 +83,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
           loading={state.loading}
           emptyMessage="No macros from other domains."
           onPlay={handlePlay}
+          onEdit={handleEdit}
           onDelete={handleDelete}
         />
       )}

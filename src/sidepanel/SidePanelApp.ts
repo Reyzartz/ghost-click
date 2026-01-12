@@ -6,6 +6,7 @@ import { MacroRepository } from "@/repositories/MacroRepository";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
 import { MacroListViewModel } from "./viewmodels/MacroListViewModel";
 import { PlaybackProgressViewModel } from "./viewmodels/PlaybackProgressViewModel";
+import { EditMacroViewModel } from "./viewmodels/EditMacroViewModel";
 import { ViewService } from "./services/ViewService";
 
 export class SidePanelApp extends BaseApp {
@@ -13,6 +14,7 @@ export class SidePanelApp extends BaseApp {
   readonly playbackStateRepository: PlaybackStateRepository;
   readonly macroListViewModel: MacroListViewModel;
   readonly playbackProgressViewModel: PlaybackProgressViewModel;
+  readonly editMacroViewModel: EditMacroViewModel;
   readonly viewService: ViewService;
 
   constructor() {
@@ -28,6 +30,7 @@ export class SidePanelApp extends BaseApp {
       playbackStateRepository,
       emitter
     );
+    const editMacroViewModel = new EditMacroViewModel(macroRepository, emitter);
 
     super(emitter, logger, [viewService]);
 
@@ -36,6 +39,7 @@ export class SidePanelApp extends BaseApp {
     this.viewService = viewService;
     this.macroListViewModel = macroListViewModel;
     this.playbackProgressViewModel = playbackProgressViewModel;
+    this.editMacroViewModel = editMacroViewModel;
   }
 
   async init(): Promise<void> {
@@ -43,5 +47,6 @@ export class SidePanelApp extends BaseApp {
     await super.init(); // Initialize all services including viewService
     await this.macroListViewModel.init();
     await this.playbackProgressViewModel.init();
+    await this.editMacroViewModel.init();
   }
 }

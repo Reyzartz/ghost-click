@@ -7,6 +7,7 @@ interface MacroSectionProps {
   loading: boolean;
   emptyMessage: string;
   onPlay: (macroId: string) => void;
+  onEdit: (macroId: string) => void;
   onDelete: (macroId: string) => void;
 }
 
@@ -16,6 +17,7 @@ export const MacroSection = ({
   loading,
   emptyMessage,
   onPlay,
+  onEdit,
   onDelete,
 }: MacroSectionProps) => {
   return (
@@ -33,8 +35,9 @@ export const MacroSection = ({
           <MacroCard
             key={macro.id}
             macro={macro}
-            onPlay={onPlay}
-            onDelete={onDelete}
+            onEdit={() => onEdit(macro.id)}
+            onPlay={() => onPlay(macro.id)}
+            onDelete={() => onDelete(macro.id)}
           />
         ))}
       </ul>

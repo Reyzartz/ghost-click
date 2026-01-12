@@ -3,6 +3,7 @@ import { SidePanelApp } from "./SidePanelApp";
 import { ViewState } from "./services/ViewService";
 import { MacroListView } from "./views/MacroListView";
 import { PlaybackProgressView } from "./views/PlaybackProgressView";
+import { EditMacroView } from "./views/EditMacroView";
 
 // Main App component that controls view switching
 export default function App({ app }: { app: SidePanelApp }) {
@@ -21,6 +22,7 @@ export default function App({ app }: { app: SidePanelApp }) {
       {viewState.currentView === "playbackProgress" && (
         <PlaybackProgressView app={app} />
       )}
+      {viewState.currentView === "editMacro" && <EditMacroView app={app} />}
     </div>
   );
 }

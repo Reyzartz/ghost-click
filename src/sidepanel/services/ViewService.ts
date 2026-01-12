@@ -2,7 +2,7 @@ import { BaseService } from "@/utils/BaseService";
 import { Emitter } from "@/utils/Emitter";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
 
-export type SidePanelView = "macroList" | "playbackProgress";
+export type SidePanelView = "macroList" | "playbackProgress" | "editMacro";
 
 export interface ViewState {
   currentView: SidePanelView;
