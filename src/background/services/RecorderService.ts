@@ -161,12 +161,30 @@ export class RecorderService extends BaseService {
       }
     }
 
+    // Calculate delays between steps
+    const withDelays = this.calculateDelays(processed);
+
     this.logger.info("Post-processed steps", {
       original: steps.length,
-      processed: processed.length,
+      processed: withDelays.length,
     });
 
-    return processed;
+    return withDelays;
+  }
+
+  private calculateDelays(steps: MacroStep[]): MacroStep[] {
+    if (steps.length === 0) return steps;
+
+    return steps.map((step, index) => {
+      // Calculate delay to next step (0 for last step)
+      const delay =
+        index < steps.length - 1 ? steps[index + 1].timestamp - step.timestamp : 0;
+
+      return {
+        ...step,
+        delay: Math.max(0, delay), // Ensure non-negative delay
+      };
+    });
   }
 
   private async saveMacro(
@@ -239,6 +257,7 @@ export class RecorderService extends BaseService {
       type: "CLICK",
       target: data.target,
       timestamp: data.timestamp,
+      delay: 0, // Will be calculated in post-processing
     };
 
     this.macroSteps.push(step);
@@ -257,6 +276,7 @@ export class RecorderService extends BaseService {
       type: "INPUT",
       target: data.target,
       value: data.value,
+      delay: 0, // Will be calculated in post-processing
       timestamp: data.timestamp,
     };
 
@@ -281,6 +301,7 @@ export class RecorderService extends BaseService {
       shiftKey: data.shiftKey,
       altKey: data.altKey,
       metaKey: data.metaKey,
+      delay: 0, // Will be calculated in post-processing
       timestamp: data.timestamp,
     };
 

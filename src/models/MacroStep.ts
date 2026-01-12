@@ -5,6 +5,7 @@ export interface BaseMacroStep {
   name: string;
   type: StepType;
   timestamp: number;
+  delay: number;
 }
 
 export interface TargetElementSelector {

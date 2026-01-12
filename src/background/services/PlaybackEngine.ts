@@ -62,8 +62,6 @@ export class PlaybackEngine {
       // Navigate to initial URL before playback
       await this.navigateToUrl(macro.initialUrl);
 
-      let prevTimestamp = 0;
-
       for (const step of macro.steps) {
         // Check if stop was requested
         if (this.shouldStop) {
@@ -80,13 +78,6 @@ export class PlaybackEngine {
         if (this.shouldStop) {
           this.logger.info("Playback stopped by user");
           break;
-        }
-
-        if (prevTimestamp > 0) {
-          const delay = step.timestamp - prevTimestamp;
-          if (delay > 0) {
-            await PlaybackEngine.sleep(delay);
-          }
         }
 
         this.logger.info(`Executing step ${step.type}`, { step });
@@ -117,8 +108,11 @@ export class PlaybackEngine {
             stepId: step.id,
             error: (err as Error)?.message,
           });
-        } finally {
-          prevTimestamp = step.timestamp;
+        }
+
+        // Wait for the delay before next step
+        if (step.delay > 0) {
+          await PlaybackEngine.sleep(step.delay);
         }
       }
 
