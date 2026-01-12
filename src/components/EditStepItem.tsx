@@ -38,7 +38,6 @@ export const EditStepItem = ({
     return (
       <li className="rounded px-3 h-8 flex items-center text-xs bg-white border border-slate-300 mx-auto max-w-max list-none">
         <div className="flex items-center gap-2">
-          <span className="text-slate-400">#{index + 1}</span>
           <input
             type="text"
             value={nameInput}
@@ -67,13 +66,16 @@ export const EditStepItem = ({
   }
 
   return (
-    <li className="rounded px-3 h-8 flex items-center text-xs bg-white border border-slate-200 mx-auto max-w-max list-none group/step">
+    <li
+      className="cursor-pointer rounded px-3 h-8 flex items-center text-xs bg-white border border-slate-200 mx-auto max-w-max list-none group/step"
+      onClick={() => setIsEditing(true)}
+    >
       <div className="flex items-center gap-2">
         <span className="text-slate-400">#{index + 1}</span>
         <span>{step.name}</span>
+
         <button
-          onClick={() => setIsEditing(true)}
-          className="opacity-0 group-hover/step:opacity-100 text-slate-500 hover:text-slate-700 px-1"
+          className="w-0 group-hover/step:w-4 overflow-hidden text-slate-500 hover:text-slate-700 transition-{width} duration-200 ease-in-out"
           title="Edit step name"
         >
           ✎

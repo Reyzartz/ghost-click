@@ -71,12 +71,14 @@ export const StepDelayItem = ({
   }
 
   return (
-    <div className="flex justify-center py-1 h-8 group-last:hidden group/delay">
+    <div
+      className="flex justify-center py-1 h-8 group-last:hidden group/delay cursor-pointer"
+      onClick={() => setIsEditing(true)}
+    >
       <div className="rounded border border-slate-300 bg-slate-50 px-3 py-1 text-xs text-slate-600 flex items-center gap-1">
         <span>{delay}ms</span>
         <button
-          onClick={() => setIsEditing(true)}
-          className="opacity-0 group-hover/delay:opacity-100 text-slate-500 hover:text-slate-700 px-1"
+          className="w-0 group-hover/delay:w-4 overflow-hidden text-slate-500 hover:text-slate-700 transition-{width} duration-200 ease-in-out"
           title="Edit delay"
         >
           ✎
