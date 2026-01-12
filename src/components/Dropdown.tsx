@@ -63,7 +63,8 @@ export const Dropdown = ({ items, trigger }: DropdownProps) => {
               className={`cursor-pointer w-full px-3 py-2 text-left text-sm hover:bg-slate-50 first:rounded-t last:rounded-b ${
                 variantStyles[item.variant || "default"]
               }`}
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 handleItemClick(item.onClick);
               }}
             >

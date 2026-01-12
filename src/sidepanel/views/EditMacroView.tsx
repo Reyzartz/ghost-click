@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { SidePanelApp } from "../SidePanelApp";
 import { ErrorAlert } from "@/components/ErrorAlert";
+import { StepListItem } from "@/components/StepListItem";
+import { StepDelayItem } from "@/components/StepDelayItem";
+import { MacroStep } from "@/models/MacroStep";
+import { EditStepItem } from "@/components/EditStepItem";
 
 type EditMacroState = {
   loading: boolean;
@@ -9,6 +13,7 @@ type EditMacroState = {
     name: string;
     domain?: string;
     stepsCount: number;
+    steps: MacroStep[];
   } | null;
   error?: string | null;
   success?: boolean;
@@ -34,6 +39,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
               name: vmState.macro.name,
               domain: vmState.macro.domain,
               stepsCount: vmState.macro.steps.length,
+              steps: vmState.macro.steps,
             }
           : null,
         error: vmState.error,
@@ -113,9 +119,36 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
             />
           </div>
 
-          <div className="text-xs text-slate-500">
-            {state.macro.stepsCount} step
-            {state.macro.stepsCount === 1 ? "" : "s"}
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Steps ({state.macro.stepsCount})
+            </label>
+            <div
+              className="rounded border border-slate-200 bg-slate-50 overflow-y-auto"
+              style={{ height: "calc(100vh - 300px)" }}
+            >
+              {state.macro.steps.length === 0 ? (
+                <div className="px-3 py-4 text-center text-slate-500 text-xs">
+                  No steps recorded
+                </div>
+              ) : (
+                <div className="py-2">
+                  {state.macro.steps.map((step, index) => (
+                    <div
+                      key={step.id}
+                      className="items-center flex flex-col group"
+                    >
+                      <EditStepItem step={step} index={index} />
+                      <div className="text-slate-400 text-sm group-last:hidden">
+                        |
+                      </div>
+                      <StepDelayItem delay={step.delay} />
+                      <div className="text-slate-400 group-last:hidden">↓</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="flex gap-2 pt-2">
