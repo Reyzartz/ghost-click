@@ -53,6 +53,10 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
     void app.editMacroViewModel.updateStepName(stepId, newName);
   };
 
+  const handleUpdateStepDelay = (stepId: string, newDelay: number): void => {
+    void app.editMacroViewModel.updateStepDelay(stepId, newDelay);
+  };
+
   return (
     <div className="p-4 space-y-4 text-sm text-slate-900">
       <header className="flex items-center justify-between">
@@ -132,7 +136,11 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                       <div className="text-slate-400 text-sm group-last:hidden">
                         |
                       </div>
-                      <StepDelayItem delay={step.delay} />
+                      <StepDelayItem
+                        delay={step.delay}
+                        stepId={step.id}
+                        onUpdateStepDelay={handleUpdateStepDelay}
+                      />
                       <div className="text-slate-400 group-last:hidden">↓</div>
                     </div>
                   ))}

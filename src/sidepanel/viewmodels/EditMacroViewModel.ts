@@ -129,6 +129,31 @@ export class EditMacroViewModel extends BaseViewModel {
     this.setState({ macro: updatedMacro });
   }
 
+  updateStepDelay(stepId: string, newDelay: number): void {
+    if (!this.state.macro) {
+      this.logger.error("Cannot update step delay: no macro loaded");
+      return;
+    }
+
+    if (newDelay < 0) {
+      this.logger.warn("Step delay cannot be negative");
+      return;
+    }
+
+    this.logger.info("Updating step delay", {
+      macroId: this.state.macro.id,
+      stepId,
+      newDelay,
+    });
+
+    const updatedSteps = this.state.macro.steps.map((step) =>
+      step.id === stepId ? { ...step, delay: newDelay } : step
+    );
+
+    const updatedMacro = { ...this.state.macro, steps: updatedSteps };
+    this.setState({ macro: updatedMacro });
+  }
+
   async updateMacro(macro: Macro): Promise<void> {
     this.logger.info("Updating macro", { macroId: macro.id });
     this.setState({ loading: true, error: null, success: false });
