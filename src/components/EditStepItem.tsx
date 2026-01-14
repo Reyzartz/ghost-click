@@ -1,5 +1,6 @@
 import { MacroStep } from "@/models";
 import { useState } from "react";
+import { EditClickStep } from "./EditClickStep";
 import { EditInputStep } from "./EditInputStep";
 import { EditKeyPressStep } from "./EditKeyPressStep";
 
@@ -42,6 +43,14 @@ export const EditStepItem = ({
 
   if (isEditing) {
     switch (step.type) {
+      case "CLICK":
+        return (
+          <EditClickStep
+            step={step}
+            onUpdateStep={handleUpdateStep}
+            onClose={onClose}
+          />
+        );
       case "INPUT":
         return (
           <EditInputStep

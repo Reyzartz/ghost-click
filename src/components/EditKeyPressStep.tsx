@@ -1,5 +1,7 @@
 import { KeyPressStep } from "@/models";
 import { memo, useRef, useState } from "react";
+import { StepNameInput } from "./StepNameInput";
+import { StepTargetInput } from "./StepTargetInput";
 
 interface EditKeyPressStepProps {
   step: KeyPressStep;
@@ -9,58 +11,17 @@ interface EditKeyPressStepProps {
 
 const EditKeyPressStep = memo<EditKeyPressStepProps>(
   ({ step, onUpdateStep, onClose }) => {
-    const [nameInput, setNameInput] = useState(step.name);
+    const [updatedStep, setUpdatedStep] = useState(step);
     const [isRecording, setIsRecording] = useState(false);
-    const [keyData, setKeyData] = useState({
-      key: step.key,
-      code: step.code,
-      ctrlKey: step.ctrlKey,
-      shiftKey: step.shiftKey,
-      altKey: step.altKey,
-      metaKey: step.metaKey,
-    });
     const recordingInputRef = useRef<HTMLInputElement>(null);
 
     const handleSave = (): void => {
-      const trimmedName = nameInput.trim();
-      const updates: Partial<KeyPressStep> = {};
-
-      if (trimmedName && trimmedName !== step.name) {
-        updates.name = trimmedName;
-      }
-
-      if (
-        keyData.key !== step.key ||
-        keyData.code !== step.code ||
-        keyData.ctrlKey !== step.ctrlKey ||
-        keyData.shiftKey !== step.shiftKey ||
-        keyData.altKey !== step.altKey ||
-        keyData.metaKey !== step.metaKey
-      ) {
-        updates.key = keyData.key;
-        updates.code = keyData.code;
-        updates.ctrlKey = keyData.ctrlKey;
-        updates.shiftKey = keyData.shiftKey;
-        updates.altKey = keyData.altKey;
-        updates.metaKey = keyData.metaKey;
-      }
-
-      if (Object.keys(updates).length > 0) {
-        onUpdateStep(step.id, updates);
-      }
+      onUpdateStep(step.id, updatedStep);
       onClose();
     };
 
     const handleCancel = (): void => {
-      setNameInput(step.name);
-      setKeyData({
-        key: step.key,
-        code: step.code,
-        ctrlKey: step.ctrlKey,
-        shiftKey: step.shiftKey,
-        altKey: step.altKey,
-        metaKey: step.metaKey,
-      });
+      setUpdatedStep(step);
       onClose();
     };
 
@@ -82,7 +43,8 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
         return;
       }
 
-      setKeyData({
+      setUpdatedStep({
+        ...updatedStep,
         key: e.key,
         code: e.code,
         ctrlKey: e.ctrlKey,
@@ -95,12 +57,12 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
 
     const formatKeyDisplay = (): string => {
       const modifiers: string[] = [];
-      if (keyData.ctrlKey) modifiers.push("Ctrl");
-      if (keyData.shiftKey) modifiers.push("Shift");
-      if (keyData.altKey) modifiers.push("Alt");
-      if (keyData.metaKey) modifiers.push("Cmd");
+      if (updatedStep.ctrlKey) modifiers.push("Ctrl");
+      if (updatedStep.shiftKey) modifiers.push("Shift");
+      if (updatedStep.altKey) modifiers.push("Alt");
+      if (updatedStep.metaKey) modifiers.push("Cmd");
 
-      const parts = [...modifiers, keyData.key];
+      const parts = [...modifiers, updatedStep.key];
       return parts.join(" + ");
     };
 
@@ -118,22 +80,13 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
 
     return (
       <li className="rounded px-3 py-2 flex flex-col gap-2 text-xs bg-white border border-slate-300 mx-auto max-w-max list-none">
+        <StepNameInput
+          name={updatedStep.name}
+          onChange={(name) => setUpdatedStep((prev) => ({ ...prev, name }))}
+        />
+
         <div className="flex items-center gap-2">
-          <label className="text-slate-600 w-16">Name:</label>
-          <input
-            type="text"
-            value={nameInput}
-            onChange={(e) => setNameInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Escape") handleCancel();
-              else if (e.key === "Enter") handleSave();
-            }}
-            className="border border-slate-300 rounded px-2 py-1 text-xs focus:outline-none focus:border-slate-500"
-            autoFocus
-          />
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-slate-600 w-16">Key:</label>
+          <label className="text-slate-600 w-12">Key:</label>
           <div className="flex items-center gap-2">
             <input
               ref={recordingInputRef}
@@ -157,6 +110,12 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
             </button>
           </div>
         </div>
+
+        <StepTargetInput
+          target={updatedStep.target}
+          onChange={(target) => setUpdatedStep((prev) => ({ ...prev, target }))}
+        />
+
         <div className="flex items-center gap-2 justify-end">
           <button
             onClick={handleSave}
