@@ -1,6 +1,10 @@
 import { BaseService } from "@/utils/BaseService";
 import { Emitter } from "@/utils/Emitter";
-import { UserClickEventData } from "@/utils/Event";
+import {
+  UserClickEventData,
+  UserInputEventData,
+  UserKeyPressEventData,
+} from "@/utils/Event";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
 
 export class UserInputService extends BaseService {
@@ -138,6 +142,7 @@ export class UserInputService extends BaseService {
         id: target.id || "",
         className: target.className || "",
         xpath: UserInputService.getXPath(target),
+        defaultSelector: "xpath",
       },
     };
 
@@ -162,7 +167,7 @@ export class UserInputService extends BaseService {
       return;
     }
 
-    const inputData = {
+    const inputData: UserInputEventData = {
       id: this.generateStepId(),
       name: target.value,
       sessionId: this.currentSessionId,
@@ -172,6 +177,7 @@ export class UserInputService extends BaseService {
         id: target.id || "",
         className: target.className || "",
         xpath: UserInputService.getXPath(target),
+        defaultSelector: "xpath",
       },
       value: target.value,
     };
@@ -206,7 +212,7 @@ export class UserInputService extends BaseService {
 
     const target = event.target as HTMLElement;
 
-    const keyPressData = {
+    const keyPressData: UserKeyPressEventData = {
       id: this.generateStepId(),
       name: event.key,
       sessionId: this.currentSessionId,
@@ -216,6 +222,7 @@ export class UserInputService extends BaseService {
         id: target.id || "",
         className: target.className || "",
         xpath: UserInputService.getXPath(target),
+        defaultSelector: "xpath",
       },
       key: event.key,
       code: event.code,

@@ -100,29 +100,43 @@ export class ActionExecutorService extends BaseService {
     });
   }
 
+  private static readonly findElementFromXPath = (
+    xpath: string
+  ): Element | null => {
+    const result = document.evaluate(
+      xpath,
+      document,
+      null,
+      XPathResult.FIRST_ORDERED_NODE_TYPE,
+      null
+    );
+    return result.singleNodeValue as Element | null;
+  };
+
+  private static readonly findElementFromId = (id: string): Element | null => {
+    return document.getElementById(id);
+  };
+
+  private static readonly findElementFromClassName = (
+    className: string
+  ): Element | null => {
+    return document.querySelector(`.${className}`);
+  };
+
   private findElement(target: ClickStep["target"]): Element | null {
-    if (target.xpath) {
-      const result = document.evaluate(
-        target.xpath,
-        document,
-        null,
-        XPathResult.FIRST_ORDERED_NODE_TYPE,
-        null
-      );
-      if (result.singleNodeValue) return result.singleNodeValue as Element;
+    switch (target.defaultSelector) {
+      case "xpath":
+        return ActionExecutorService.findElementFromXPath(target.xpath);
+      case "id":
+        return ActionExecutorService.findElementFromId(target.id);
+      case "className":
+        return ActionExecutorService.findElementFromClassName(target.className);
+      default:
+        this.logger.warn("Unknown selector type", {
+          defaultSelector: target.defaultSelector,
+        });
+        return null;
     }
-
-    if (target.id) {
-      const byId = document.getElementById(target.id);
-      if (byId) return byId;
-    }
-
-    if (target.className) {
-      const byClass = document.querySelector(`.${target.className}`);
-      if (byClass) return byClass;
-    }
-
-    return null;
   }
 
   private async executeInputStep(step: InputStep): Promise<void> {

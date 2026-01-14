@@ -1,4 +1,4 @@
-import { Macro, MacroStep } from "@/models";
+import { Macro, MacroStep, TargetElementSelector } from "@/models";
 
 export type EventType =
   | "START_RECORDING"
@@ -34,12 +34,6 @@ export interface StopRecordingEvent extends BaseEvent {
 
 export type UserEventType = "CLICK" | "INPUT" | "KEYPRESS";
 
-export type UserEventTarget = {
-  id: string;
-  className: string;
-  xpath: string;
-};
-
 interface BaseUserEventData {
   id: string;
   name: string;
@@ -50,18 +44,18 @@ interface BaseUserEventData {
 
 export interface UserClickEventData extends BaseUserEventData {
   type: "CLICK";
-  target: UserEventTarget;
+  target: TargetElementSelector;
 }
 
 export interface UserInputEventData extends BaseUserEventData {
   type: "INPUT";
-  target: UserEventTarget;
+  target: TargetElementSelector;
   value: string;
 }
 
 export interface UserKeyPressEventData extends BaseUserEventData {
   type: "KEYPRESS";
-  target: UserEventTarget;
+  target: TargetElementSelector;
   key: string;
   code: string;
   ctrlKey: boolean;
