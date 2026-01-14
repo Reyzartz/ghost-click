@@ -3,7 +3,7 @@ import { SidePanelApp } from "../SidePanelApp";
 import { ErrorAlert } from "@/components/ErrorAlert";
 import { StepDelayItem } from "@/components/StepDelayItem";
 import { EditStepItem } from "@/components/EditStepItem";
-import { Macro } from "@/models";
+import { Macro, MacroStep } from "@/models";
 
 type EditMacroState = {
   loading: boolean;
@@ -49,8 +49,8 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
     app.editMacroViewModel.reset();
   };
 
-  const handleUpdateStepName = (stepId: string, newName: string): void => {
-    void app.editMacroViewModel.updateStepName(stepId, newName);
+  const handleUpdateStep = (stepId: string, step: Partial<MacroStep>): void => {
+    void app.editMacroViewModel.updateStep(stepId, step);
   };
 
   const handleUpdateStepDelay = (stepId: string, newDelay: number): void => {
@@ -131,7 +131,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                       <EditStepItem
                         step={step}
                         index={index}
-                        onUpdateStepName={handleUpdateStepName}
+                        handleUpdateStep={handleUpdateStep}
                       />
                       <div className="text-slate-400 text-sm group-last:hidden">
                         |

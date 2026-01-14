@@ -1,4 +1,4 @@
-import { Macro } from "@/models";
+import { Macro, MacroStep } from "@/models";
 import { MacroRepository } from "@/repositories/MacroRepository";
 import { BaseViewModel } from "@/utils/BaseViewModel";
 import { Emitter } from "@/utils/Emitter";
@@ -102,30 +102,26 @@ export class EditMacroViewModel extends BaseViewModel {
     this.setState({ macro: updatedMacro });
   }
 
-  updateStepName(stepId: string, newName: string): void {
+  updateStep(stepId: string, step: Partial<MacroStep>): void {
     if (!this.state.macro) {
       this.logger.error("Cannot update step: no macro loaded");
       return;
     }
 
-    const trimmedName = newName.trim();
-
-    if (!trimmedName) {
-      this.logger.warn("Step name cannot be empty");
-      return;
-    }
-
-    this.logger.info("Updating step name", {
+    this.logger.info("Updating step ", {
       macroId: this.state.macro.id,
       stepId,
-      newName: trimmedName,
+      step,
     });
 
-    const updatedSteps = this.state.macro.steps.map((step) =>
-      step.id === stepId ? { ...step, name: trimmedName } : step
+    const updatedSteps = this.state.macro.steps.map((s) =>
+      s.id === stepId ? { ...s, ...step } : s
     );
 
-    const updatedMacro = { ...this.state.macro, steps: updatedSteps };
+    const updatedMacro = {
+      ...this.state.macro,
+      steps: updatedSteps as MacroStep[],
+    };
     this.setState({ macro: updatedMacro });
   }
 
