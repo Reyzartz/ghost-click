@@ -1,6 +1,7 @@
 import { MacroStep } from "@/models";
 import { useState } from "react";
 import { EditInputStep } from "./EditInputStep";
+import { EditKeyPressStep } from "./EditKeyPressStep";
 
 interface EditStepItemProps {
   step: MacroStep;
@@ -44,6 +45,14 @@ export const EditStepItem = ({
       case "INPUT":
         return (
           <EditInputStep
+            step={step}
+            onUpdateStep={handleUpdateStep}
+            onClose={onClose}
+          />
+        );
+      case "KEYPRESS":
+        return (
+          <EditKeyPressStep
             step={step}
             onUpdateStep={handleUpdateStep}
             onClose={onClose}
