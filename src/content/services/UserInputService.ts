@@ -6,6 +6,7 @@ import {
   UserKeyPressEventData,
 } from "@/utils/Event";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
+import { ElementSelector } from "@/utils/ElementSelector";
 
 export class UserInputService extends BaseService {
   private isRecording = false;
@@ -138,12 +139,7 @@ export class UserInputService extends BaseService {
       sessionId: this.currentSessionId,
       timestamp: Date.now(),
       type: "CLICK",
-      target: {
-        id: target.id || "",
-        className: target.className || "",
-        xpath: UserInputService.getXPath(target),
-        defaultSelector: "xpath",
-      },
+      target: ElementSelector.getElementSelector(target),
     };
 
     this.logger.info("Click captured", clickData);
@@ -173,12 +169,7 @@ export class UserInputService extends BaseService {
       sessionId: this.currentSessionId,
       timestamp: Date.now(),
       type: "INPUT" as const,
-      target: {
-        id: target.id || "",
-        className: target.className || "",
-        xpath: UserInputService.getXPath(target),
-        defaultSelector: "xpath",
-      },
+      target: ElementSelector.getElementSelector(target),
       value: target.value,
     };
 
@@ -218,12 +209,7 @@ export class UserInputService extends BaseService {
       sessionId: this.currentSessionId,
       timestamp: Date.now(),
       type: "KEYPRESS" as const,
-      target: {
-        id: target.id || "",
-        className: target.className || "",
-        xpath: UserInputService.getXPath(target),
-        defaultSelector: "xpath",
-      },
+      target: ElementSelector.getElementSelector(target),
       key: event.key,
       code: event.code,
       ctrlKey: event.ctrlKey,
@@ -236,110 +222,5 @@ export class UserInputService extends BaseService {
 
     // Emit USER_ACTION event
     this.emitter.emit("USER_ACTION", keyPressData);
-  }
-
-  private static getXPath(el: Document | Element | DocumentFragment) {
-    let element: Element | (Node & ParentNode) = el;
-    let parent: Element | (Node & ParentNode) | null;
-    let sames: Node[];
-    let elementType: number;
-    let result = "";
-
-    const escapeXPath = (name: string): string =>
-      name.replace(/([:*])/g, "\\$1"); // Escapes colons and asterisks
-
-    const filterNode = (_node: Node): void => {
-      if (_node.nodeName === element.nodeName) {
-        sames.push(_node);
-      }
-    };
-
-    if (!(element instanceof Node)) {
-      return result;
-    }
-
-    parent = element.parentNode ?? element.ownerDocument ?? null;
-
-    while (parent !== null) {
-      elementType = element.nodeType;
-      sames = [];
-
-      try {
-        parent.childNodes.forEach(filterNode);
-      } catch {
-        break;
-      }
-
-      const nodeNameEscaped: string = escapeXPath(element.nodeName);
-
-      switch (elementType) {
-        case Node.ELEMENT_NODE: {
-          const nodeName: string = nodeNameEscaped.toLowerCase();
-          const isSVG =
-            element instanceof SVGElement &&
-            (element as Element).namespaceURI === "http://www.w3.org/2000/svg";
-
-          if (isSVG) {
-            break;
-          }
-
-          const sameNodesCount: string = `[${
-            [].indexOf.call(sames, element as never) + 1
-          }]`;
-
-          result = `/${nodeName}${
-            sames.length > 1 ? sameNodesCount : ""
-          }${result}`;
-          break;
-        }
-
-        case Node.TEXT_NODE: {
-          const textNodes: ChildNode[] = Array.from(parent.childNodes).filter(
-            (n) => n.nodeType === Node.TEXT_NODE
-          );
-          const index: number =
-            element instanceof Node && "remove" in element
-              ? [].indexOf.call(sames, element as never) + 1
-              : 1;
-
-          result = `/text()${
-            textNodes.length > 1 ? `[${index}]` : ""
-          }${result}`;
-          break;
-        }
-
-        case Node.ATTRIBUTE_NODE: {
-          result = `/@${nodeNameEscaped.toLowerCase()}${result}`;
-          break;
-        }
-
-        case Node.COMMENT_NODE: {
-          const index: number =
-            Array.from(parent.childNodes)
-              .filter((n) => n.nodeType === Node.COMMENT_NODE)
-              .indexOf(element as never) + 1;
-          result = `/comment()[${index}]${result}`;
-          break;
-        }
-
-        case Node.PROCESSING_INSTRUCTION_NODE: {
-          result = `/processing-instruction('${nodeNameEscaped}')${result}`;
-          break;
-        }
-
-        case Node.DOCUMENT_NODE: {
-          result = `/${result}`;
-          break;
-        }
-
-        default:
-          break;
-      }
-
-      element = parent;
-      parent = element.parentNode ?? element.ownerDocument ?? null;
-    }
-
-    return `.//${result.replace(/^\//, "")}`;
   }
 }

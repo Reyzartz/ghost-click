@@ -4,6 +4,7 @@ import { Logger } from "@/utils/Logger";
 import { BaseService } from "@/utils/BaseService";
 import { UserInputService } from "./services/UserInputService";
 import { ActionExecutorService } from "./services/ActionExecutorService";
+import { ElementInspectorService } from "./services/ElementInspectorService";
 import { StatusIndicatorViewModel } from "./viewmodels/StatusIndicatorViewModel";
 import { NotificationViewModel } from "./viewmodels/NotificationViewModel";
 import { QuickActionsViewModel } from "./viewmodels/QuickActionsViewModel";
@@ -45,6 +46,7 @@ export class ContentApp extends BaseApp {
     const services: Array<BaseService> = [
       new UserInputService(emitter, recordingStateRepository),
       new ActionExecutorService(emitter, playbackStateRepository),
+      new ElementInspectorService(emitter),
     ];
 
     super(emitter, logger, services, viewModels);

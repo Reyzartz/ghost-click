@@ -2,8 +2,11 @@ import { BaseService } from "@/utils/BaseService";
 import { Emitter } from "@/utils/Emitter";
 import { ClickStep, InputStep, KeyPressStep } from "@/models/MacroStep";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
+import { ElementSelector } from "@/utils/ElementSelector";
 
 export class ActionExecutorService extends BaseService {
+  private overlay: HTMLDivElement | null = null;
+
   constructor(
     protected readonly emitter: Emitter,
     protected readonly playbackStateRepository: PlaybackStateRepository
@@ -100,37 +103,14 @@ export class ActionExecutorService extends BaseService {
     });
   }
 
-  private static readonly findElementFromXPath = (
-    xpath: string
-  ): Element | null => {
-    const result = document.evaluate(
-      xpath,
-      document,
-      null,
-      XPathResult.FIRST_ORDERED_NODE_TYPE,
-      null
-    );
-    return result.singleNodeValue as Element | null;
-  };
-
-  private static readonly findElementFromId = (id: string): Element | null => {
-    return document.getElementById(id);
-  };
-
-  private static readonly findElementFromClassName = (
-    className: string
-  ): Element | null => {
-    return document.querySelector(`.${className}`);
-  };
-
   private findElement(target: ClickStep["target"]): Element | null {
     switch (target.defaultSelector) {
       case "xpath":
-        return ActionExecutorService.findElementFromXPath(target.xpath);
+        return ElementSelector.findElementFromXPath(target.xpath);
       case "id":
-        return ActionExecutorService.findElementFromId(target.id);
+        return ElementSelector.findElementFromId(target.id);
       case "className":
-        return ActionExecutorService.findElementFromClassName(target.className);
+        return ElementSelector.findElementFromClassName(target.className);
       default:
         this.logger.warn("Unknown selector type", {
           defaultSelector: target.defaultSelector,
@@ -236,15 +216,38 @@ export class ActionExecutorService extends BaseService {
     }
   }
 
-  private async highlightElement(element: HTMLElement): Promise<void> {
-    const originalOutline = element.style.outline;
-    element.style.outline = "4px solid red";
+  private highlightElement(element: HTMLElement): void {
+    this.removeHighlight();
 
-    setTimeout(function () {
-      element.style.outline = originalOutline;
+    if (!this.overlay) {
+      this.overlay = document.createElement("div");
+      this.overlay.style.cssText = `
+        position: absolute;
+        pointer-events: none;
+        border: 2px solid #3b82f6;
+        background: rgba(59, 130, 246, 0.1);
+        z-index: 2147483647;
+        box-sizing: border-box;
+      `;
+      document.body.appendChild(this.overlay);
+    }
+
+    const rect = element.getBoundingClientRect();
+    this.overlay.style.top = `${rect.top + window.scrollY}px`;
+    this.overlay.style.left = `${rect.left + window.scrollX}px`;
+    this.overlay.style.width = `${rect.width}px`;
+    this.overlay.style.height = `${rect.height}px`;
+    this.overlay.style.display = "block";
+
+    setTimeout(() => {
+      this.removeHighlight();
     }, 250);
+  }
 
-    await this.sleep(300);
+  private removeHighlight(): void {
+    if (this.overlay) {
+      this.overlay.style.display = "none";
+    }
   }
 
   private sleep(ms: number): Promise<void> {

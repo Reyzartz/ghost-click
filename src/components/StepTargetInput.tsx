@@ -1,5 +1,5 @@
 import { TargetElementSelector } from "@/models";
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
 
 interface StepTargetInputProps {
   target: TargetElementSelector;
@@ -7,9 +7,76 @@ interface StepTargetInputProps {
 }
 
 const StepTargetInput = memo<StepTargetInputProps>(({ target, onChange }) => {
+  const [isInspecting, setIsInspecting] = useState(false);
+
+  useEffect(() => {
+    const handleMessage = (message: any) => {
+      if (
+        message.type === "EMIT_EVENT" &&
+        message.event === "ELEMENT_SELECTED"
+      ) {
+        onChange(message.data.selector);
+        setIsInspecting(false);
+      }
+    };
+
+    chrome.runtime.onMessage.addListener(handleMessage);
+
+    return () => {
+      chrome.runtime.onMessage.removeListener(handleMessage);
+    };
+  }, [onChange]);
+
+  const startInspection = async (): Promise<void> => {
+    setIsInspecting(true);
+
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    if (!tab.id) return;
+
+    await chrome.tabs.sendMessage(tab.id, {
+      type: "EMIT_EVENT",
+      event: "START_ELEMENT_INSPECTION",
+      source: "sidepanel",
+    });
+  };
+
+  const stopInspection = async (): Promise<void> => {
+    setIsInspecting(false);
+
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    if (!tab.id) return;
+
+    await chrome.tabs.sendMessage(tab.id, {
+      type: "EMIT_EVENT",
+      event: "STOP_ELEMENT_INSPECTION",
+      source: "sidepanel",
+    });
+  };
+
   return (
     <div className="flex flex-col gap-2 border border-slate-200 rounded p-2 bg-slate-50">
-      <div className="text-slate-600 text-xs font-medium">Target Selector:</div>
+      <div className="flex items-center justify-between">
+        <div className="text-slate-600 text-xs font-medium">
+          Target Selector:
+        </div>
+        <button
+          onClick={isInspecting ? stopInspection : startInspection}
+          className={`text-xs px-2 py-1 rounded cursor-pointer ${
+            isInspecting
+              ? "bg-red-500 text-white hover:bg-red-600"
+              : "bg-blue-500 text-white hover:bg-blue-600"
+          }`}
+          title={isInspecting ? "Stop inspection" : "Inspect element on page"}
+        >
+          {isInspecting ? "⏹ Stop" : "🔍 Inspect"}
+        </button>
+      </div>
       <div className="flex items-center gap-2">
         <label className="text-slate-600 w-20 text-[10px]">ID:</label>
         <input

@@ -1,4 +1,5 @@
 import {
+  ElementSelectedEvent,
   EventType,
   ExecuteActionEvent,
   PausePlaybackEvent,
@@ -7,7 +8,9 @@ import {
   PlayMacroEvent,
   ResumePlaybackEvent,
   SavedMacroEvent,
+  StartElementInspectionEvent,
   StartRecordingEvent,
+  StopElementInspectionEvent,
   StopRecordingEvent,
   ToggleQuickActionsEvent,
   UserActionEvent,
@@ -25,7 +28,10 @@ type Events =
   | PlaybackErrorEvent
   | PausePlaybackEvent
   | ResumePlaybackEvent
-  | ToggleQuickActionsEvent;
+  | ToggleQuickActionsEvent
+  | StartElementInspectionEvent
+  | StopElementInspectionEvent
+  | ElementSelectedEvent;
 
 type EventOf<T extends EventType> = Extract<Events, { name: T }>;
 

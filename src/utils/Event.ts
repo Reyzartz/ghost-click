@@ -12,7 +12,10 @@ export type EventType =
   | "STOP_PLAYBACK"
   | "PAUSE_PLAYBACK"
   | "RESUME_PLAYBACK"
-  | "TOGGLE_QUICK_ACTIONS";
+  | "TOGGLE_QUICK_ACTIONS"
+  | "START_ELEMENT_INSPECTION"
+  | "STOP_ELEMENT_INSPECTION"
+  | "ELEMENT_SELECTED";
 
 export interface BaseEvent {
   name: EventType;
