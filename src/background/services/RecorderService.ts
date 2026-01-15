@@ -178,7 +178,9 @@ export class RecorderService extends BaseService {
     return steps.map((step, index) => {
       // Calculate delay to next step (0 for last step)
       const delay =
-        index < steps.length - 1 ? steps[index + 1].timestamp - step.timestamp : 0;
+        index < steps.length - 1
+          ? steps[index + 1].timestamp - step.timestamp
+          : 0;
 
       return {
         ...step,
@@ -258,6 +260,8 @@ export class RecorderService extends BaseService {
       target: data.target,
       timestamp: data.timestamp,
       delay: 0, // Will be calculated in post-processing
+      retryCount: 1,
+      retryInterval: 200,
     };
 
     this.macroSteps.push(step);
@@ -278,6 +282,8 @@ export class RecorderService extends BaseService {
       value: data.value,
       delay: 0, // Will be calculated in post-processing
       timestamp: data.timestamp,
+      retryCount: 1,
+      retryInterval: 200,
     };
 
     this.macroSteps.push(step);
@@ -303,6 +309,8 @@ export class RecorderService extends BaseService {
       metaKey: data.metaKey,
       delay: 0, // Will be calculated in post-processing
       timestamp: data.timestamp,
+      retryCount: 1,
+      retryInterval: 200,
     };
 
     this.macroSteps.push(step);

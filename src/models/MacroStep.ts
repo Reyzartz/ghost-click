@@ -6,6 +6,8 @@ export interface BaseMacroStep {
   type: StepType;
   timestamp: number;
   delay: number;
+  retryCount: number;
+  retryInterval: number;
 }
 
 export interface TargetElementSelector {

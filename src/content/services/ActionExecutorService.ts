@@ -60,7 +60,11 @@ export class ActionExecutorService extends BaseService {
   }
 
   private async executeClickStep(step: ClickStep): Promise<void> {
-    const element = this.findElement(step.target);
+    const element = await this.findElementWithRetry(
+      step.target,
+      step.retryCount,
+      step.retryInterval
+    );
 
     if (!element) {
       throw new Error(
@@ -103,6 +107,45 @@ export class ActionExecutorService extends BaseService {
     });
   }
 
+  private async findElementWithRetry(
+    target: ClickStep["target"],
+    retryCount: number,
+    retryInterval: number
+  ): Promise<Element | null> {
+    let attempts = 0;
+    const maxAttempts = retryCount + 1; // Initial attempt + retries
+
+    while (attempts < maxAttempts) {
+      const element = this.findElement(target);
+
+      if (element) {
+        if (attempts > 0) {
+          this.logger.info("Element found after retry", {
+            attempt: attempts + 1,
+            maxAttempts,
+          });
+        }
+        return element;
+      }
+
+      attempts++;
+
+      if (attempts < maxAttempts) {
+        this.logger.info("Element not found, retrying", {
+          attempt: attempts,
+          maxAttempts,
+          retryInterval,
+        });
+        await this.sleep(retryInterval);
+      }
+    }
+
+    this.logger.error("Element not found after all retries", {
+      attempts: maxAttempts,
+    });
+    return null;
+  }
+
   private findElement(target: ClickStep["target"]): Element | null {
     switch (target.defaultSelector) {
       case "xpath":
@@ -120,7 +163,11 @@ export class ActionExecutorService extends BaseService {
   }
 
   private async executeInputStep(step: InputStep): Promise<void> {
-    const element = this.findElement(step.target);
+    const element = await this.findElementWithRetry(
+      step.target,
+      step.retryCount,
+      step.retryInterval
+    );
 
     if (!element) {
       throw new Error(
@@ -163,7 +210,11 @@ export class ActionExecutorService extends BaseService {
   }
 
   private async executeKeyPressStep(step: KeyPressStep): Promise<void> {
-    const element = this.findElement(step.target);
+    const element = await this.findElementWithRetry(
+      step.target,
+      step.retryCount,
+      step.retryInterval
+    );
 
     if (!element) {
       throw new Error(
