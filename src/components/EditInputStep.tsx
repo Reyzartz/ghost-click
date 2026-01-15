@@ -51,7 +51,9 @@ const EditInputStep = memo<EditInputStepProps>(
         <StepRetryInput
           retryCount={updatedStep.retryCount}
           retryInterval={updatedStep.retryInterval}
-          onChange={(updates) => setUpdatedStep((prev) => ({ ...prev, ...updates }))}
+          onChange={(updates) =>
+            setUpdatedStep((prev) => ({ ...prev, ...updates }))
+          }
         />
 
         <div className="flex items-center gap-2 justify-end">
