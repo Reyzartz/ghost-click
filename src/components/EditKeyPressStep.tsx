@@ -1,6 +1,7 @@
 import { KeyPressStep } from "@/models";
 import { memo, useRef, useState } from "react";
 import { StepNameInput } from "./StepNameInput";
+import { StepRetryInput } from "./StepRetryInput";
 import { StepTargetInput } from "./StepTargetInput";
 
 interface EditKeyPressStepProps {
@@ -114,6 +115,12 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
         <StepTargetInput
           target={updatedStep.target}
           onChange={(target) => setUpdatedStep((prev) => ({ ...prev, target }))}
+        />
+
+        <StepRetryInput
+          retryCount={updatedStep.retryCount}
+          retryInterval={updatedStep.retryInterval}
+          onChange={(updates) => setUpdatedStep((prev) => ({ ...prev, ...updates }))}
         />
 
         <div className="flex items-center gap-2 justify-end">
