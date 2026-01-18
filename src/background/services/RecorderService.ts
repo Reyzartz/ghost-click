@@ -37,6 +37,18 @@ export class RecorderService extends BaseService {
       this.recordUserAction(data);
     });
 
+    this.emitter.on("SAVE_RECORDING_CONFIRMED", (data) => {
+      void this.handleSaveRecordingConfirmed(data);
+    });
+
+    this.emitter.on("SAVE_RECORDING_CANCELLED", (data) => {
+      this.handleSaveRecordingCancelled(data);
+    });
+
+    this.emitter.on("RE_RECORD_REQUESTED", (data) => {
+      this.handleReRecordRequested(data);
+    });
+
     // Listen for tab close to stop recording
     chrome.tabs.onRemoved.addListener((tabId) => {
       if (this.isRecording && this.recordingTabId === tabId) {
@@ -119,12 +131,17 @@ export class RecorderService extends BaseService {
 
     // Post-process steps to combine adjacent input events
     const processedSteps = this.postProcessSteps(this.macroSteps);
-
-    await this.saveMacro(sessionId, initialUrl, processedSteps);
     this.macroSteps = [];
 
     // Clear recording state from repository
     await this.recordingStateRepository.clear();
+
+    // Emit event to show save recording modal in content script
+    this.emitter.emit("SHOW_SAVE_RECORDING_MODAL", {
+      sessionId,
+      initialUrl,
+      steps: processedSteps,
+    });
   }
 
   private postProcessSteps(steps: MacroStep[]): MacroStep[] {
@@ -192,7 +209,8 @@ export class RecorderService extends BaseService {
   private async saveMacro(
     sessionId: string,
     initialUrl: string,
-    steps: MacroStep[]
+    steps: MacroStep[],
+    name?: string
   ): Promise<void> {
     const now = Date.now();
     const existing = await this.macroRepository.findById(sessionId);
@@ -202,7 +220,10 @@ export class RecorderService extends BaseService {
 
     const macro: Macro = {
       id: sessionId,
-      name: existing?.name ?? `Untitled Macro ${new Date().toLocaleString()}`,
+      name:
+        name ??
+        existing?.name ??
+        `Untitled Macro ${new Date().toLocaleString()}`,
       initialUrl,
       domain,
       steps: [...steps],
@@ -336,5 +357,42 @@ export class RecorderService extends BaseService {
     return displayName.length > 30
       ? `${displayName.substring(0, 27)}...`
       : displayName;
+  }
+
+  private async handleSaveRecordingConfirmed(data: {
+    sessionId: string;
+    name: string;
+    initialUrl: string;
+    steps: MacroStep[];
+  }): Promise<void> {
+    this.logger.info("Save recording confirmed", {
+      sessionId: data.sessionId,
+      name: data.name,
+    });
+
+    await this.saveMacro(
+      data.sessionId,
+      data.initialUrl,
+      data.steps,
+      data.name
+    );
+  }
+
+  private handleSaveRecordingCancelled(data: { sessionId: string }): void {
+    this.logger.info("Save recording cancelled", { sessionId: data.sessionId });
+    // Recording is already cleared, nothing to do
+  }
+
+  private handleReRecordRequested(data: {
+    sessionId: string;
+    initialUrl: string;
+  }): void {
+    this.logger.info("Re-record requested", { sessionId: data.sessionId });
+
+    // Start a new recording session
+    this.emitter.emit("START_RECORDING", {
+      sessionId: data.sessionId,
+      initialUrl: data.initialUrl,
+    });
   }
 }

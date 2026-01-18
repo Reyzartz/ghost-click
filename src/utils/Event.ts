@@ -15,7 +15,11 @@ export type EventType =
   | "TOGGLE_QUICK_ACTIONS"
   | "START_ELEMENT_INSPECTION"
   | "STOP_ELEMENT_INSPECTION"
-  | "ELEMENT_SELECTED";
+  | "ELEMENT_SELECTED"
+  | "SHOW_SAVE_RECORDING_MODAL"
+  | "SAVE_RECORDING_CONFIRMED"
+  | "SAVE_RECORDING_CANCELLED"
+  | "RE_RECORD_REQUESTED";
 
 export interface BaseEvent {
   name: EventType;
@@ -121,4 +125,38 @@ export interface ExecuteActionEvent extends BaseEvent {
 
 export interface ToggleQuickActionsEvent extends BaseEvent {
   name: "TOGGLE_QUICK_ACTIONS";
+}
+
+export interface ShowSaveRecordingModalEvent extends BaseEvent {
+  name: "SHOW_SAVE_RECORDING_MODAL";
+  data: {
+    sessionId: string;
+    initialUrl: string;
+    steps: MacroStep[];
+  };
+}
+
+export interface SaveRecordingConfirmedEvent extends BaseEvent {
+  name: "SAVE_RECORDING_CONFIRMED";
+  data: {
+    sessionId: string;
+    name: string;
+    initialUrl: string;
+    steps: MacroStep[];
+  };
+}
+
+export interface SaveRecordingCancelledEvent extends BaseEvent {
+  name: "SAVE_RECORDING_CANCELLED";
+  data: {
+    sessionId: string;
+  };
+}
+
+export interface ReRecordRequestedEvent extends BaseEvent {
+  name: "RE_RECORD_REQUESTED";
+  data: {
+    sessionId: string;
+    initialUrl: string;
+  };
 }
