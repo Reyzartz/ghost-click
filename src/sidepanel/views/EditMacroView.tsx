@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { SidePanelApp } from "../SidePanelApp";
 import { ErrorAlert } from "@/components/ErrorAlert";
-import { StepDelayItem } from "@/components/StepDelayItem";
 import { EditStepItem } from "@/components/EditStepItem";
 import { AddStepButton } from "@/components/AddStepButton";
 import { ClickStep, InputStep, KeyPressStep, Macro, MacroStep } from "@/models";
@@ -55,10 +54,6 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
 
   const handleUpdateStep = (stepId: string, step: Partial<MacroStep>): void => {
     void app.editMacroViewModel.updateStep(stepId, step);
-  };
-
-  const handleUpdateStepDelay = (stepId: string, newDelay: number): void => {
-    void app.editMacroViewModel.updateStepDelay(stepId, newDelay);
   };
 
   const handleAddStep = (
@@ -155,21 +150,11 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                         isDeleted={state.deletedStepIds.has(step.id)}
                         handleUndoDelete={handleUndoDelete}
                       />
-                      <div className="text-slate-300 text-sm group-last:hidden leading-1.5">
-                        |
-                      </div>
-                      <StepDelayItem
-                        delay={step.delay}
-                        stepId={step.id}
-                        onUpdateStepDelay={handleUpdateStepDelay}
-                      />
-                      <div className="text-slate-300 text-sm leading-3">|</div>
+                      <div className="text-slate-300 text-sm">|</div>
                       <AddStepButton
                         onAddStep={(step) => handleAddStep(step, index + 1)}
                       />
-                      <div className="text-slate-300 group-last:hidden leading-3">
-                        ↓
-                      </div>
+                      <div className="text-slate-300 group-last:hidden">↓</div>
                     </div>
                   ))}
                 </div>

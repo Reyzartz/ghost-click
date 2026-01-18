@@ -1,5 +1,6 @@
 import { KeyPressStep } from "@/models";
 import { memo, useRef, useState } from "react";
+import { StepDelayInput } from "./StepDelayInput";
 import { StepNameInput } from "./StepNameInput";
 import { StepRetryInput } from "./StepRetryInput";
 import { StepTargetInput } from "./StepTargetInput";
@@ -123,6 +124,11 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
           onChange={(updates) =>
             setUpdatedStep((prev) => ({ ...prev, ...updates }))
           }
+        />
+
+        <StepDelayInput
+          delay={updatedStep.delay}
+          onChange={(delay) => setUpdatedStep((prev) => ({ ...prev, delay }))}
         />
 
         <div className="flex items-center gap-2 justify-end">
