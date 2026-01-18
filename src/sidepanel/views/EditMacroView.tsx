@@ -3,7 +3,8 @@ import { SidePanelApp } from "../SidePanelApp";
 import { ErrorAlert } from "@/components/ErrorAlert";
 import { StepDelayItem } from "@/components/StepDelayItem";
 import { EditStepItem } from "@/components/EditStepItem";
-import { Macro, MacroStep } from "@/models";
+import { AddStepButton } from "@/components/AddStepButton";
+import { ClickStep, InputStep, KeyPressStep, Macro, MacroStep } from "@/models";
 
 type EditMacroState = {
   loading: boolean;
@@ -55,6 +56,13 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
 
   const handleUpdateStepDelay = (stepId: string, newDelay: number): void => {
     void app.editMacroViewModel.updateStepDelay(stepId, newDelay);
+  };
+
+  const handleAddStep = (
+    newStep: ClickStep | InputStep | KeyPressStep,
+    position: number
+  ): void => {
+    app.editMacroViewModel.addStep(newStep, position);
   };
 
   return (
@@ -133,7 +141,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                         index={index}
                         handleUpdateStep={handleUpdateStep}
                       />
-                      <div className="text-slate-400 text-sm group-last:hidden">
+                      <div className="text-slate-300 text-sm group-last:hidden leading-1.5">
                         |
                       </div>
                       <StepDelayItem
@@ -141,7 +149,13 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                         stepId={step.id}
                         onUpdateStepDelay={handleUpdateStepDelay}
                       />
-                      <div className="text-slate-400 group-last:hidden">↓</div>
+                      <div className="text-slate-300 text-sm leading-3">|</div>
+                      <AddStepButton
+                        onAddStep={(step) => handleAddStep(step, index + 1)}
+                      />
+                      <div className="text-slate-300 group-last:hidden leading-3">
+                        ↓
+                      </div>
                     </div>
                   ))}
                 </div>

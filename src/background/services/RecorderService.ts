@@ -197,7 +197,7 @@ export class RecorderService extends BaseService {
       const delay =
         index < steps.length - 1
           ? steps[index + 1].timestamp - step.timestamp
-          : 0;
+          : 200;
 
       return {
         ...step,

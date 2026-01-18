@@ -150,6 +150,27 @@ export class EditMacroViewModel extends BaseViewModel {
     this.setState({ macro: updatedMacro });
   }
 
+  addStep(newStep: MacroStep, position: number): void {
+    if (!this.state.macro) {
+      this.logger.error("Cannot add step: no macro loaded");
+      return;
+    }
+
+    this.logger.info("Adding new step", {
+      macroId: this.state.macro.id,
+      stepType: newStep.type,
+    });
+
+    const updatedSteps = [
+      ...this.state.macro.steps.slice(0, position),
+      newStep,
+      ...this.state.macro.steps.slice(position),
+    ];
+
+    const updatedMacro = { ...this.state.macro, steps: updatedSteps };
+    this.setState({ macro: updatedMacro });
+  }
+
   async updateMacro(macro: Macro): Promise<void> {
     this.logger.info("Updating macro", { macroId: macro.id });
     this.setState({ loading: true, error: null, success: false });
