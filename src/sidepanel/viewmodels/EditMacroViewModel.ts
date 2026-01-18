@@ -8,6 +8,7 @@ export interface EditMacroState {
   macro: Macro | null;
   error?: string | null;
   success?: boolean;
+  deletedStepIds: Set<string>;
 }
 
 export class EditMacroViewModel extends BaseViewModel {
@@ -16,6 +17,7 @@ export class EditMacroViewModel extends BaseViewModel {
     macro: null,
     error: null,
     success: false,
+    deletedStepIds: new Set(),
   };
   private listeners: Array<(state: EditMacroState) => void> = [];
 
@@ -170,19 +172,63 @@ export class EditMacroViewModel extends BaseViewModel {
     const updatedMacro = { ...this.state.macro, steps: updatedSteps };
     this.setState({ macro: updatedMacro });
   }
+  deleteStep(stepId: string): void {
+    if (!this.state.macro) {
+      this.logger.error("Cannot delete step: no macro loaded");
+      return;
+    }
+
+    this.logger.info("Marking step for deletion", {
+      macroId: this.state.macro.id,
+      stepId,
+    });
+
+    const deletedStepIds = new Set(this.state.deletedStepIds);
+    deletedStepIds.add(stepId);
+
+    this.setState({ deletedStepIds });
+  }
+
+  undoDeleteStep(stepId: string): void {
+    if (!this.state.macro) {
+      this.logger.error("Cannot undo: no macro loaded");
+      return;
+    }
+
+    this.logger.info("Undoing delete step", {
+      macroId: this.state.macro.id,
+      stepId,
+    });
+
+    const deletedStepIds = new Set(this.state.deletedStepIds);
+    deletedStepIds.delete(stepId);
+
+    this.setState({ deletedStepIds });
+  }
+
+  isStepDeleted(stepId: string): boolean {
+    return this.state.deletedStepIds.has(stepId);
+  }
 
   async updateMacro(macro: Macro): Promise<void> {
     this.logger.info("Updating macro", { macroId: macro.id });
     this.setState({ loading: true, error: null, success: false });
 
     try {
-      await this.macroRepository.save(macro);
+      // Filter out deleted steps before saving
+      const filteredSteps = macro.steps.filter(
+        (step) => !this.state.deletedStepIds.has(step.id)
+      );
+      const macroToSave = { ...macro, steps: filteredSteps };
+
+      await this.macroRepository.save(macroToSave);
 
       this.setState({
         loading: false,
-        macro,
+        macro: macroToSave,
         success: true,
         error: null,
+        deletedStepIds: new Set(),
       });
 
       this.logger.info("Updated macro", { macroId: macro.id });

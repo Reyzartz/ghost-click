@@ -7,13 +7,19 @@ import { EditKeyPressStep } from "./EditKeyPressStep";
 interface EditStepItemProps {
   step: MacroStep;
   index: number;
+  isDeleted: boolean;
   handleUpdateStep: (stepId: string, step: Partial<MacroStep>) => void;
+  handleDeleteStep: (stepId: string) => void;
+  handleUndoDelete: (stepId: string) => void;
 }
 
 export const EditStepItem = ({
   step,
   index,
+  isDeleted,
   handleUpdateStep,
+  handleDeleteStep,
+  handleUndoDelete,
 }: EditStepItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [nameInput, setNameInput] = useState(step.name);
@@ -101,19 +107,52 @@ export const EditStepItem = ({
 
   return (
     <li
-      className="cursor-pointer rounded px-3 h-8 flex items-center text-xs bg-white border border-slate-200 mx-auto max-w-max list-none group/step"
-      onClick={() => setIsEditing(true)}
+      className={`cursor-pointer rounded px-3 h-8 flex items-center text-xs bg-white border mx-auto max-w-max list-none group/step transition-all ${
+        isDeleted ? "opacity-50 border-red-300 bg-red-50" : "border-slate-200"
+      }`}
+      onClick={() => !isDeleted && setIsEditing(true)}
     >
       <div className="flex items-center gap-2">
         <span className="text-slate-400">#{index + 1}</span>
-        <span>{step.name}</span>
+        <span className={isDeleted ? "line-through text-slate-500" : ""}>
+          {step.name}
+        </span>
 
-        <button
-          className="cursor-pointer w-0 group-hover/step:w-4 overflow-hidden text-slate-500 hover:text-slate-700 transition-{width} duration-200 ease-in-out"
-          title="Edit step name"
-        >
-          ✎
-        </button>
+        {isDeleted ? (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleUndoDelete(step.id);
+            }}
+            className="cursor-pointer ml-2 text-blue-600 hover:text-blue-700 px-2 py-1 rounded hover:bg-blue-50 text-xs font-medium"
+            title="Undo delete"
+          >
+            ↶ Undo
+          </button>
+        ) : (
+          <div className="flex items-center gap-1 opacity-0 group-hover/step:opacity-100 transition-opacity duration-200">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsEditing(true);
+              }}
+              className="cursor-pointer text-slate-500 hover:text-slate-700 px-1"
+              title="Edit step"
+            >
+              ✎
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDeleteStep(step.id);
+              }}
+              className="cursor-pointer text-red-500 hover:text-red-700 px-1"
+              title="Delete step"
+            >
+              🗑️
+            </button>
+          </div>
+        )}
       </div>
     </li>
   );

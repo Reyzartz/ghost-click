@@ -11,6 +11,7 @@ type EditMacroState = {
   macro: Macro | null;
   error?: string | null;
   success?: boolean;
+  deletedStepIds: Set<string>;
 };
 
 export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
@@ -19,6 +20,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
     macro: null,
     error: null,
     success: false,
+    deletedStepIds: new Set(),
   });
 
   useEffect(() => {
@@ -28,6 +30,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
         macro: vmState.macro,
         error: vmState.error,
         success: vmState.success,
+        deletedStepIds: vmState.deletedStepIds,
       });
     });
 
@@ -63,6 +66,14 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
     position: number
   ): void => {
     app.editMacroViewModel.addStep(newStep, position);
+  };
+
+  const handleDeleteStep = (stepId: string): void => {
+    app.editMacroViewModel.deleteStep(stepId);
+  };
+
+  const handleUndoDelete = (stepId: string): void => {
+    app.editMacroViewModel.undoDeleteStep(stepId);
   };
 
   return (
@@ -140,6 +151,9 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                         step={step}
                         index={index}
                         handleUpdateStep={handleUpdateStep}
+                        handleDeleteStep={handleDeleteStep}
+                        isDeleted={state.deletedStepIds.has(step.id)}
+                        handleUndoDelete={handleUndoDelete}
                       />
                       <div className="text-slate-300 text-sm group-last:hidden leading-1.5">
                         |
