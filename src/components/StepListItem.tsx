@@ -21,7 +21,7 @@ export const StepListItem = ({
         isCurrent
           ? "bg-green-100 border border-green-300 font-medium"
           : isCompleted
-          ? "bg-slate-100 border border-slate-200 text-slate-500 line-through"
+          ? "bg-slate-100 border border-slate-200 text-slate-500"
           : "bg-white border border-slate-200"
       } ${isErrored ? "border-red-300 bg-red-50 text-red-700" : ""}`}
       autoFocus={isCurrent}
@@ -31,8 +31,14 @@ export const StepListItem = ({
         }
       }}
     >
-      <div className="flex items-center gap-2">
-        <span className="text-slate-400">#{index + 1}</span>
+      <div
+        className={`flex items-center gap-2 ${
+          isCompleted && isErrored ? "text-red-600" : ""
+        } ${isCompleted && !isErrored ? "text-green-600" : ""}`}
+      >
+        <span className={`${isCurrent ? "font-semibold" : ""}`}>  
+          #{index + 1}
+        </span>
         <span>{step.name}</span>
         {isCurrent && <span className="ml-auto text-green-600">▶</span>}
         {isCompleted && !isErrored && (

@@ -76,9 +76,22 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
     });
   };
 
+  const handleEditMacro = (): void => {
+    if (!state.macro) return;
+    app.playbackProgressViewModel.clearErrors();
+    app.editMacroViewModel.loadMacro(state.macro.id);
+    app.viewService.navigateToView("editMacro");
+  };
+
   return (
     <div className="p-4 space-y-4 text-sm text-slate-900">
-      <header className="flex items-center justify-between">
+      <header className="flex items-start gap-2">
+        <button
+          onClick={handleGoBack}
+          className="cursor-pointer font-medium text-slate-500 leading-4"
+        >
+          ←
+        </button>
         <div>
           <p className="text-xs uppercase tracking-wide text-slate-500">
             {hasError && state.isPlaying
@@ -147,9 +160,9 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
           </button>
           <button
             className="cursor-pointer rounded border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
-            onClick={handleGoBack}
+            onClick={handleEditMacro}
           >
-            Go Back
+            Edit Macro
           </button>
         </div>
       )}
