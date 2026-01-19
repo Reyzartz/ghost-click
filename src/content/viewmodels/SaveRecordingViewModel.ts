@@ -8,6 +8,7 @@ export type SaveRecordingState = {
   sessionId: string;
   initialUrl: string;
   domain: string;
+  faviconUrl: string;
   stepCount: number;
   duration: number;
 };
@@ -19,6 +20,7 @@ export class SaveRecordingViewModel extends BaseViewModel {
     sessionId: "",
     initialUrl: "",
     domain: "",
+    faviconUrl: "",
     stepCount: 0,
     duration: 0,
   };
@@ -60,6 +62,9 @@ export class SaveRecordingViewModel extends BaseViewModel {
     // Extract domain from URL
     const domain = this.extractDomain(data.initialUrl);
 
+    // Get favicon from current page
+    const faviconUrl = this.getFaviconUrl();
+
     // Calculate duration (difference between first and last step)
     const duration =
       this.steps.length > 0
@@ -75,6 +80,7 @@ export class SaveRecordingViewModel extends BaseViewModel {
       sessionId: data.sessionId,
       initialUrl: data.initialUrl,
       domain,
+      faviconUrl,
       stepCount: this.steps.length,
       duration,
     });
@@ -106,6 +112,7 @@ export class SaveRecordingViewModel extends BaseViewModel {
       name: trimmedName,
       initialUrl: this.state.initialUrl,
       steps: this.steps,
+      faviconUrl: this.state.faviconUrl,
     });
 
     this.closeModal();
@@ -143,6 +150,7 @@ export class SaveRecordingViewModel extends BaseViewModel {
       sessionId: "",
       initialUrl: "",
       domain: "",
+      faviconUrl: "",
       stepCount: 0,
       duration: 0,
     });
@@ -155,6 +163,26 @@ export class SaveRecordingViewModel extends BaseViewModel {
       return urlObj.hostname;
     } catch {
       return "unknown";
+    }
+  }
+
+  private getFaviconUrl(): string {
+    // Try to get favicon from link tags
+    const linkElements =
+      document.querySelectorAll<HTMLLinkElement>('link[rel*="icon"]');
+
+    for (const link of linkElements) {
+      if (link.href) {
+        return link.href;
+      }
+    }
+
+    // Fallback to default favicon.ico
+    try {
+      const url = new URL(window.location.href);
+      return `${url.protocol}//${url.hostname}/favicon.ico`;
+    } catch {
+      return "";
     }
   }
 }

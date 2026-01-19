@@ -36,11 +36,13 @@ export const StepListItem = ({
           isCompleted && isErrored ? "text-red-600" : ""
         } ${isCompleted && !isErrored ? "text-green-600" : ""}`}
       >
-        <span className={`${isCurrent ? "font-semibold" : ""}`}>  
+        <span className={`${isCurrent ? "font-semibold" : ""}`}>
           #{index + 1}
         </span>
         <span>{step.name}</span>
-        {isCurrent && <span className="ml-auto text-green-600">▶</span>}
+        {isCurrent && !isErrored && (
+          <span className="ml-auto text-green-600">▶</span>
+        )}
         {isCompleted && !isErrored && (
           <span className="ml-auto text-green-600">✓</span>
         )}

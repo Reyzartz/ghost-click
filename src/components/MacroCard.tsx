@@ -1,5 +1,6 @@
 import { Macro } from "@/models";
 import { Dropdown, DropdownItem } from "./Dropdown";
+import { DisplayFavicon } from "./DisplayFavicon";
 
 interface MacroCardProps {
   macro: Macro;
@@ -40,18 +41,27 @@ export const MacroCard = ({
       onClick={onPlay}
     >
       <div className="flex items-center justify-between gap-4">
-        <div className="grow overflow-hidden">
-          <p className="font-medium text-slate-900">{macro.name}</p>
-          <div className="flex gap-2 items-center">
-            <span className="text-xs text-slate-600 shrink-0">
-              {macro.steps.length} step
-              {macro.steps.length === 1 ? "" : "s"}
-            </span>
-            {macro.domain && (
-              <span className="text-xs text-slate-400 truncate">
-                • {macro.domain}
+        <div className="flex items-start gap-3 grow overflow-hidden">
+          <DisplayFavicon
+            name={macro.name}
+            faviconUrl={macro.faviconUrl}
+            className="mt-1"
+          />
+
+          <div className="grow overflow-hidden">
+            <p className="font-medium text-slate-900">{macro.name}</p>
+            <div className="flex gap-2 items-center">
+              <span className="text-xs text-slate-600 shrink-0">
+                {macro.steps.length} step
+                {macro.steps.length === 1 ? "" : "s"}
               </span>
-            )}
+              
+              {macro.domain && (
+                <span className="text-xs text-slate-400 truncate">
+                  • {macro.domain}
+                </span>
+              )}
+            </div>
           </div>
         </div>
 

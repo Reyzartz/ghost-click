@@ -226,6 +226,7 @@ export class RecorderService extends BaseService {
         `Untitled Macro ${new Date().toLocaleString()}`,
       initialUrl,
       domain,
+      faviconUrl: this.getDefaultFavicon(initialUrl),
       steps: [...steps],
       createdAt: existing?.createdAt ?? now,
       updatedAt: now,
@@ -245,6 +246,15 @@ export class RecorderService extends BaseService {
       return urlObj.hostname;
     } catch {
       return "unknown";
+    }
+  }
+
+  private getDefaultFavicon(url: string): string {
+    try {
+      const urlObj = new URL(url);
+      return `${urlObj.protocol}//${urlObj.hostname}/favicon.ico`;
+    } catch {
+      return "";
     }
   }
 
@@ -364,6 +374,7 @@ export class RecorderService extends BaseService {
     name: string;
     initialUrl: string;
     steps: MacroStep[];
+    faviconUrl: string;
   }): Promise<void> {
     this.logger.info("Save recording confirmed", {
       sessionId: data.sessionId,

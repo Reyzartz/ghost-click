@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { ContentApp } from "../ContentApp";
+import { DisplayFavicon } from "@/components/DisplayFavicon";
 
 type SaveRecordingState = {
   isOpen: boolean;
@@ -7,6 +8,7 @@ type SaveRecordingState = {
   sessionId: string;
   initialUrl: string;
   domain: string;
+  faviconUrl: string;
   stepCount: number;
   duration: number;
 };
@@ -18,6 +20,7 @@ export const SaveRecordingModal = ({ app }: { app: ContentApp }) => {
     sessionId: "",
     initialUrl: "",
     domain: "",
+    faviconUrl: "",
     stepCount: 0,
     duration: 0,
   });
@@ -63,10 +66,22 @@ export const SaveRecordingModal = ({ app }: { app: ContentApp }) => {
       >
         {/* Header */}
         <div className="bg-slate-900 px-6 py-4">
-          <h2 className="text-lg font-semibold text-white">Save Recording</h2>
-          <p className="text-xs text-slate-300 mt-1">
-            Name your macro and save it for future use
-          </p>
+          <div className="flex items-center gap-3">
+            <DisplayFavicon
+              faviconUrl={state.faviconUrl}
+              name={state.domain}
+              size="large"
+            />
+
+            <div>
+              <h2 className="text-lg font-semibold text-white">
+                Save Recording
+              </h2>
+              <p className="text-xs text-slate-300 mt-1">
+                Name your macro and save it for future use
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Content */}

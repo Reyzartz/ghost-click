@@ -4,6 +4,7 @@ import { ErrorAlert } from "@/components/ErrorAlert";
 import { EditStepItem } from "@/components/EditStepItem";
 import { AddStepButton } from "@/components/AddStepButton";
 import { ClickStep, InputStep, KeyPressStep, Macro, MacroStep } from "@/models";
+import { DisplayFavicon } from "@/components/DisplayFavicon";
 
 type EditMacroState = {
   loading: boolean;
@@ -74,21 +75,27 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
   return (
     <div className="p-4 space-y-4 text-sm text-slate-900">
       <header className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleBack}
-            className="text-slate-500 hover:text-slate-700"
-          >
-            ← Back
-          </button>
-        </div>
+        <button
+          onClick={handleBack}
+          className="cursor-pointer text-slate-500 hover:text-slate-700"
+        >
+          ← Back
+        </button>
       </header>
 
       <div>
-        <h2 className="text-lg font-semibold">Edit Macro</h2>
-        {state.macro?.domain && (
-          <p className="text-xs text-slate-500">Domain: {state.macro.domain}</p>
-        )}
+        <h2 className="text-lg font-semibold mb-1">Edit Macro</h2>
+
+        <div className="flex items-center gap-1 ">
+          <DisplayFavicon
+            faviconUrl={state.macro?.faviconUrl || null}
+            name={state.macro?.domain || ""}
+            size="small"
+          />
+          {state.macro?.domain && (
+            <p className="text-xs text-slate-500"> • {state.macro.domain}</p>
+          )}
+        </div>
       </div>
 
       {state.error && <ErrorAlert message={state.error} />}

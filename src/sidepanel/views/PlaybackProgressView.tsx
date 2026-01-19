@@ -5,6 +5,7 @@ import { ErrorDetailsPanel } from "@/components/ErrorDetailsPanel";
 import { ErrorAlert } from "@/components/ErrorAlert";
 import { ProgressBar } from "@/components/ProgressBar";
 import { StepListItem } from "@/components/StepListItem";
+import { DisplayFavicon } from "@/components/DisplayFavicon";
 
 export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<PlaybackProgressState>({
@@ -85,26 +86,34 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
 
   return (
     <div className="p-4 space-y-4 text-sm text-slate-900">
+      <button
+        onClick={handleGoBack}
+        className="text-slate-500 hover:text-slate-700 cursor-pointer"
+      >
+        ← Back
+      </button>
+
       <header className="flex items-start gap-2">
-        <button
-          onClick={handleGoBack}
-          className="cursor-pointer font-medium text-slate-500 leading-4"
-        >
-          ←
-        </button>
-        <div>
-          <p className="text-xs uppercase tracking-wide text-slate-500">
-            {hasError && state.isPlaying
-              ? "Playback In Progress (Errors)"
-              : hasError
-              ? "Playback Error"
-              : isComplete
-              ? "Playback Completed"
-              : state.isPaused
-              ? "Playback Paused"
-              : "Playback In Progress"}
-          </p>
-          <h2 className="text-lg font-semibold">{state.macro?.name}</h2>
+        <div className="flex items-center gap-2">
+          <DisplayFavicon
+            faviconUrl={state.macro.faviconUrl}
+            name={state.macro.name}
+            size="large"
+          />
+          <div>
+            <p className="text-xs uppercase tracking-wide text-slate-500">
+              {hasError && state.isPlaying
+                ? "Playback In Progress (Errors)"
+                : hasError
+                ? "Playback Error"
+                : isComplete
+                ? "Playback Completed"
+                : state.isPaused
+                ? "Playback Paused"
+                : "Playback In Progress"}
+            </p>
+            <h2 className="text-lg font-semibold">{state.macro?.name}</h2>
+          </div>
         </div>
       </header>
 

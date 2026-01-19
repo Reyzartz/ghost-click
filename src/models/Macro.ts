@@ -5,6 +5,7 @@ export interface Macro {
   name: string;
   initialUrl: string;
   domain: string;
+  faviconUrl: string | null;
   steps: MacroStep[];
   createdAt: number;
   updatedAt: number;
