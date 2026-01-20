@@ -90,8 +90,14 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
   };
 
   return (
-    <div className="p-4 space-y-4 text-sm text-slate-900">
-      <Button onClick={handleGoBack} variant="ghost" size="sm" icon={ArrowLeft}>
+    <div className="p-4 gap-4 text-sm text-slate-900 flex flex-col h-screen overflow-hidden">
+      <Button
+        onClick={handleGoBack}
+        variant="ghost"
+        size="sm"
+        icon={ArrowLeft}
+        className="self-start"
+      >
         Back
       </Button>
 
@@ -118,16 +124,6 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
           </div>
         </div>
       </header>
-
-      {state.error && state.errorDetails.length === 0 && (
-        <Alert variant="error">{state.error}</Alert>
-      )}
-
-      {isComplete && (
-        <Alert variant="success">
-          Playback finished. Review the steps or replay.
-        </Alert>
-      )}
 
       {state.isPlaying ? (
         <div className="flex gap-2">
@@ -184,11 +180,21 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
         />
       )}
 
-      <div className="space-y-2">
-        <Text variant="caption" color="muted">
+      {state.error && state.errorDetails.length === 0 && (
+        <Alert variant="error">{state.error}</Alert>
+      )}
+
+      {isComplete && (
+        <Alert variant="success">
+          Playback finished. Review the steps or replay.
+        </Alert>
+      )}
+
+      <div className="space-y-2 grow overflow-y-auto max-h-full">
+        <Text variant="caption" color="muted" className="sticky top-0 bg-white">
           All Steps
         </Text>
-        <ul className="space-y-1 max-h-96 overflow-y-auto">
+        <ul className="space-y-1">
           {state.macro?.steps.map((step, index) => (
             <StepListItem
               key={step.id}

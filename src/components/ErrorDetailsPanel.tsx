@@ -15,7 +15,7 @@ export const ErrorDetailsPanel = ({
   const [showDetails, setShowDetails] = useState(false);
 
   return (
-    <div className="rounded border border-red-300 bg-red-50 overflow-hidden">
+    <div className="shrink-0 rounded border border-red-300 bg-red-50 overflow-hidden">
       <div
         className="flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-red-100"
         onClick={() => setShowDetails(!showDetails)}
@@ -33,45 +33,45 @@ export const ErrorDetailsPanel = ({
           </Text>
         </div>
       </div>
-      {showDetails && (
-        <div className="border-t border-red-200 bg-red-50 overflow-auto max-h-48">
-          <ul className="divide-y divide-red-200">
-            {errorDetails.map((err, idx) => (
-              <li key={idx} className="px-3 py-2">
-                <div className="flex items-start gap-2">
-                  <Text variant="small" color="error" className="mt-0.5">
-                    •
-                  </Text>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <Text
-                        variant="small"
-                        className="font-medium text-red-900"
-                      >
-                        {err.stepName}
-                      </Text>
-                      <Text
-                        variant="small"
-                        color="error"
-                        className="px-1.5 py-0.5 rounded bg-red-100"
-                      >
-                        {err.stepType}
-                      </Text>
-                    </div>
+
+      <div
+        className={`border-red-200 bg-red-50 overflow-auto transition-[max-height] duration-300 ${
+          showDetails ? "max-h-48 border-t" : "max-h-0"
+        }`}
+      >
+        <ul className="divide-y divide-red-200">
+          {errorDetails.map((err, idx) => (
+            <li key={idx} className="px-3 py-2">
+              <div className="flex items-start gap-2">
+                <Text variant="small" color="error" className="mt-0.5">
+                  •
+                </Text>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <Text variant="small" className="font-medium text-red-900">
+                      {err.stepName}
+                    </Text>
                     <Text
                       variant="small"
                       color="error"
-                      className="mt-1 wrap-break-word"
+                      className="px-1.5 py-0.5 rounded bg-red-100"
                     >
-                      {err.error}
+                      {err.stepType}
                     </Text>
                   </div>
+                  <Text
+                    variant="small"
+                    color="error"
+                    className="mt-1 wrap-break-word"
+                  >
+                    {err.error}
+                  </Text>
                 </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
