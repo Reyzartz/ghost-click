@@ -13,8 +13,8 @@ interface DisplayFaviconProps {
 
 const sizeMap: Record<DisplayFaviconSize, string> = {
   small: "w-4 h-4 p-px",
-  medium: "w-8 h-8 p-1.5",
-  large: "w-12 h-12 p-3",
+  medium: "w-8 h-8 p-1",
+  large: "w-12 h-12 p-2",
 };
 
 const DisplayFavicon = memo(

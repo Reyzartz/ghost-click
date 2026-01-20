@@ -8,7 +8,6 @@ import {
   ModalFooter,
   Button,
   Input,
-  InfoPanel,
   Text,
 } from "@/design-system";
 
@@ -53,10 +52,6 @@ export const SaveRecordingModal = ({ app }: { app: ContentApp }) => {
     app.saveRecordingViewModel.cancelRecording();
   };
 
-  const handleReRecord = (): void => {
-    app.saveRecordingViewModel.reRecord();
-  };
-
   const formatDuration = (ms: number): string => {
     const seconds = Math.floor(ms / 1000);
     if (seconds < 60) return `${seconds}s`;
@@ -72,40 +67,41 @@ export const SaveRecordingModal = ({ app }: { app: ContentApp }) => {
       maxWidth="md"
       zIndex={2147483646}
     >
-      <ModalHeader variant="dark">
-        <div className="flex items-center gap-3">
+      <ModalHeader>
+        <div className="flex gap-2">
           <DisplayFavicon
             faviconUrl={state.faviconUrl}
             name={state.domain}
             size="large"
+            className="bg-white"
           />
 
-          <div>
-            <Text variant="h2" className="text-white">
-              Save Recording
-            </Text>
-            <Text variant="small" className="text-slate-300 mt-1">
-              Name your macro and save it for future use
-            </Text>
+          <div className="space-y-0.5">
+            <Text variant="h2">Save Recording</Text>
+            {state.domain && (
+              <Text variant="small" color="muted">
+                {state.domain}
+              </Text>
+            )}
           </div>
         </div>
       </ModalHeader>
 
-      <ModalBody className="space-y-4">
-        <InfoPanel
-          items={[
-            { label: "Steps recorded", value: state.stepCount },
-            { label: "Duration", value: formatDuration(state.duration) },
-            {
-              label: "Domain",
-              value: (
-                <Text variant="body" className="truncate">
-                  {state.domain}
-                </Text>
-              ),
-            },
-          ]}
-        />
+      <ModalBody className="space-y-4 mx-4 bg-white border border-solid border-slate-200 rounded-lg px-3 py-3">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <Text variant="small" color="muted">
+              Steps recorded:
+            </Text>
+            <Text variant="small">{state.stepCount}</Text>
+          </div>
+          <div className="flex items-center gap-2">
+            <Text variant="small" color="muted">
+              Duration:
+            </Text>
+            <Text variant="small">{formatDuration(state.duration)}</Text>
+          </div>
+        </div>
 
         <Input
           label="Macro Name"
@@ -124,18 +120,16 @@ export const SaveRecordingModal = ({ app }: { app: ContentApp }) => {
         />
       </ModalBody>
 
-      <ModalFooter className="grid gap-2 grid-cols-2">
+      <ModalFooter className="flex gap-2">
         <Button
           onClick={handleSave}
           disabled={!state.macroName.trim()}
           variant="primary"
+          fullWidth
         >
           Save
         </Button>
-        <Button onClick={handleReRecord} variant="secondary">
-          Re-Record
-        </Button>
-        <Button onClick={handleCancel} variant="danger" className="col-span-2">
+        <Button onClick={handleCancel} variant="danger" fullWidth>
           Discard
         </Button>
       </ModalFooter>

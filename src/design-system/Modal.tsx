@@ -35,7 +35,7 @@ export const Modal = ({
     >
       <div
         className={[
-          "bg-white rounded-lg shadow-xl w-full mx-4 overflow-hidden",
+          "bg-slate-100 rounded-lg shadow-xl w-full mx-4 overflow-hidden",
           maxWidthStyles[maxWidth],
           className,
         ]
@@ -56,18 +56,13 @@ interface ModalHeaderProps extends HTMLAttributes<HTMLDivElement> {
 
 export const ModalHeader = ({
   children,
-  variant = "default",
+
   className = "",
   ...props
 }: ModalHeaderProps) => {
-  const variantClass =
-    variant === "dark"
-      ? "bg-slate-900 text-white"
-      : "bg-white border-b border-slate-200";
-
   return (
     <div
-      className={["px-6 py-4", variantClass, className]
+      className={["p-4 border-b border-slate-200", className]
         .filter(Boolean)
         .join(" ")}
       {...props}
@@ -87,7 +82,7 @@ export const ModalBody = ({
   ...props
 }: ModalBodyProps) => {
   return (
-    <div className={["p-6", className].filter(Boolean).join(" ")} {...props}>
+    <div className={["p-4", className].filter(Boolean).join(" ")} {...props}>
       {children}
     </div>
   );
@@ -104,7 +99,7 @@ export const ModalFooter = ({
 }: ModalFooterProps) => {
   return (
     <div
-      className={["px-6 pb-4 flex gap-2", className].filter(Boolean).join(" ")}
+      className={["p-4 flex gap-2", className].filter(Boolean).join(" ")}
       {...props}
     >
       {children}
