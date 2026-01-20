@@ -22,7 +22,7 @@ export const Badge = ({
   ...props
 }: BadgeProps) => {
   const classes = [
-    "inline-flex items-center px-2 py-1 rounded text-xs font-medium border",
+    "inline-flex items-center px-2 py-1 rounded text-xs font-medium border shrink-0",
     variantStyles[variant],
     className,
   ]

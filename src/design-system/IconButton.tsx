@@ -1,4 +1,5 @@
 import { ButtonHTMLAttributes, forwardRef } from "react";
+import { LucideIcon } from "lucide-react";
 
 export type IconButtonVariant = "default" | "ghost" | "danger";
 export type IconButtonSize = "sm" | "md" | "lg";
@@ -6,7 +7,7 @@ export type IconButtonSize = "sm" | "md" | "lg";
 interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: IconButtonVariant;
   size?: IconButtonSize;
-  icon: string;
+  icon: LucideIcon;
 }
 
 const variantStyles: Record<IconButtonVariant, string> = {
@@ -17,18 +18,30 @@ const variantStyles: Record<IconButtonVariant, string> = {
 };
 
 const sizeStyles: Record<IconButtonSize, string> = {
-  sm: "px-1 py-1 text-xs",
-  md: "px-2 py-2 text-sm",
-  lg: "px-3 py-3 text-base",
+  sm: "p-1",
+  md: "p-2",
+  lg: "p-3",
+};
+
+const iconSizes: Record<IconButtonSize, number> = {
+  sm: 14,
+  md: 16,
+  lg: 18,
 };
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
   (
-    { variant = "default", size = "md", icon, className = "", ...props },
+    {
+      variant = "default",
+      size = "md",
+      icon: IconComponent,
+      className = "",
+      ...props
+    },
     ref
   ) => {
     const classes = [
-      "cursor-pointer rounded transition-colors",
+      "cursor-pointer rounded transition-colors inline-flex items-center justify-center",
       "disabled:cursor-not-allowed disabled:opacity-50",
       variantStyles[variant],
       sizeStyles[size],
@@ -39,7 +52,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
 
     return (
       <button ref={ref} className={classes} {...props}>
-        {icon}
+        <IconComponent size={iconSizes[size]} />
       </button>
     );
   }

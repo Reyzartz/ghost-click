@@ -1,5 +1,6 @@
 import { Macro } from "@/models";
 import { memo } from "react";
+import { Text } from "@/design-system";
 
 type DisplayFaviconSize = "small" | "medium" | "large";
 
@@ -33,9 +34,9 @@ const DisplayFavicon = memo(
             className="w-full h-full object-center object-contain"
           />
         ) : (
-          <span className="text-slate-400 text-xs select-none">
+          <Text variant="small" color="muted" className="select-none">
             {name.charAt(0).toUpperCase()}
-          </span>
+          </Text>
         )}
       </div>
     );

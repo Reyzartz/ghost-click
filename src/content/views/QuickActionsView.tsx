@@ -4,6 +4,7 @@ import { ContentApp } from "../ContentApp";
 import { SearchInput } from "@/components/SearchInput";
 import { QuickActionItem } from "@/components/QuickActionItem";
 import { Text } from "@/design-system";
+import { ArrowUp, ArrowDown } from "lucide-react";
 
 export const QuickActionsView = ({ app }: { app: ContentApp }) => {
   const [state, setState] = useState<QuickActionsState>({
@@ -81,9 +82,17 @@ export const QuickActionsView = ({ app }: { app: ContentApp }) => {
           ref={searchInputRef}
         />
 
-        <Text variant="small" color="muted" className="mt-1 px-6 py-2">
-          Use ↑↓ to navigate, Enter to select, Esc to close
-        </Text>
+        <div className="flex items-center gap-2 mt-1 px-6 py-2">
+          <Text
+            variant="small"
+            color="muted"
+            className="flex items-center gap-1"
+          >
+            Use <ArrowUp size={12} className="inline" />
+            <ArrowDown size={12} className="inline" /> to navigate, Enter to
+            select, Esc to close
+          </Text>
+        </div>
 
         <div className="overflow-y-auto" style={{ maxHeight: 400 }}>
           {state.loading && (

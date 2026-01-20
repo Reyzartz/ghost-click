@@ -4,6 +4,8 @@ import { StepDelayInput } from "./StepDelayInput";
 import { StepNameInput } from "./StepNameInput";
 import { StepRetryInput } from "./StepRetryInput";
 import { StepTargetInput } from "./StepTargetInput";
+import { Check, X } from "lucide-react";
+import { Button } from "@/design-system";
 
 interface EditClickStepProps {
   step: ClickStep;
@@ -51,20 +53,12 @@ const EditClickStep = memo<EditClickStepProps>(
         />
 
         <div className="flex items-center gap-2 justify-end">
-          <button
-            onClick={handleSave}
-            className="cursor-pointer text-green-600 hover:text-green-700 px-2 py-1 rounded hover:bg-green-50"
-            title="Save"
-          >
-            ✓ Save
-          </button>
-          <button
-            onClick={handleCancel}
-            className="cursor-pointer text-red-600 hover:text-red-700 px-2 py-1 rounded hover:bg-red-50"
-            title="Cancel"
-          >
-            ✕ Cancel
-          </button>
+          <Button onClick={handleSave} variant="success" size="sm" icon={Check}>
+            Save
+          </Button>
+          <Button onClick={handleCancel} variant="danger" size="sm" icon={X}>
+            Cancel
+          </Button>
         </div>
       </li>
     );

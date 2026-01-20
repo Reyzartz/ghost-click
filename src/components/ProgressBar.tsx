@@ -1,3 +1,5 @@
+import { Text } from "@/design-system";
+
 interface ProgressBarProps {
   current: number;
   total: number;
@@ -11,11 +13,13 @@ export const ProgressBar = ({
 }: ProgressBarProps) => {
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between text-xs text-slate-600">
-        <span>
+      <div className="flex items-center justify-between">
+        <Text variant="small" color="muted">
           Step {current} of {total}
-        </span>
-        <span>{percentage}%</span>
+        </Text>
+        <Text variant="small" color="muted">
+          {percentage}%
+        </Text>
       </div>
       <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
         <div

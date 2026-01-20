@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { Text, Input } from "@/design-system";
 
 interface StepRetryInputProps {
   retryCount: number;
@@ -10,15 +11,17 @@ const StepRetryInput = memo<StepRetryInputProps>(
   ({ retryCount, retryInterval, onChange }) => {
     return (
       <div className="flex flex-col gap-2 border border-slate-200 rounded p-2 bg-slate-50">
-        <div className="text-slate-600 text-xs font-medium">
+        <Text variant="small" color="muted" className="font-medium">
           Retry Settings:
-        </div>
+        </Text>
         <div className="flex items-center gap-2">
-          <label className="text-slate-600 w-20 text-[10px]">Count:</label>
-          <input
+          <Text variant="small" color="muted" className="w-20">
+            Count:
+          </Text>
+          <Input
             type="number"
-            min="0"
-            max="10"
+            min={0}
+            max={10}
             value={retryCount}
             onChange={(e) =>
               onChange({
@@ -26,20 +29,21 @@ const StepRetryInput = memo<StepRetryInputProps>(
                 retryInterval,
               })
             }
-            className="flex-1 border border-slate-300 rounded px-2 py-1 text-xs focus:outline-none focus:border-slate-500"
+            className="flex-1 text-xs"
             placeholder="0"
+            fullWidth={false}
           />
         </div>
 
         <div className="flex items-center gap-2">
-          <label className="text-slate-600 w-20 text-[10px]">
+          <Text variant="caption" color="muted" className="w-20 normal-case">
             Interval (ms):
-          </label>
-          <input
+          </Text>
+          <Input
             type="number"
-            min="0"
-            max="10000"
-            step="100"
+            min={0}
+            max={10000}
+            step={100}
             value={retryInterval}
             onChange={(e) =>
               onChange({
@@ -47,8 +51,9 @@ const StepRetryInput = memo<StepRetryInputProps>(
                 retryInterval: parseInt(e.target.value) || 0,
               })
             }
-            className="flex-1 border border-slate-300 rounded px-2 py-1 text-xs focus:outline-none focus:border-slate-500"
+            className="flex-1 text-xs"
             placeholder="1000"
+            fullWidth={false}
           />
         </div>
       </div>

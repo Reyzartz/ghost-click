@@ -1,4 +1,6 @@
 import { Macro } from "@/models";
+import { Play } from "lucide-react";
+import { Text } from "@/design-system";
 
 interface QuickActionItemProps {
   macro: Macro;
@@ -30,45 +32,43 @@ const QuickActionItem = ({
     >
       <div className="flex items-center justify-between">
         <div className="flex-1 min-w-0">
-          <p
+          <Text
+            variant="body"
             className={`font-medium truncate ${
               isSelected ? "text-white" : "text-slate-900"
             }`}
           >
             {macro.name}
-          </p>
+          </Text>
           <div className="flex items-center gap-2 mt-1">
-            <span
-              className={`text-xs ${
-                isSelected ? "text-slate-300" : "text-slate-500"
-              }`}
+            <Text
+              variant="small"
+              className={isSelected ? "text-slate-300" : "text-slate-500"}
             >
               {macro.steps.length} step
               {macro.steps.length === 1 ? "" : "s"}
-            </span>
+            </Text>
             {macro.domain && (
               <>
-                <span
-                  className={`text-xs ${
-                    isSelected ? "text-slate-400" : "text-slate-300"
-                  }`}
+                <Text
+                  variant="small"
+                  className={isSelected ? "text-slate-400" : "text-slate-300"}
                 >
                   •
-                </span>
-                <span
-                  className={`text-xs ${
-                    isSelected ? "text-slate-300" : "text-slate-500"
-                  }`}
+                </Text>
+                <Text
+                  variant="small"
+                  className={isSelected ? "text-slate-300" : "text-slate-500"}
                 >
                   {macro.domain}
-                </span>
+                </Text>
               </>
             )}
           </div>
         </div>
         {isSelected && (
           <div className="ml-4">
-            <span className="text-white text-lg">▶</span>
+            <Play size={18} className="text-white" />
           </div>
         )}
       </div>

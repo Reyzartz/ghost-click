@@ -1,11 +1,18 @@
 import { HTMLAttributes, ReactNode } from "react";
+import {
+  CheckCircle,
+  XCircle,
+  AlertTriangle,
+  Info,
+  LucideIcon,
+} from "lucide-react";
 
 export type AlertVariant = "success" | "error" | "warning" | "info";
 
 interface AlertProps extends HTMLAttributes<HTMLDivElement> {
   variant?: AlertVariant;
   children: ReactNode;
-  icon?: string;
+  showIcon?: boolean;
 }
 
 const variantStyles: Record<AlertVariant, { container: string; icon: string }> =
@@ -28,22 +35,22 @@ const variantStyles: Record<AlertVariant, { container: string; icon: string }> =
     },
   };
 
-const defaultIcons: Record<AlertVariant, string> = {
-  success: "✓",
-  error: "⚠",
-  warning: "⚠",
-  info: "ℹ",
+const defaultIcons: Record<AlertVariant, LucideIcon> = {
+  success: CheckCircle,
+  error: XCircle,
+  warning: AlertTriangle,
+  info: Info,
 };
 
 export const Alert = ({
   variant = "info",
   children,
-  icon,
+  showIcon = true,
   className = "",
   ...props
 }: AlertProps) => {
   const styles = variantStyles[variant];
-  const displayIcon = icon !== undefined ? icon : defaultIcons[variant];
+  const IconComponent = defaultIcons[variant];
 
   return (
     <div
@@ -56,13 +63,14 @@ export const Alert = ({
         .join(" ")}
       {...props}
     >
-      {displayIcon && (
+      {showIcon ? (
         <div className="flex items-center gap-2">
-          <span className={`text-base ${styles.icon}`}>{displayIcon}</span>
+          <IconComponent size={16} className={styles.icon} />
           <span>{children}</span>
         </div>
+      ) : (
+        children
       )}
-      {!displayIcon && children}
     </div>
   );
 };

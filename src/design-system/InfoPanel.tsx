@@ -1,5 +1,6 @@
 import { HTMLAttributes, ReactNode } from "react";
 import { Card } from "./Card";
+import { Text } from "./Text";
 
 interface InfoPanelProps extends HTMLAttributes<HTMLDivElement> {
   items: Array<{
@@ -20,9 +21,13 @@ export const InfoPanel = ({
       {...props}
     >
       {items.map((item, index) => (
-        <div key={index} className="flex justify-between text-sm">
-          <span className="text-slate-600">{item.label}:</span>
-          <span className="font-medium text-slate-900">{item.value}</span>
+        <div key={index} className="flex justify-between">
+          <Text variant="body" color="muted">
+            {item.label}:
+          </Text>
+          <Text variant="body" className="font-medium">
+            {item.value}
+          </Text>
         </div>
       ))}
     </Card>

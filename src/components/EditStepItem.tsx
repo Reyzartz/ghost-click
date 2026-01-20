@@ -3,6 +3,17 @@ import { useState } from "react";
 import { EditClickStep } from "./EditClickStep";
 import { EditInputStep } from "./EditInputStep";
 import { EditKeyPressStep } from "./EditKeyPressStep";
+import {
+  Check,
+  X,
+  Undo2,
+  Edit,
+  Trash2,
+  MousePointerClickIcon,
+  TextCursorInputIcon,
+  KeyboardIcon,
+} from "lucide-react";
+import { IconButton, Text, Button } from "@/design-system";
 
 interface EditStepItemProps {
   step: MacroStep;
@@ -13,9 +24,14 @@ interface EditStepItemProps {
   handleUndoDelete: (stepId: string) => void;
 }
 
+const StepTypeToIcon: Record<string, React.ComponentType<{ size?: number }>> = {
+  CLICK: MousePointerClickIcon,
+  INPUT: TextCursorInputIcon,
+  KEYPRESS: KeyboardIcon,
+};
+
 export const EditStepItem = ({
   step,
-  index,
   isDeleted,
   handleUpdateStep,
   handleDeleteStep,
@@ -85,25 +101,27 @@ export const EditStepItem = ({
                 className="border border-slate-300 h-8 border-none rounded px-2 py-1 text-xs focus:outline-none focus:border-slate-500"
                 autoFocus
               />
-              <button
+              <IconButton
                 onClick={handleSave}
-                className="text-green-600 hover:text-green-700 px-1"
+                icon={Check}
+                variant="ghost"
+                size="sm"
                 title="Save"
-              >
-                ✓
-              </button>
-              <button
+              />
+              <IconButton
                 onClick={handleCancel}
-                className="text-red-600 hover:text-red-700 px-1"
+                icon={X}
+                variant="danger"
+                size="sm"
                 title="Cancel"
-              >
-                ✕
-              </button>
+              />
             </div>
           </li>
         );
     }
   }
+
+  const IconComponent = StepTypeToIcon[step.type];
 
   return (
     <li
@@ -112,56 +130,64 @@ export const EditStepItem = ({
       }`}
     >
       <div
-        className={`cursor-pointer px-3 h-8 flex items-center text-xs mx-auto max-w-max transition-all`}
+        className={`cursor-pointer relative px-3 h-8 flex items-center text-xs mx-auto max-w-max transition-all`}
         onClick={() => !isDeleted && setIsEditing(true)}
       >
         <div className="flex items-start gap-2">
-          <span className="text-slate-400">#{index + 1}</span>
+          <IconComponent size={16} />
 
-          <span className={isDeleted ? "line-through text-slate-500" : ""}>
+          <Text
+            className={isDeleted ? "line-through" : ""}
+            color={isDeleted ? "muted" : "default"}
+          >
             {step.name}
-          </span>
+          </Text>
 
           {isDeleted ? (
-            <button
+            <Button
               onClick={(e) => {
                 e.stopPropagation();
                 handleUndoDelete(step.id);
               }}
-              className="cursor-pointer ml-2 text-blue-600 hover:text-blue-700 px-2 py-1 rounded hover:bg-blue-50 text-xs font-medium"
-              title="Undo delete"
+              variant="ghost"
+              size="sm"
+              icon={Undo2}
+              className="ml-2"
             >
-              ↶ Undo
-            </button>
+              Undo
+            </Button>
           ) : (
-            <div className="flex items-center gap-1 opacity-0 group-hover/step:opacity-100 transition-opacity duration-200">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsEditing(true);
-                }}
-                className="cursor-pointer text-slate-500 hover:text-slate-700 px-1"
-                title="Edit step"
-              >
-                ✎
-              </button>
-              <button
+            <div className="flex flex-col absolute right-0 top-0 items-center gap-1 opacity-0 group-hover/step:opacity-100 group-hover/step:-right-7 transition-all duration-200 ">
+              <IconButton
                 onClick={(e) => {
                   e.stopPropagation();
                   handleDeleteStep(step.id);
                 }}
-                className="cursor-pointer text-red-500 hover:text-red-700 px-1"
+                icon={Trash2}
+                size="sm"
+                variant="danger"
                 title="Delete step"
-              >
-                🗑️
-              </button>
+              />
+
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsEditing(true);
+                }}
+                icon={Edit}
+                size="sm"
+                variant="ghost"
+                title="Edit step"
+              />
             </div>
           )}
         </div>
       </div>
 
-      <div className="-mt-1 rounded w-full bg-slate-50 px-3 py-1 text-xs text-slate-600 flex items-center gap-1 border-t-0 rounded-t-none group-last-of-type:/step:hidden">
-        <span>{step.delay}ms</span>
+      <div className="-mt-1 pl-9 rounded w-full bg-slate-50 px-3 py-1 text-xs text-slate-600 flex items-center gap-1 border-t-0 rounded-t-none group-last-of-type:/step:hidden">
+        <Text color="muted" variant="small">
+          {step.delay}ms
+        </Text>
       </div>
     </li>
   );

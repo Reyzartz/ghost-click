@@ -1,4 +1,5 @@
 import { ButtonHTMLAttributes, forwardRef } from "react";
+import { LucideIcon } from "lucide-react";
 
 export type ButtonVariant =
   | "primary"
@@ -12,15 +13,19 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   fullWidth?: boolean;
+  icon?: LucideIcon;
+  iconPosition?: "left" | "right";
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary: "bg-slate-900 text-white hover:bg-slate-800 disabled:bg-slate-300",
   secondary:
     "bg-white border border-slate-300 text-slate-700 hover:bg-slate-50",
-  danger: "bg-red-600 text-white hover:bg-red-700 disabled:bg-red-300",
+  danger:
+    "bg-red-50 text-red-700 hover:bg-red-100 disabled:bg-red-200 border border-red-300",
   ghost: "bg-transparent text-slate-700 hover:bg-slate-100",
-  success: "bg-green-600 text-white hover:bg-green-700 disabled:bg-green-300",
+  success:
+    "bg-green-50 text-green-700 hover:bg-green-100 border border-green-200",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -29,12 +34,20 @@ const sizeStyles: Record<ButtonSize, string> = {
   lg: "px-6 py-3 text-base",
 };
 
+const iconSizes: Record<ButtonSize, number> = {
+  sm: 14,
+  md: 16,
+  lg: 18,
+};
+
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       variant = "primary",
       size = "md",
       fullWidth = false,
+      icon: IconComponent,
+      iconPosition = "left",
       className = "",
       disabled,
       children,
@@ -43,7 +56,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const classes = [
-      "cursor-pointer rounded font-medium transition-colors",
+      "cursor-pointer rounded font-medium transition-colors inline-flex items-center justify-center gap-2",
       "disabled:cursor-not-allowed",
       variantStyles[variant],
       sizeStyles[size],
@@ -55,7 +68,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <button ref={ref} className={classes} disabled={disabled} {...props}>
+        {IconComponent && iconPosition === "left" && (
+          <IconComponent size={iconSizes[size]} />
+        )}
         {children}
+        {IconComponent && iconPosition === "right" && (
+          <IconComponent size={iconSizes[size]} />
+        )}
       </button>
     );
   }

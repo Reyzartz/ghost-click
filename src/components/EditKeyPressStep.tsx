@@ -2,8 +2,10 @@ import { KeyPressStep } from "@/models";
 import { memo, useRef, useState } from "react";
 import { StepDelayInput } from "./StepDelayInput";
 import { StepNameInput } from "./StepNameInput";
+import { Check, KeyboardIcon, X } from "lucide-react";
 import { StepRetryInput } from "./StepRetryInput";
 import { StepTargetInput } from "./StepTargetInput";
+import { Text as TextComponent, Button } from "@/design-system";
 
 interface EditKeyPressStepProps {
   step: KeyPressStep;
@@ -88,7 +90,9 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
         />
 
         <div className="flex items-center gap-2">
-          <label className="text-slate-600 w-12">Key:</label>
+          <TextComponent variant="small" color="muted" className="w-12">
+            Key:
+          </TextComponent>
           <div className="flex items-center gap-2">
             <input
               ref={recordingInputRef}
@@ -103,13 +107,9 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
               }`}
               placeholder="Click to record"
             />
-            <button
-              onClick={toggleRecording}
-              className="text-blue-600 hover:text-blue-700 px-2 py-1 rounded hover:bg-blue-50 whitespace-nowrap"
-              title="Record key press"
-            >
-              {isRecording ? "Recording..." : "🎤 Record"}
-            </button>
+            <Button onClick={toggleRecording} icon={KeyboardIcon} size="sm">
+              {isRecording ? "Recording..." : "Record"}
+            </Button>
           </div>
         </div>
 
@@ -132,20 +132,12 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
         />
 
         <div className="flex items-center gap-2 justify-end">
-          <button
-            onClick={handleSave}
-            className="cursor-pointer text-green-600 hover:text-green-700 px-2 py-1 rounded hover:bg-green-50"
-            title="Save"
-          >
-            ✓ Save
-          </button>
-          <button
-            onClick={handleCancel}
-            className="cursor-pointer text-red-600 hover:text-red-700 px-2 py-1 rounded hover:bg-red-50"
-            title="Cancel"
-          >
-            ✕ Cancel
-          </button>
+          <Button onClick={handleSave} variant="success" size="sm" icon={Check}>
+            Save
+          </Button>
+          <Button onClick={handleCancel} variant="danger" size="sm" icon={X}>
+            Cancel
+          </Button>
         </div>
       </li>
     );

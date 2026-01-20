@@ -98,7 +98,11 @@ export const SaveRecordingModal = ({ app }: { app: ContentApp }) => {
             { label: "Duration", value: formatDuration(state.duration) },
             {
               label: "Domain",
-              value: <span className="truncate">{state.domain}</span>,
+              value: (
+                <Text variant="body" className="truncate">
+                  {state.domain}
+                </Text>
+              ),
             },
           ]}
         />

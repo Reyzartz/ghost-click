@@ -1,4 +1,13 @@
 import { MacroStep } from "@/models";
+import {
+  Play,
+  Check,
+  AlertCircle,
+  MousePointerClickIcon,
+  TextCursorInputIcon,
+  KeyboardIcon,
+} from "lucide-react";
+import { Text } from "@/design-system";
 
 interface StepListItemProps {
   step: MacroStep;
@@ -8,13 +17,19 @@ interface StepListItemProps {
   isErrored: boolean;
 }
 
+const StepTypeToIcon: Record<string, React.ComponentType<{ size?: number }>> = {
+  CLICK: MousePointerClickIcon,
+  INPUT: TextCursorInputIcon,
+  KEYPRESS: KeyboardIcon,
+};
+
 export const StepListItem = ({
   step,
-  index,
   isCurrent,
   isCompleted,
   isErrored,
 }: StepListItemProps) => {
+  const IconComponent = StepTypeToIcon[step.type];
   return (
     <li
       className={`rounded px-3 py-2 text-xs ${
@@ -36,17 +51,17 @@ export const StepListItem = ({
           isCompleted && isErrored ? "text-red-600" : ""
         } ${isCompleted && !isErrored ? "text-green-600" : ""}`}
       >
-        <span className={`${isCurrent ? "font-semibold" : ""}`}>
-          #{index + 1}
-        </span>
-        <span>{step.name}</span>
+        <IconComponent size={16} />
+        <Text variant="small">{step.name}</Text>
         {isCurrent && !isErrored && (
-          <span className="ml-auto text-green-600">▶</span>
+          <Play size={14} className="ml-auto text-green-600" />
         )}
         {isCompleted && !isErrored && (
-          <span className="ml-auto text-green-600">✓</span>
+          <Check size={14} className="ml-auto text-green-600" />
         )}
-        {isErrored && <span className="ml-auto text-red-600">!</span>}
+        {isErrored && (
+          <AlertCircle size={14} className="ml-auto text-red-600" />
+        )}
       </div>
     </li>
   );

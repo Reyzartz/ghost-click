@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { Text } from "./Text";
+import { LucideIcon } from "lucide-react";
 
 export interface DropdownItem {
   label: string;
   onClick: () => void;
   variant?: "default" | "danger";
+  icon?: LucideIcon;
 }
 
 interface DropdownProps {
@@ -53,23 +55,36 @@ export const Dropdown = ({ items, trigger }: DropdownProps) => {
 
       {isOpen && (
         <div className="absolute right-0 top-full mt-1 z-10 min-w-30 rounded border border-slate-200 bg-white shadow-lg">
-          {items.map((item, index) => (
-            <button
-              key={index}
-              className="cursor-pointer w-full px-3 py-2 text-left text-sm hover:bg-slate-50 first:rounded-t last:rounded-b"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleItemClick(item.onClick);
-              }}
-            >
-              <Text
-                variant="body"
-                color={item.variant === "danger" ? "error" : "default"}
+          {items.map((item, index) => {
+            const IconComponent = item.icon;
+            return (
+              <button
+                key={index}
+                className="cursor-pointer w-full px-3 py-2 text-left text-sm hover:bg-slate-50 first:rounded-t last:rounded-b flex items-center gap-2"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleItemClick(item.onClick);
+                }}
               >
-                {item.label}
-              </Text>
-            </button>
-          ))}
+                {IconComponent && (
+                  <IconComponent
+                    size={14}
+                    className={
+                      item.variant === "danger"
+                        ? "text-red-700"
+                        : "text-slate-900"
+                    }
+                  />
+                )}
+                <Text
+                  variant="body"
+                  color={item.variant === "danger" ? "error" : "default"}
+                >
+                  {item.label}
+                </Text>
+              </button>
+            );
+          })}
         </div>
       )}
     </div>

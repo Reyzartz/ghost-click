@@ -21,3 +21,6 @@ export type { IconButtonVariant, IconButtonSize } from "./IconButton";
 export { Divider } from "./Divider";
 
 export { InfoPanel } from "./InfoPanel";
+
+export { Icon } from "./Icon";
+export type { IconName } from "./Icon";

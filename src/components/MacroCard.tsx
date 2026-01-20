@@ -1,6 +1,8 @@
 import { Macro } from "@/models";
 import { Dropdown, DropdownItem } from "../design-system/Dropdown";
 import { DisplayFavicon } from "./DisplayFavicon";
+import { Text, IconButton } from "@/design-system";
+import { MoreVertical, Play, Edit, Trash2 } from "lucide-react";
 
 interface MacroCardProps {
   macro: Macro;
@@ -19,6 +21,7 @@ export const MacroCard = ({
     {
       label: "Play",
       onClick: onPlay,
+      icon: Play,
     },
   ];
 
@@ -26,6 +29,7 @@ export const MacroCard = ({
     dropdownItems.push({
       label: "Edit",
       onClick: onEdit,
+      icon: Edit,
     });
   }
 
@@ -33,6 +37,7 @@ export const MacroCard = ({
     label: "Delete",
     onClick: onDelete,
     variant: "danger" as const,
+    icon: Trash2,
   });
 
   return (
@@ -49,17 +54,17 @@ export const MacroCard = ({
           />
 
           <div className="grow overflow-hidden">
-            <p className="font-medium text-slate-900">{macro.name}</p>
+            <Text className="font-medium">{macro.name}</Text>
             <div className="flex gap-2 items-center">
-              <span className="text-xs text-slate-600 shrink-0">
+              <Text variant="small" color="muted" className="shrink-0">
                 {macro.steps.length} step
                 {macro.steps.length === 1 ? "" : "s"}
-              </span>
+              </Text>
 
               {macro.domain && (
-                <span className="text-xs text-slate-400 truncate">
+                <Text variant="small" className="text-slate-400 truncate">
                   • {macro.domain}
-                </span>
+                </Text>
               )}
             </div>
           </div>
@@ -68,9 +73,12 @@ export const MacroCard = ({
         <Dropdown
           items={dropdownItems}
           trigger={
-            <button className="cursor-pointer opacity-0 group-hover:opacity-100 rounded bg-slate-100 px-1 py-1 text-xs text-slate-700 hover:bg-slate-200">
-              •••
-            </button>
+            <IconButton
+              icon={MoreVertical}
+              variant="ghost"
+              size="sm"
+              className="opacity-0 group-hover:opacity-100"
+            />
           }
         />
       </div>

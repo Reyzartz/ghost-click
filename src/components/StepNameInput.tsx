@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { Text, Input } from "@/design-system";
 
 interface StepNameInputProps {
   name: string;
@@ -8,13 +9,16 @@ interface StepNameInputProps {
 const StepNameInput = memo<StepNameInputProps>(({ name, onChange }) => {
   return (
     <div className="flex items-center gap-2">
-      <label className="text-slate-600 w-12">Name:</label>
-      <input
+      <Text variant="small" color="muted" className="w-12">
+        Name:
+      </Text>
+      <Input
         type="text"
         value={name}
         onChange={(e) => onChange(e.target.value.trim())}
-        className="border border-slate-300 rounded px-2 py-1 text-xs focus:outline-none focus:border-slate-500"
+        className="text-xs"
         autoFocus
+        fullWidth={false}
       />
     </div>
   );

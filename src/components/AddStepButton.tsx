@@ -3,6 +3,13 @@ import { memo, useState } from "react";
 import { EditClickStep } from "./EditClickStep";
 import { EditInputStep } from "./EditInputStep";
 import { EditKeyPressStep } from "./EditKeyPressStep";
+import { Button, Text } from "@/design-system";
+import {
+  KeyboardIcon,
+  MousePointerClickIcon,
+  PlusIcon,
+  TextCursorInputIcon,
+} from "lucide-react";
 
 interface AddStepButtonProps {
   onAddStep: (step: ClickStep | InputStep | KeyPressStep) => void;
@@ -84,10 +91,10 @@ const AddStepButton = memo<AddStepButtonProps>(({ onAddStep }) => {
     return (
       <button
         onClick={() => setIsAdding(true)}
-        className="cursor-pointer flex items-center justify-center gap-2 w-5 h-5 rounded-full border border-dashed border-slate-300 text-slate-300 hover:border-slate-400 hover:text-slate-400 hover:bg-slate-50 transition-colors leading-3"
+        className="cursor-pointer flex items-center justify-center gap-2 w-5 h-5 rounded-full border-[1.5px] border-dashed border-slate-300 text-slate-300 hover:border-slate-400 hover:text-slate-400 hover:bg-slate-50 transition-colors"
         title="Add new step"
       >
-        +
+        <PlusIcon size={14} />
       </button>
     );
   }
@@ -95,37 +102,39 @@ const AddStepButton = memo<AddStepButtonProps>(({ onAddStep }) => {
   if (!selectedType) {
     return (
       <div className="flex flex-col gap-2 p-2 border border-dashed border-slate-300 rounded bg-slate-50">
-        <label className="text-slate-600 text-[10px]">Select Step Type:</label>
+        <Text variant="small" color="muted">
+          Select Step Type:
+        </Text>
 
         <div className="flex gap-2">
-          <button
+          <Button
             onClick={() => handleSelectType("CLICK")}
-            className="cursor-pointer px-3 py-1.5 rounded-md border border-slate-200 bg-white text-slate-700 text-sm hover:bg-slate-100 transition-colors flex items-center gap-2"
+            variant="secondary"
+            size="sm"
+            icon={MousePointerClickIcon}
           >
-            <span className="text-sm">🖱️</span>
-            <span>Click</span>
-          </button>
-          <button
+            Click
+          </Button>
+          <Button
             onClick={() => handleSelectType("INPUT")}
-            className="cursor-pointer px-3 py-1.5 rounded-md border border-slate-200 bg-white text-slate-700 text-sm hover:bg-slate-100 transition-colors flex items-center gap-2"
+            variant="secondary"
+            size="sm"
+            icon={TextCursorInputIcon}
           >
-            <span className="text-sm">⌨️</span>
-            <span>Input</span>
-          </button>
-          <button
+            Input
+          </Button>
+          <Button
             onClick={() => handleSelectType("KEYPRESS")}
-            className="cursor-pointer px-3 py-1.5 rounded-md border border-slate-200 bg-white text-slate-700 text-sm hover:bg-slate-100 transition-colors flex items-center gap-2"
+            variant="secondary"
+            size="sm"
+            icon={KeyboardIcon}
           >
-            <span className="text-sm">🎹</span>
-            <span>Keypress</span>
-          </button>
+            Key Press
+          </Button>
         </div>
-        <button
-          onClick={handleClose}
-          className="cursor-pointer text-xs text-slate-500 hover:text-slate-700"
-        >
+        <Button variant="danger" size="sm" onClick={handleClose}>
           Cancel
-        </button>
+        </Button>
       </div>
     );
   }

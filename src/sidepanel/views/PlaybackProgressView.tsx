@@ -3,6 +3,7 @@ import { SidePanelApp } from "../SidePanelApp";
 import { PlaybackProgressState } from "../viewmodels/PlaybackProgressViewModel";
 import { ErrorDetailsPanel } from "@/components/ErrorDetailsPanel";
 import { Alert, Button, Text, Card } from "@/design-system";
+import { ArrowLeft, Play, Pause, Square, Edit } from "lucide-react";
 import { ProgressBar } from "@/components/ProgressBar";
 import { StepListItem } from "@/components/StepListItem";
 import { DisplayFavicon } from "@/components/DisplayFavicon";
@@ -86,8 +87,8 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
 
   return (
     <div className="p-4 space-y-4 text-sm text-slate-900">
-      <Button onClick={handleGoBack} variant="ghost" size="sm">
-        ← Back
+      <Button onClick={handleGoBack} variant="ghost" size="sm" icon={ArrowLeft}>
+        Back
       </Button>
 
       <header className="flex items-start gap-2">
@@ -134,29 +135,40 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
       {state.isPlaying ? (
         <div className="flex gap-2">
           {state.isPaused ? (
-            <Button variant="success" size="sm" onClick={handleResume}>
-              ▶ Resume Playback
+            <Button
+              variant="success"
+              size="sm"
+              onClick={handleResume}
+              icon={Play}
+            >
+              Resume Playback
             </Button>
           ) : (
-            <Button
-              className="bg-yellow-600 hover:bg-yellow-700"
-              size="sm"
-              onClick={handlePause}
-            >
-              ⏸ Pause Playback
+            <Button size="sm" onClick={handlePause} icon={Pause}>
+              Pause Playback
             </Button>
           )}
 
-          <Button variant="danger" size="sm" onClick={handleStop}>
-            ⏹ Stop Playback
+          <Button variant="danger" size="sm" onClick={handleStop} icon={Square}>
+            Stop Playback
           </Button>
         </div>
       ) : (
         <div className="flex gap-2">
-          <Button variant="primary" size="sm" onClick={handleReplay}>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={handleReplay}
+            icon={Play}
+          >
             Replay
           </Button>
-          <Button variant="secondary" size="sm" onClick={handleEditMacro}>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={handleEditMacro}
+            icon={Edit}
+          >
             Edit Macro
           </Button>
         </div>

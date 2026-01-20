@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { SidePanelApp } from "../SidePanelApp";
 import { Alert, Button, Input, Text } from "@/design-system";
+import { ArrowDown, ArrowLeft } from "lucide-react";
 import { EditStepItem } from "@/components/EditStepItem";
 import { AddStepButton } from "@/components/AddStepButton";
 import { ClickStep, InputStep, KeyPressStep, Macro, MacroStep } from "@/models";
@@ -75,8 +76,8 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
   return (
     <div className="p-4 space-y-4 text-sm text-slate-900">
       <header className="flex items-center justify-between">
-        <Button onClick={handleBack} variant="ghost" size="sm">
-          ← Back
+        <Button onClick={handleBack} variant="ghost" size="sm" icon={ArrowLeft}>
+          Back
         </Button>
       </header>
 
@@ -92,7 +93,10 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
             size="small"
           />
           {state.macro?.domain && (
-            <p className="text-xs text-slate-500"> • {state.macro.domain}</p>
+            <Text variant="small" color="muted">
+              {" "}
+              • {state.macro.domain}
+            </Text>
           )}
         </div>
       </div>
@@ -119,9 +123,9 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
           />
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <Text variant="body" className="font-medium mb-2">
               Steps ({state.macro.steps.length})
-            </label>
+            </Text>
             <div
               className="rounded border border-slate-200 bg-slate-50 overflow-y-auto"
               style={{ height: "calc(100vh - 300px)" }}
@@ -149,7 +153,9 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                       <AddStepButton
                         onAddStep={(step) => handleAddStep(step, index + 1)}
                       />
-                      <div className="text-slate-300 group-last:hidden">↓</div>
+                      <div className="text-slate-300 group-last:hidden">
+                        <ArrowDown size={16} />
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -161,7 +167,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
             <Button
               onClick={handleSave}
               disabled={state.loading || !state.macro?.name.trim()}
-              variant="primary"
+              variant="success"
               fullWidth
             >
               {state.loading ? "Saving..." : "Save"}
@@ -169,7 +175,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
             <Button
               onClick={handleCancel}
               disabled={state.loading}
-              variant="secondary"
+              variant="danger"
               fullWidth
             >
               Cancel
