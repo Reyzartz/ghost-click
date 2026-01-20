@@ -87,7 +87,7 @@ export const SaveRecordingModal = ({ app }: { app: ContentApp }) => {
         </div>
       </ModalHeader>
 
-      <ModalBody className="space-y-4 mx-4 bg-white border border-solid border-slate-200 rounded-lg px-3 py-3">
+      <ModalBody className="space-y-4 mx-4 mb-4 bg-white border border-solid border-slate-200 rounded-lg px-3 py-3">
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <Text variant="small" color="muted">
@@ -118,21 +118,21 @@ export const SaveRecordingModal = ({ app }: { app: ContentApp }) => {
             }
           }}
         />
-      </ModalBody>
 
-      <ModalFooter className="flex gap-2">
-        <Button
-          onClick={handleSave}
-          disabled={!state.macroName.trim()}
-          variant="primary"
-          fullWidth
-        >
-          Save
-        </Button>
-        <Button onClick={handleCancel} variant="danger" fullWidth>
-          Discard
-        </Button>
-      </ModalFooter>
+        <div className="flex gap-2">
+          <Button
+            onClick={handleSave}
+            disabled={!state.macroName.trim()}
+            variant="primary"
+            fullWidth
+          >
+            Save
+          </Button>
+          <Button onClick={handleCancel} variant="danger" fullWidth>
+            Discard
+          </Button>
+        </div>
+      </ModalBody>
     </Modal>
   );
 };

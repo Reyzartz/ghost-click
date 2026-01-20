@@ -3,7 +3,7 @@ import { SidePanelApp } from "../SidePanelApp";
 import { PlaybackProgressState } from "../viewmodels/PlaybackProgressViewModel";
 import { ErrorDetailsPanel } from "@/components/ErrorDetailsPanel";
 import { Alert, Button, Text, Card } from "@/design-system";
-import { ArrowLeft, Play, Pause, Square, Edit } from "lucide-react";
+import { ArrowLeft, Play, Pause, Square, Edit, RotateCcw } from "lucide-react";
 import { ProgressBar } from "@/components/ProgressBar";
 import { StepListItem } from "@/components/StepListItem";
 import { DisplayFavicon } from "@/components/DisplayFavicon";
@@ -30,7 +30,6 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
     return null;
   }
 
-  const currentStep = app.playbackProgressViewModel.getCurrentStep();
   const normalizedStepIndex = Math.min(
     state.currentStepIndex,
     state.totalSteps
@@ -57,6 +56,11 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
 
   const handleGoBack = (): void => {
     app.playbackProgressViewModel.clearErrors();
+    if (state.isPlaying) {
+      app.emitter.emit("STOP_PLAYBACK", undefined, {
+        currentTab: false,
+      });
+    }
     app.viewService.navigateToView("macroList");
   };
 
@@ -115,13 +119,6 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
         </div>
       </header>
 
-      {state.error && state.errorDetails.length > 0 && (
-        <ErrorDetailsPanel
-          errorMessage={state.error}
-          errorDetails={state.errorDetails}
-        />
-      )}
-
       {state.error && state.errorDetails.length === 0 && (
         <Alert variant="error">{state.error}</Alert>
       )}
@@ -159,7 +156,7 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
             variant="primary"
             size="sm"
             onClick={handleReplay}
-            icon={Play}
+            icon={RotateCcw}
           >
             Replay
           </Button>
@@ -180,16 +177,11 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
         percentage={progress}
       />
 
-      {currentStep && (
-        <Card className="bg-slate-50 space-y-1">
-          <Text variant="caption" color="muted">
-            Current Step
-          </Text>
-          <Text className="font-medium">{currentStep.name}</Text>
-          <Text variant="small" color="muted">
-            Type: {currentStep.type}
-          </Text>
-        </Card>
+      {state.error && state.errorDetails.length > 0 && (
+        <ErrorDetailsPanel
+          errorMessage={state.error}
+          errorDetails={state.errorDetails}
+        />
       )}
 
       <div className="space-y-2">

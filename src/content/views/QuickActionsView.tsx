@@ -4,7 +4,7 @@ import { ContentApp } from "../ContentApp";
 import { SearchInput } from "@/components/SearchInput";
 import { QuickActionItem } from "@/components/QuickActionItem";
 import { Text } from "@/design-system";
-import { ArrowUp, ArrowDown } from "lucide-react";
+import { ArrowUp, ArrowDown, TimerIcon } from "lucide-react";
 
 export const QuickActionsView = ({ app }: { app: ContentApp }) => {
   const [state, setState] = useState<QuickActionsState>({
@@ -68,25 +68,32 @@ export const QuickActionsView = ({ app }: { app: ContentApp }) => {
       onClick={() => app.quickActionsViewModel.close()}
     >
       <div
-        className="bg-white rounded-lg shadow-2xl overflow-hidden"
+        className="bg-white rounded-lg shadow-2xl overflow-hidden p-4"
         style={{
           width: 600,
           maxHeight: 800,
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <SearchInput
-          value={state.searchQuery}
-          onChange={(value) => app.quickActionsViewModel.setSearchQuery(value)}
-          placeholder="Search macros..."
-          ref={searchInputRef}
-        />
+        <div>
+          <header className="flex items-center gap-2 mb-3">
+            <TimerIcon size={20} className="text-slate-800" />
+            <Text variant="h2">Quick Actions</Text>
+          </header>
 
-        <div className="flex items-center gap-2 mt-1 px-6 py-2">
+          <SearchInput
+            value={state.searchQuery}
+            onChange={(value) =>
+              app.quickActionsViewModel.setSearchQuery(value)
+            }
+            placeholder="Search macros..."
+            ref={searchInputRef}
+          />
+
           <Text
             variant="small"
             color="muted"
-            className="flex items-center gap-1"
+            className="flex items-center gap-0.5 mt-2"
           >
             Use <ArrowUp size={12} className="inline" />
             <ArrowDown size={12} className="inline" /> to navigate, Enter to
@@ -94,15 +101,15 @@ export const QuickActionsView = ({ app }: { app: ContentApp }) => {
           </Text>
         </div>
 
-        <div className="overflow-y-auto" style={{ maxHeight: 400 }}>
+        <div className="overflow-y-auto mt-3" style={{ maxHeight: 400 }}>
           {state.loading && (
-            <div className="px-6 py-8 text-center">
+            <div className="py-8 text-center">
               <Text color="muted">Loading macros...</Text>
             </div>
           )}
 
           {!state.loading && state.filteredMacros.length === 0 && (
-            <div className="px-6 py-8 text-center">
+            <div className="py-8 text-center">
               <Text color="muted">
                 {state.searchQuery
                   ? `No macros found for "${state.searchQuery}"`
@@ -112,7 +119,7 @@ export const QuickActionsView = ({ app }: { app: ContentApp }) => {
           )}
 
           {!state.loading && state.filteredMacros.length > 0 && (
-            <ul className="divide-y divide-slate-100">
+            <ul>
               {state.filteredMacros.map((macro, index) => (
                 <QuickActionItem
                   key={macro.id}
