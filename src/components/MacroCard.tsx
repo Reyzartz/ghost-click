@@ -1,5 +1,5 @@
 import { Macro } from "@/models";
-import { Dropdown, DropdownItem } from "./Dropdown";
+import { Dropdown, DropdownItem } from "../design-system/Dropdown";
 import { DisplayFavicon } from "./DisplayFavicon";
 
 interface MacroCardProps {
@@ -55,7 +55,7 @@ export const MacroCard = ({
                 {macro.steps.length} step
                 {macro.steps.length === 1 ? "" : "s"}
               </span>
-              
+
               {macro.domain && (
                 <span className="text-xs text-slate-400 truncate">
                   • {macro.domain}

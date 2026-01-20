@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { Text } from "./Text";
 
 export interface DropdownItem {
   label: string;
@@ -10,11 +11,6 @@ interface DropdownProps {
   items: DropdownItem[];
   trigger: React.ReactNode;
 }
-
-const variantStyles = {
-  default: "text-slate-900",
-  danger: "text-red-600 hover:bg-red-50",
-};
 
 export const Dropdown = ({ items, trigger }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -60,15 +56,18 @@ export const Dropdown = ({ items, trigger }: DropdownProps) => {
           {items.map((item, index) => (
             <button
               key={index}
-              className={`cursor-pointer w-full px-3 py-2 text-left text-sm hover:bg-slate-50 first:rounded-t last:rounded-b ${
-                variantStyles[item.variant || "default"]
-              }`}
+              className="cursor-pointer w-full px-3 py-2 text-left text-sm hover:bg-slate-50 first:rounded-t last:rounded-b"
               onClick={(e) => {
                 e.stopPropagation();
                 handleItemClick(item.onClick);
               }}
             >
-              {item.label}
+              <Text
+                variant="body"
+                color={item.variant === "danger" ? "error" : "default"}
+              >
+                {item.label}
+              </Text>
             </button>
           ))}
         </div>

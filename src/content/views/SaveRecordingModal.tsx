@@ -1,6 +1,16 @@
 import { useState, useEffect } from "react";
 import { ContentApp } from "../ContentApp";
 import { DisplayFavicon } from "@/components/DisplayFavicon";
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Input,
+  InfoPanel,
+  Text,
+} from "@/design-system";
 
 type SaveRecordingState = {
   isOpen: boolean;
@@ -56,108 +66,75 @@ export const SaveRecordingModal = ({ app }: { app: ContentApp }) => {
   };
 
   return (
-    <div
-      style={{ zIndex: 2147483646 }}
-      className="fixed inset-0 bg-black/50 flex items-center justify-center pointer-events-auto"
+    <Modal
+      isOpen={state.isOpen}
+      onClose={handleCancel}
+      maxWidth="md"
+      zIndex={2147483646}
     >
-      <div
-        className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="bg-slate-900 px-6 py-4">
-          <div className="flex items-center gap-3">
-            <DisplayFavicon
-              faviconUrl={state.faviconUrl}
-              name={state.domain}
-              size="large"
-            />
+      <ModalHeader variant="dark">
+        <div className="flex items-center gap-3">
+          <DisplayFavicon
+            faviconUrl={state.faviconUrl}
+            name={state.domain}
+            size="large"
+          />
 
-            <div>
-              <h2 className="text-lg font-semibold text-white">
-                Save Recording
-              </h2>
-              <p className="text-xs text-slate-300 mt-1">
-                Name your macro and save it for future use
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="p-6 space-y-4">
-          {/* Recording Info */}
-          <div className="bg-slate-50 rounded border border-solid border-slate-200 p-4 space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-slate-600">Steps recorded:</span>
-              <span className="font-medium text-slate-900">
-                {state.stepCount}
-              </span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-slate-600">Duration:</span>
-              <span className="font-medium text-slate-900">
-                {formatDuration(state.duration)}
-              </span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-slate-600">Domain:</span>
-              <span className="font-medium text-slate-900 truncate ml-2">
-                {state.domain}
-              </span>
-            </div>
-          </div>
-
-          {/* Name Input */}
           <div>
-            <label
-              htmlFor="macro-name"
-              className="block text-sm font-medium text-slate-700 mb-1"
-            >
-              Macro Name
-            </label>
-            <input
-              id="macro-name"
-              type="text"
-              value={state.macroName}
-              onChange={(e) =>
-                app.saveRecordingViewModel.updateMacroName(e.target.value)
-              }
-              className="w-full rounded border border-solid border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none text-slate-900"
-              placeholder="Enter macro name"
-              autoFocus
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && state.macroName.trim()) {
-                  handleSave();
-                }
-              }}
-            />
+            <Text variant="h2" className="text-white">
+              Save Recording
+            </Text>
+            <Text variant="small" className="text-slate-300 mt-1">
+              Name your macro and save it for future use
+            </Text>
           </div>
         </div>
+      </ModalHeader>
 
-        {/* Footer */}
-        <div className="px-6 pb-4 grid gap-2 grid-cols-2">
-          <button
-            onClick={handleSave}
-            disabled={!state.macroName.trim()}
-            className="cursor-pointer flex-1 rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
-          >
-            Save
-          </button>
-          <button
-            onClick={handleReRecord}
-            className="cursor-pointer flex-1 rounded border border-solid border-slate-300  px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
-          >
-            Re-Record
-          </button>
-          <button
-            onClick={handleCancel}
-            className="cursor-pointer flex-1 col-span-2 rounded border border-solid border-red-500 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-red-50 bg-red-100 transition-colors"
-          >
-            Discard
-          </button>
-        </div>
-      </div>
-    </div>
+      <ModalBody className="space-y-4">
+        <InfoPanel
+          items={[
+            { label: "Steps recorded", value: state.stepCount },
+            { label: "Duration", value: formatDuration(state.duration) },
+            {
+              label: "Domain",
+              value: <span className="truncate">{state.domain}</span>,
+            },
+          ]}
+        />
+
+        <Input
+          label="Macro Name"
+          type="text"
+          value={state.macroName}
+          onChange={(e) =>
+            app.saveRecordingViewModel.updateMacroName(e.target.value)
+          }
+          placeholder="Enter macro name"
+          autoFocus
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && state.macroName.trim()) {
+              handleSave();
+            }
+          }}
+        />
+      </ModalBody>
+
+      <ModalFooter className="grid gap-2 grid-cols-2">
+        <Button
+          onClick={handleSave}
+          disabled={!state.macroName.trim()}
+          variant="primary"
+        >
+          Save
+        </Button>
+        <Button onClick={handleReRecord} variant="secondary">
+          Re-Record
+        </Button>
+        <Button onClick={handleCancel} variant="danger" className="col-span-2">
+          Discard
+        </Button>
+      </ModalFooter>
+    </Modal>
   );
 };

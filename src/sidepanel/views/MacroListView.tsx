@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Macro } from "@/models";
 import { SidePanelApp } from "../SidePanelApp";
-import { ErrorAlert } from "@/components/ErrorAlert";
+import { Alert, Text, Badge } from "@/design-system";
 import { MacroSection } from "@/components/MacroSection";
 
 type MacroListState = {
@@ -50,21 +50,21 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
     <div className="p-4 space-y-3 text-sm text-slate-900">
       <header className="flex items-center justify-between gap-4">
         <div className="grow overflow-hidden">
-          <h2 className="text-lg font-semibold">Macros</h2>
+          <Text variant="h2">Macros</Text>
 
           {state.currentDomain && (
-            <p className="text-xs text-slate-500 truncate">
+            <Text variant="small" color="muted" className="truncate">
               Domain: {state.currentDomain}
-            </p>
+            </Text>
           )}
         </div>
 
-        <span className="text-xs text-slate-500 shrink-0">
+        <Badge variant="default">
           {state.loading ? "Loading…" : `${state.macros.length} saved`}
-        </span>
+        </Badge>
       </header>
 
-      {state.error && <ErrorAlert message={state.error} />}
+      {state.error && <Alert variant="error">{state.error}</Alert>}
 
       <MacroSection
         title="Current Domain"

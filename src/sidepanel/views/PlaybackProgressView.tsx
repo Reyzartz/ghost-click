@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { SidePanelApp } from "../SidePanelApp";
 import { PlaybackProgressState } from "../viewmodels/PlaybackProgressViewModel";
 import { ErrorDetailsPanel } from "@/components/ErrorDetailsPanel";
-import { ErrorAlert } from "@/components/ErrorAlert";
+import { Alert, Button, Text, Card } from "@/design-system";
 import { ProgressBar } from "@/components/ProgressBar";
 import { StepListItem } from "@/components/StepListItem";
 import { DisplayFavicon } from "@/components/DisplayFavicon";
@@ -86,12 +86,9 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
 
   return (
     <div className="p-4 space-y-4 text-sm text-slate-900">
-      <button
-        onClick={handleGoBack}
-        className="text-slate-500 hover:text-slate-700 cursor-pointer"
-      >
+      <Button onClick={handleGoBack} variant="ghost" size="sm">
         ← Back
-      </button>
+      </Button>
 
       <header className="flex items-start gap-2">
         <div className="flex items-center gap-2">
@@ -101,7 +98,7 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
             size="large"
           />
           <div>
-            <p className="text-xs uppercase tracking-wide text-slate-500">
+            <Text variant="caption" color="muted">
               {hasError && state.isPlaying
                 ? "Playback In Progress (Errors)"
                 : hasError
@@ -111,8 +108,8 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
                 : state.isPaused
                 ? "Playback Paused"
                 : "Playback In Progress"}
-            </p>
-            <h2 className="text-lg font-semibold">{state.macro?.name}</h2>
+            </Text>
+            <Text variant="h2">{state.macro?.name}</Text>
           </div>
         </div>
       </header>
@@ -125,54 +122,43 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
       )}
 
       {state.error && state.errorDetails.length === 0 && (
-        <ErrorAlert message={state.error} simple />
+        <Alert variant="error">{state.error}</Alert>
       )}
 
       {isComplete && (
-        <div className="rounded border border-green-200 bg-green-50 px-3 py-2 text-green-800">
+        <Alert variant="success">
           Playback finished. Review the steps or replay.
-        </div>
+        </Alert>
       )}
 
       {state.isPlaying ? (
         <div className="flex gap-2">
           {state.isPaused ? (
-            <button
-              className="cursor-pointer rounded bg-green-600 px-3 py-2 text-xs font-medium text-white hover:bg-green-700"
-              onClick={handleResume}
-            >
+            <Button variant="success" size="sm" onClick={handleResume}>
               ▶ Resume Playback
-            </button>
+            </Button>
           ) : (
-            <button
-              className="cursor-pointer rounded bg-yellow-600 px-3 py-2 text-xs font-medium text-white hover:bg-yellow-700"
+            <Button
+              className="bg-yellow-600 hover:bg-yellow-700"
+              size="sm"
               onClick={handlePause}
             >
               ⏸ Pause Playback
-            </button>
+            </Button>
           )}
 
-          <button
-            className="cursor-pointer rounded bg-red-600 px-3 py-2 text-xs font-medium text-white hover:bg-red-700"
-            onClick={handleStop}
-          >
+          <Button variant="danger" size="sm" onClick={handleStop}>
             ⏹ Stop Playback
-          </button>
+          </Button>
         </div>
       ) : (
         <div className="flex gap-2">
-          <button
-            className="cursor-pointer rounded bg-slate-900 px-3 py-2 text-xs font-medium text-white hover:bg-slate-800"
-            onClick={handleReplay}
-          >
+          <Button variant="primary" size="sm" onClick={handleReplay}>
             Replay
-          </button>
-          <button
-            className="cursor-pointer rounded border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
-            onClick={handleEditMacro}
-          >
+          </Button>
+          <Button variant="secondary" size="sm" onClick={handleEditMacro}>
             Edit Macro
-          </button>
+          </Button>
         </div>
       )}
 
@@ -183,19 +169,21 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
       />
 
       {currentStep && (
-        <div className="rounded border border-slate-200 bg-slate-50 px-3 py-3 space-y-1">
-          <p className="text-xs uppercase tracking-wide text-slate-500">
+        <Card className="bg-slate-50 space-y-1">
+          <Text variant="caption" color="muted">
             Current Step
-          </p>
-          <p className="font-medium text-slate-900">{currentStep.name}</p>
-          <p className="text-xs text-slate-600">Type: {currentStep.type}</p>
-        </div>
+          </Text>
+          <Text className="font-medium">{currentStep.name}</Text>
+          <Text variant="small" color="muted">
+            Type: {currentStep.type}
+          </Text>
+        </Card>
       )}
 
       <div className="space-y-2">
-        <p className="text-xs uppercase tracking-wide text-slate-500">
+        <Text variant="caption" color="muted">
           All Steps
-        </p>
+        </Text>
         <ul className="space-y-1 max-h-96 overflow-y-auto">
           {state.macro?.steps.map((step, index) => (
             <StepListItem

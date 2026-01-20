@@ -3,6 +3,7 @@ import { QuickActionsState } from "../viewmodels/QuickActionsViewModel";
 import { ContentApp } from "../ContentApp";
 import { SearchInput } from "@/components/SearchInput";
 import { QuickActionItem } from "@/components/QuickActionItem";
+import { Text } from "@/design-system";
 
 export const QuickActionsView = ({ app }: { app: ContentApp }) => {
   const [state, setState] = useState<QuickActionsState>({
@@ -80,22 +81,24 @@ export const QuickActionsView = ({ app }: { app: ContentApp }) => {
           ref={searchInputRef}
         />
 
-        <p className="text-xs text-slate-500 mt-1 px-6 py-2">
+        <Text variant="small" color="muted" className="mt-1 px-6 py-2">
           Use ↑↓ to navigate, Enter to select, Esc to close
-        </p>
+        </Text>
 
         <div className="overflow-y-auto" style={{ maxHeight: 400 }}>
           {state.loading && (
-            <div className="px-6 py-8 text-center text-slate-500">
-              Loading macros...
+            <div className="px-6 py-8 text-center">
+              <Text color="muted">Loading macros...</Text>
             </div>
           )}
 
           {!state.loading && state.filteredMacros.length === 0 && (
-            <div className="px-6 py-8 text-center text-slate-500">
-              {state.searchQuery
-                ? `No macros found for "${state.searchQuery}"`
-                : "No macros available. Record one first!"}
+            <div className="px-6 py-8 text-center">
+              <Text color="muted">
+                {state.searchQuery
+                  ? `No macros found for "${state.searchQuery}"`
+                  : "No macros available. Record one first!"}
+              </Text>
             </div>
           )}
 
