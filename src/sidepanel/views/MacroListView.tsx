@@ -47,7 +47,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
   };
 
   return (
-    <div className="p-4 space-y-3 text-sm text-slate-900">
+    <div className="p-4 space-y-3 text-sm text-slate-900 bg-white">
       <header className="flex items-center justify-between gap-4">
         <div className="grow overflow-hidden">
           <Text variant="h2">Macros</Text>

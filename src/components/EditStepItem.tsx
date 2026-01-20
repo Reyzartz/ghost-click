@@ -176,7 +176,6 @@ export const EditStepItem = ({
                 }}
                 icon={Edit}
                 size="sm"
-                variant="ghost"
                 title="Edit step"
               />
             </div>
