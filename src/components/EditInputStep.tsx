@@ -4,17 +4,26 @@ import { StepDelayInput } from "./StepDelayInput";
 import { StepNameInput } from "./StepNameInput";
 import { StepRetryInput } from "./StepRetryInput";
 import { StepTargetInput } from "./StepTargetInput";
-import { Check, X } from "lucide-react";
-import { Text, Button } from "@/design-system";
+import { TextCursorInputIcon } from "lucide-react";
+import {
+  Text,
+  Button,
+  Input,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "@/design-system";
 
 interface EditInputStepProps {
   step: InputStep;
+  isOpen: boolean;
   onUpdateStep: (stepId: string, step: Partial<InputStep>) => void;
   onClose: () => void;
 }
 
 const EditInputStep = memo<EditInputStepProps>(
-  ({ step, onUpdateStep, onClose }) => {
+  ({ step, isOpen, onUpdateStep, onClose }) => {
     const [updatedStep, setUpdatedStep] = useState(step);
 
     const handleSave = (): void => {
@@ -28,55 +37,57 @@ const EditInputStep = memo<EditInputStepProps>(
     };
 
     return (
-      <li className="rounded px-3 py-2 flex flex-col gap-2 text-xs bg-white border border-slate-300 mx-auto max-w-max list-none">
-        <StepNameInput
-          name={updatedStep.name}
-          onChange={(name) => setUpdatedStep((prev) => ({ ...prev, name }))}
-        />
+      <Modal isOpen={isOpen} onClose={handleCancel} maxWidth="md">
+        <ModalHeader className="flex items-center gap-2">
+          <TextCursorInputIcon size={20} className="text-slate-600" />
+          <Text variant="h2">Edit Input Step</Text>
+        </ModalHeader>
 
-        <div className="flex items-center gap-2">
-          <Text variant="small" color="muted" className="w-12">
-            Value:
-          </Text>
-          <input
+        <ModalBody className="space-y-2">
+          <StepNameInput
+            name={updatedStep.name}
+            onChange={(name) => setUpdatedStep((prev) => ({ ...prev, name }))}
+          />
+
+          <Input
             type="text"
+            label="Value"
             value={updatedStep.value}
             onChange={(e) =>
               setUpdatedStep((prev) => ({ ...prev, value: e.target.value }))
             }
-            className="border border-slate-300 rounded px-2 py-1 text-xs focus:outline-none focus:border-slate-500"
+            placeholder="Enter value"
           />
-        </div>
 
-        <StepTargetInput
-          target={updatedStep.target}
-          onChange={(target) => setUpdatedStep((prev) => ({ ...prev, target }))}
-        />
+          <StepDelayInput
+            delay={updatedStep.delay}
+            onChange={(delay) => setUpdatedStep((prev) => ({ ...prev, delay }))}
+          />
 
-        <StepRetryInput
-          retryCount={updatedStep.retryCount}
-          retryInterval={updatedStep.retryInterval}
-          onChange={(updates) =>
-            setUpdatedStep((prev) => ({ ...prev, ...updates }))
-          }
-        />
+          <StepTargetInput
+            target={updatedStep.target}
+            onChange={(target) =>
+              setUpdatedStep((prev) => ({ ...prev, target }))
+            }
+          />
 
-        <StepDelayInput
-          delay={updatedStep.delay}
-          onChange={(delay) => setUpdatedStep((prev) => ({ ...prev, delay }))}
-        />
+          <StepRetryInput
+            retryCount={updatedStep.retryCount}
+            retryInterval={updatedStep.retryInterval}
+            onChange={(updates) =>
+              setUpdatedStep((prev) => ({ ...prev, ...updates }))
+            }
+          />
+        </ModalBody>
 
-        <div className="flex items-center gap-2 justify-end">
-          <Button onClick={handleSave} variant="success" size="sm" icon={Check}>
+        <ModalFooter className="flex justify-end gap-2">
+          <Button onClick={handleSave} variant="primary" fullWidth>
             Save
           </Button>
-          <Button onClick={handleCancel} variant="danger" size="sm" icon={X}>
-            Cancel
-          </Button>
-        </div>
-      </li>
+        </ModalFooter>
+      </Modal>
     );
-  }
+  },
 );
 
 export { EditInputStep };

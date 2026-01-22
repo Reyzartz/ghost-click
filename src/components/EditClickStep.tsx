@@ -4,17 +4,25 @@ import { StepDelayInput } from "./StepDelayInput";
 import { StepNameInput } from "./StepNameInput";
 import { StepRetryInput } from "./StepRetryInput";
 import { StepTargetInput } from "./StepTargetInput";
-import { Check, X } from "lucide-react";
-import { Button } from "@/design-system";
+import { MousePointerClickIcon } from "lucide-react";
+import {
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Text,
+} from "@/design-system";
 
 interface EditClickStepProps {
   step: ClickStep;
+  isOpen: boolean;
   onUpdateStep: (stepId: string, step: Partial<ClickStep>) => void;
   onClose: () => void;
 }
 
 const EditClickStep = memo<EditClickStepProps>(
-  ({ step, onUpdateStep, onClose }) => {
+  ({ step, isOpen, onUpdateStep, onClose }) => {
     const [updatedStep, setUpdatedStep] = useState(step);
 
     const handleSave = (): void => {
@@ -28,41 +36,47 @@ const EditClickStep = memo<EditClickStepProps>(
     };
 
     return (
-      <li className="rounded px-3 py-2 flex flex-col gap-2 text-xs bg-white border border-slate-300 mx-auto max-w-max list-none">
-        <StepNameInput
-          name={updatedStep.name}
-          onChange={(name) => setUpdatedStep((prev) => ({ ...prev, name }))}
-        />
+      <Modal isOpen={isOpen} onClose={handleCancel} maxWidth="md">
+        <ModalHeader className="flex items-center gap-2">
+          <MousePointerClickIcon size={20} className="text-slate-600" />
+          <Text variant="h2">Edit Click Step</Text>
+        </ModalHeader>
 
-        <StepTargetInput
-          target={updatedStep.target}
-          onChange={(target) => setUpdatedStep((prev) => ({ ...prev, target }))}
-        />
+        <ModalBody className="space-y-2">
+          <StepNameInput
+            name={updatedStep.name}
+            onChange={(name) => setUpdatedStep((prev) => ({ ...prev, name }))}
+          />
 
-        <StepRetryInput
-          retryCount={updatedStep.retryCount}
-          retryInterval={updatedStep.retryInterval}
-          onChange={(updates) =>
-            setUpdatedStep((prev) => ({ ...prev, ...updates }))
-          }
-        />
+          <StepDelayInput
+            delay={updatedStep.delay}
+            onChange={(delay) => setUpdatedStep((prev) => ({ ...prev, delay }))}
+          />
 
-        <StepDelayInput
-          delay={updatedStep.delay}
-          onChange={(delay) => setUpdatedStep((prev) => ({ ...prev, delay }))}
-        />
+          <StepTargetInput
+            target={updatedStep.target}
+            onChange={(target) =>
+              setUpdatedStep((prev) => ({ ...prev, target }))
+            }
+          />
 
-        <div className="flex items-center gap-2 justify-end">
-          <Button onClick={handleSave} variant="success" size="sm" icon={Check}>
+          <StepRetryInput
+            retryCount={updatedStep.retryCount}
+            retryInterval={updatedStep.retryInterval}
+            onChange={(updates) =>
+              setUpdatedStep((prev) => ({ ...prev, ...updates }))
+            }
+          />
+        </ModalBody>
+
+        <ModalFooter className="flex justify-end gap-2">
+          <Button onClick={handleSave} variant="primary" fullWidth>
             Save
           </Button>
-          <Button onClick={handleCancel} variant="danger" size="sm" icon={X}>
-            Cancel
-          </Button>
-        </div>
-      </li>
+        </ModalFooter>
+      </Modal>
     );
-  }
+  },
 );
 
 export { EditClickStep };

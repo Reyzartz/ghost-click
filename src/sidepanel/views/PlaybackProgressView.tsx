@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { SidePanelApp } from "../SidePanelApp";
 import { PlaybackProgressState } from "../viewmodels/PlaybackProgressViewModel";
 import { ErrorDetailsPanel } from "@/components/ErrorDetailsPanel";
-import { Alert, Button, Text, Card } from "@/design-system";
+import { Alert, Button, Text } from "@/design-system";
 import { ArrowLeft, Play, Pause, Square, Edit, RotateCcw } from "lucide-react";
 import { ProgressBar } from "@/components/ProgressBar";
 import { StepListItem } from "@/components/StepListItem";

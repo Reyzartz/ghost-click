@@ -25,7 +25,7 @@ ${tailwindCss as unknown as string}
 @keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-100%);
   }
   to {
     opacity: 1;
@@ -42,7 +42,7 @@ shadowRoot.appendChild(mount);
 createRoot(mount).render(
   <StrictMode>
     <App app={contentApp} />
-  </StrictMode>
+  </StrictMode>,
 );
 
 // TODO:

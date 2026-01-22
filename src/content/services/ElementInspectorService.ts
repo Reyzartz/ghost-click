@@ -1,6 +1,5 @@
 import { BaseService } from "@/utils/BaseService";
 import { Emitter } from "@/utils/Emitter";
-import { TargetElementSelector } from "@/models";
 import { ElementSelector } from "@/utils/ElementSelector";
 
 export class ElementInspectorService extends BaseService {
@@ -84,7 +83,9 @@ export class ElementInspectorService extends BaseService {
     this.logger.info("Element selected", { selector });
 
     // Emit locally and broadcast to sidepanel
-    this.emitter.emit("ELEMENT_SELECTED", { selector });
+    this.emitter.emit("ELEMENT_SELECTED", {
+      selector,
+    });
 
     this.stopInspection();
   };

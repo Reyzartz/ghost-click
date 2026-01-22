@@ -1,7 +1,7 @@
 import { TargetElementSelector } from "@/models";
 import { memo, useEffect, useState } from "react";
 import { Square, Search } from "lucide-react";
-import { Text, Button, Input } from "@/design-system";
+import { Text, Button, Input, Select } from "@/design-system";
 
 interface StepTargetInputProps {
   target: TargetElementSelector;
@@ -62,11 +62,12 @@ const StepTargetInput = memo<StepTargetInputProps>(({ target, onChange }) => {
   };
 
   return (
-    <div className="flex flex-col gap-2 border border-slate-200 rounded p-2 bg-slate-50">
-      <div className="flex items-center justify-between">
+    <div>
+      <div className="flex items-end justify-between mb-2">
         <Text variant="small" color="muted" className="font-medium">
           Target Selector:
         </Text>
+
         <Button
           onClick={isInspecting ? stopInspection : startInspection}
           variant={isInspecting ? "danger" : "primary"}
@@ -77,66 +78,47 @@ const StepTargetInput = memo<StepTargetInputProps>(({ target, onChange }) => {
           {isInspecting ? "Stop" : "Inspect"}
         </Button>
       </div>
-      <div className="flex items-center gap-2">
-        <Text variant="small" color="muted" className="w-20">
-          ID:
-        </Text>
+
+      <div className="flex flex-col gap-2 border border-slate-200 rounded p-2 bg-slate-50">
         <Input
           type="text"
+          label="Element ID"
           value={target.id}
           onChange={(e) => onChange({ ...target, id: e.target.value })}
-          className="flex-1 text-xs"
           placeholder="element-id"
-          fullWidth={false}
         />
-      </div>
 
-      <div className="flex items-center gap-2">
-        <Text variant="small" color="muted" className="w-20">
-          Class:
-        </Text>
         <Input
           type="text"
+          label="Classnames"
           value={target.className}
           onChange={(e) => onChange({ ...target, className: e.target.value })}
-          className="flex-1 text-xs"
           placeholder="class-name"
-          fullWidth={false}
         />
-      </div>
 
-      <div className="flex items-center gap-2">
-        <Text variant="small" color="muted" className="w-20">
-          XPath:
-        </Text>
         <Input
           type="text"
+          label="XPath"
           value={target.xpath}
           onChange={(e) => onChange({ ...target, xpath: e.target.value })}
-          className="flex-1 text-xs"
           placeholder="//div[@id='example']"
-          fullWidth={false}
+          fullWidth
         />
-      </div>
 
-      <div className="flex items-center gap-2">
-        <Text variant="small" color="muted" className="w-20">
-          Default:
-        </Text>
-        <select
+        <Select
           value={target.defaultSelector}
-          onChange={(e) =>
+          label="Default Element Selector"
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
             onChange({
               ...target,
               defaultSelector: e.target.value as "id" | "className" | "xpath",
             })
           }
-          className="flex-1 border border-slate-300 rounded px-2 py-1 text-xs focus:outline-none focus:border-slate-500 bg-white cursor-pointer"
         >
           <option value="id">ID</option>
           <option value="className">Class</option>
           <option value="xpath">XPath</option>
-        </select>
+        </Select>
       </div>
     </div>
   );

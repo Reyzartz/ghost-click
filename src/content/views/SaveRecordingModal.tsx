@@ -5,7 +5,6 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   Button,
   Input,
   Text,
@@ -66,6 +65,7 @@ export const SaveRecordingModal = ({ app }: { app: ContentApp }) => {
       onClose={handleCancel}
       maxWidth="md"
       zIndex={2147483646}
+      className="bg-slate-100!"
     >
       <ModalHeader>
         <div className="flex gap-2">

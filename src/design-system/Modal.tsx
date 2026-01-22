@@ -1,4 +1,6 @@
 import { HTMLAttributes, ReactNode } from "react";
+import { IconButton } from "./IconButton";
+import { X } from "lucide-react";
 
 interface ModalProps extends HTMLAttributes<HTMLDivElement> {
   isOpen: boolean;
@@ -35,7 +37,7 @@ export const Modal = ({
     >
       <div
         className={[
-          "bg-slate-100 rounded-lg shadow-xl w-full mx-4 overflow-hidden",
+          "bg-white rounded-lg shadow-xl w-full mx-4 overflow-hidden relative",
           maxWidthStyles[maxWidth],
           className,
         ]
@@ -43,6 +45,14 @@ export const Modal = ({
           .join(" ")}
         onClick={(e) => e.stopPropagation()}
       >
+        {onClose && (
+          <IconButton
+            icon={X}
+            onClick={onClose}
+            className="absolute right-3 top-3"
+            variant="ghost"
+          />
+        )}
         {children}
       </div>
     </div>
@@ -56,15 +66,12 @@ interface ModalHeaderProps extends HTMLAttributes<HTMLDivElement> {
 
 export const ModalHeader = ({
   children,
-
   className = "",
   ...props
 }: ModalHeaderProps) => {
   return (
     <div
-      className={["p-4 border-b border-slate-200", className]
-        .filter(Boolean)
-        .join(" ")}
+      className={["p-4 pb-0", className].filter(Boolean).join(" ")}
       {...props}
     >
       {children}
@@ -82,7 +89,12 @@ export const ModalBody = ({
   ...props
 }: ModalBodyProps) => {
   return (
-    <div className={["p-4", className].filter(Boolean).join(" ")} {...props}>
+    <div
+      className={["px-4 my-4 max-h-120 overflow-scroll scrollbar", className]
+        .filter(Boolean)
+        .join(" ")}
+      {...props}
+    >
       {children}
     </div>
   );
@@ -99,7 +111,7 @@ export const ModalFooter = ({
 }: ModalFooterProps) => {
   return (
     <div
-      className={["p-4 flex gap-2", className].filter(Boolean).join(" ")}
+      className={["p-4 pt-0 flex gap-2", className].filter(Boolean).join(" ")}
       {...props}
     >
       {children}

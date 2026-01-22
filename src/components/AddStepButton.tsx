@@ -29,7 +29,7 @@ const AddStepButton = memo<AddStepButtonProps>(({ onAddStep }) => {
   };
 
   const createEmptyStep = (
-    type: StepType
+    type: StepType,
   ): ClickStep | InputStep | KeyPressStep => {
     const baseStep = {
       id: crypto.randomUUID(),
@@ -74,7 +74,7 @@ const AddStepButton = memo<AddStepButtonProps>(({ onAddStep }) => {
 
   const handleAddStep = (
     _stepId: string,
-    updates: Partial<ClickStep | InputStep | KeyPressStep>
+    updates: Partial<ClickStep | InputStep | KeyPressStep>,
   ): void => {
     if (!selectedType) return;
 
@@ -87,54 +87,62 @@ const AddStepButton = memo<AddStepButtonProps>(({ onAddStep }) => {
     handleClose();
   };
 
-  if (!isAdding) {
+  if (!selectedType || !isAdding) {
     return (
-      <button
-        onClick={() => setIsAdding(true)}
-        className="cursor-pointer flex items-center justify-center gap-2 w-5 h-5 rounded-full border-[1.5px] border-dashed border-slate-300 text-slate-300 hover:border-slate-400 hover:text-slate-400 hover:bg-slate-50 transition-colors"
-        title="Add new step"
+      <div
+        className={`group/add flex flex-col gap-2 p-2 border-dashed border-[1.5px] border-slate-300 bg-slate-50 transition-all duration-300 ease-in-out overflow-hidden ${
+          !isAdding
+            ? "cursor-pointer items-center justify-center w-6 h-6 rounded-2xl hover:border-slate-400"
+            : "w-74 h-28 rounded"
+        }`}
       >
-        <PlusIcon size={14} />
-      </button>
-    );
-  }
+        {!selectedType && isAdding && (
+          <>
+            <Text variant="small" color="muted">
+              Select Step Type:
+            </Text>
 
-  if (!selectedType) {
-    return (
-      <div className="flex flex-col gap-2 p-2 border border-dashed border-slate-300 rounded bg-slate-50">
-        <Text variant="small" color="muted">
-          Select Step Type:
-        </Text>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => handleSelectType("CLICK")}
+                variant="secondary"
+                size="sm"
+                icon={MousePointerClickIcon}
+              >
+                Click
+              </Button>
+              <Button
+                onClick={() => handleSelectType("INPUT")}
+                variant="secondary"
+                size="sm"
+                icon={TextCursorInputIcon}
+              >
+                Input
+              </Button>
+              <Button
+                onClick={() => handleSelectType("KEYPRESS")}
+                variant="secondary"
+                size="sm"
+                icon={KeyboardIcon}
+              >
+                Key Press
+              </Button>
+            </div>
+            <Button variant="danger" size="sm" onClick={handleClose}>
+              Cancel
+            </Button>
+          </>
+        )}
 
-        <div className="flex gap-2">
-          <Button
-            onClick={() => handleSelectType("CLICK")}
-            variant="secondary"
-            size="sm"
-            icon={MousePointerClickIcon}
+        {!isAdding && (
+          <button
+            onClick={() => setIsAdding(true)}
+            title="Add new step"
+            className="cursor-pointer duration-300 text-slate-300 group-hover/add:text-slate-400"
           >
-            Click
-          </Button>
-          <Button
-            onClick={() => handleSelectType("INPUT")}
-            variant="secondary"
-            size="sm"
-            icon={TextCursorInputIcon}
-          >
-            Input
-          </Button>
-          <Button
-            onClick={() => handleSelectType("KEYPRESS")}
-            variant="secondary"
-            size="sm"
-            icon={KeyboardIcon}
-          >
-            Key Press
-          </Button>
-        </div>
-        <Button variant="danger" size="sm" onClick={handleClose}>
-          Cancel
-        </Button>
+            <PlusIcon size={14} />
+          </button>
+        )}
       </div>
     );
   }
@@ -146,6 +154,7 @@ const AddStepButton = memo<AddStepButtonProps>(({ onAddStep }) => {
       {selectedType === "CLICK" && (
         <EditClickStep
           step={emptyStep as ClickStep}
+          isOpen={true}
           onUpdateStep={handleAddStep}
           onClose={handleClose}
         />
@@ -153,6 +162,7 @@ const AddStepButton = memo<AddStepButtonProps>(({ onAddStep }) => {
       {selectedType === "INPUT" && (
         <EditInputStep
           step={emptyStep as InputStep}
+          isOpen={true}
           onUpdateStep={handleAddStep}
           onClose={handleClose}
         />
@@ -160,6 +170,7 @@ const AddStepButton = memo<AddStepButtonProps>(({ onAddStep }) => {
       {selectedType === "KEYPRESS" && (
         <EditKeyPressStep
           step={emptyStep as KeyPressStep}
+          isOpen={true}
           onUpdateStep={handleAddStep}
           onClose={handleClose}
         />

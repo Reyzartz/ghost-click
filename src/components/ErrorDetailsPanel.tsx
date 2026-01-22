@@ -26,7 +26,7 @@ export const ErrorDetailsPanel = ({
             {errorMessage}
           </Text>
         </div>
-        <div className="flex items-center gap-1 text-red-600 text-xs">
+        <div className="flex items-center gap-1 text-red-600">
           {showDetails ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
           <Text variant="small" color="error">
             Details

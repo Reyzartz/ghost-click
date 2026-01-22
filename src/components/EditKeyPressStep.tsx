@@ -2,19 +2,28 @@ import { KeyPressStep } from "@/models";
 import { memo, useRef, useState } from "react";
 import { StepDelayInput } from "./StepDelayInput";
 import { StepNameInput } from "./StepNameInput";
-import { Check, KeyboardIcon, X } from "lucide-react";
+import { KeyboardIcon } from "lucide-react";
 import { StepRetryInput } from "./StepRetryInput";
 import { StepTargetInput } from "./StepTargetInput";
-import { Text as TextComponent, Button } from "@/design-system";
+import {
+  Text,
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Input,
+} from "@/design-system";
 
 interface EditKeyPressStepProps {
   step: KeyPressStep;
+  isOpen: boolean;
   onUpdateStep: (stepId: string, step: Partial<KeyPressStep>) => void;
   onClose: () => void;
 }
 
 const EditKeyPressStep = memo<EditKeyPressStepProps>(
-  ({ step, onUpdateStep, onClose }) => {
+  ({ step, isOpen, onUpdateStep, onClose }) => {
     const [updatedStep, setUpdatedStep] = useState(step);
     const [isRecording, setIsRecording] = useState(false);
     const recordingInputRef = useRef<HTMLInputElement>(null);
@@ -57,6 +66,9 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
         metaKey: e.metaKey,
       });
       setIsRecording(false);
+
+      // Blur the input to stop recording
+      recordingInputRef.current?.blur();
     };
 
     const formatKeyDisplay = (): string => {
@@ -70,78 +82,71 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
       return parts.join(" + ");
     };
 
-    const toggleRecording = (): void => {
-      if (isRecording) {
-        setIsRecording(false);
-        return;
-      }
-
+    const onStartRecording = (): void => {
       setIsRecording(true);
-      setTimeout(() => {
-        recordingInputRef.current?.focus();
-      }, 0);
+    };
+
+    const onStopRecording = (): void => {
+      setIsRecording(false);
     };
 
     return (
-      <li className="rounded px-3 py-2 flex flex-col gap-2 text-xs bg-white border border-slate-300 mx-auto max-w-max list-none">
-        <StepNameInput
-          name={updatedStep.name}
-          onChange={(name) => setUpdatedStep((prev) => ({ ...prev, name }))}
-        />
+      <Modal isOpen={isOpen} onClose={handleCancel} maxWidth="md">
+        <ModalHeader className="flex items-center gap-2">
+          <KeyboardIcon size={20} className="text-slate-600" />
+          <Text variant="h2">Edit Key Press Step</Text>
+        </ModalHeader>
 
-        <div className="flex items-center gap-2">
-          <TextComponent variant="small" color="muted" className="w-12">
-            Key:
-          </TextComponent>
-          <div className="flex items-center gap-2">
-            <input
-              ref={recordingInputRef}
-              type="text"
-              value={isRecording ? "Press any key..." : formatKeyDisplay()}
-              onKeyDown={handleKeyDown}
-              onFocus={() => setIsRecording(true)}
-              onBlur={() => setIsRecording(false)}
-              readOnly
-              className={`border border-slate-300 rounded px-2 py-1 text-xs focus:outline-none focus:border-blue-500 cursor-pointer ${
-                isRecording ? "bg-blue-50 border-blue-400" : "bg-slate-50"
-              }`}
-              placeholder="Click to record"
-            />
-            <Button onClick={toggleRecording} icon={KeyboardIcon} size="sm">
-              {isRecording ? "Recording..." : "Record"}
-            </Button>
-          </div>
-        </div>
+        <ModalBody className="space-y-2">
+          <StepNameInput
+            name={updatedStep.name}
+            onChange={(name) => setUpdatedStep((prev) => ({ ...prev, name }))}
+          />
 
-        <StepTargetInput
-          target={updatedStep.target}
-          onChange={(target) => setUpdatedStep((prev) => ({ ...prev, target }))}
-        />
+          <Input
+            ref={recordingInputRef}
+            type="text"
+            label="Key Combination"
+            value={isRecording ? "Press any key..." : formatKeyDisplay()}
+            onKeyDown={handleKeyDown}
+            onFocus={onStartRecording}
+            onBlur={onStopRecording}
+            readOnly
+            className={`cursor-pointer ${
+              isRecording ? "bg-blue-50 border-blue-400" : "bg-slate-50"
+            }`}
+            placeholder="Click to record"
+          />
 
-        <StepRetryInput
-          retryCount={updatedStep.retryCount}
-          retryInterval={updatedStep.retryInterval}
-          onChange={(updates) =>
-            setUpdatedStep((prev) => ({ ...prev, ...updates }))
-          }
-        />
+          <StepDelayInput
+            delay={updatedStep.delay}
+            onChange={(delay) => setUpdatedStep((prev) => ({ ...prev, delay }))}
+          />
 
-        <StepDelayInput
-          delay={updatedStep.delay}
-          onChange={(delay) => setUpdatedStep((prev) => ({ ...prev, delay }))}
-        />
+          <StepTargetInput
+            target={updatedStep.target}
+            onChange={(target) =>
+              setUpdatedStep((prev) => ({ ...prev, target }))
+            }
+          />
 
-        <div className="flex items-center gap-2 justify-end">
-          <Button onClick={handleSave} variant="success" size="sm" icon={Check}>
+          <StepRetryInput
+            retryCount={updatedStep.retryCount}
+            retryInterval={updatedStep.retryInterval}
+            onChange={(updates) =>
+              setUpdatedStep((prev) => ({ ...prev, ...updates }))
+            }
+          />
+        </ModalBody>
+
+        <ModalFooter className="flex justify-end gap-2">
+          <Button onClick={handleSave} variant="primary" fullWidth>
             Save
           </Button>
-          <Button onClick={handleCancel} variant="danger" size="sm" icon={X}>
-            Cancel
-          </Button>
-        </div>
-      </li>
+        </ModalFooter>
+      </Modal>
     );
-  }
+  },
 );
 
 export { EditKeyPressStep };

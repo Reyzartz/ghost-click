@@ -10,14 +10,12 @@ interface StepRetryInputProps {
 const StepRetryInput = memo<StepRetryInputProps>(
   ({ retryCount, retryInterval, onChange }) => {
     return (
-      <div className="flex flex-col gap-2 border border-slate-200 rounded p-2 bg-slate-50">
+      <div className="flex flex-col gap-2">
         <Text variant="small" color="muted" className="font-medium">
           Retry Settings:
         </Text>
-        <div className="flex items-center gap-2">
-          <Text variant="small" color="muted" className="w-20">
-            Count:
-          </Text>
+
+        <div className="flex flex-col gap-2 border border-slate-200 rounded p-2 bg-slate-50">
           <Input
             type="number"
             min={0}
@@ -29,16 +27,10 @@ const StepRetryInput = memo<StepRetryInputProps>(
                 retryInterval,
               })
             }
-            className="flex-1 text-xs"
             placeholder="0"
-            fullWidth={false}
+            label="Retry Count"
           />
-        </div>
 
-        <div className="flex items-center gap-2">
-          <Text variant="caption" color="muted" className="w-20 normal-case">
-            Interval (ms):
-          </Text>
           <Input
             type="number"
             min={0}
@@ -51,9 +43,8 @@ const StepRetryInput = memo<StepRetryInputProps>(
                 retryInterval: parseInt(e.target.value) || 0,
               })
             }
-            className="flex-1 text-xs"
             placeholder="1000"
-            fullWidth={false}
+            label="Interval (ms)"
           />
         </div>
       </div>

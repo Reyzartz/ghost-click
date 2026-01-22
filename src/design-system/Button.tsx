@@ -53,10 +53,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       children,
       ...props
     },
-    ref
+    ref,
   ) => {
     const classes = [
-      "cursor-pointer rounded font-medium transition-colors inline-flex items-center justify-center gap-2",
+      "cursor-pointer rounded font-medium transition-colors inline-flex items-center justify-center gap-2 whitespace-nowrap",
       "disabled:cursor-not-allowed",
       variantStyles[variant],
       sizeStyles[size],
@@ -77,7 +77,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         )}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = "Button";

@@ -60,7 +60,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
 
   const handleAddStep = (
     newStep: ClickStep | InputStep | KeyPressStep,
-    position: number
+    position: number,
   ): void => {
     app.editMacroViewModel.addStep(newStep, position);
   };
@@ -127,19 +127,19 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
               Steps ({state.macro.steps.length})
             </Text>
             <div
-              className="rounded border border-slate-200 bg-slate-50 overflow-y-auto"
+              className="rounded-lg border border-slate-200 bg-slate-50 overflow-y-auto"
               style={{ height: "calc(100vh - 300px)" }}
             >
               {state.macro.steps.length === 0 ? (
-                <div className="px-3 py-4 text-center text-slate-500 text-xs">
-                  No steps recorded
+                <div className="px-3 py-4 text-center text-slate-500">
+                  <Text>No steps added yet.</Text>
                 </div>
               ) : (
-                <div className="py-2">
+                <div className="p-4">
                   {state.macro.steps.map((step, index) => (
                     <div
                       key={step.id}
-                      className="items-center flex flex-col group"
+                      className="items-center flex flex-col group w-full"
                     >
                       <EditStepItem
                         step={step}
@@ -149,7 +149,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                         isDeleted={state.deletedStepIds.has(step.id)}
                         handleUndoDelete={handleUndoDelete}
                       />
-                      <div className="text-slate-300 text-sm">|</div>
+                      <div className="text-slate-300 text-xs">|</div>
                       <AddStepButton
                         onAddStep={(step) => handleAddStep(step, index + 1)}
                       />
@@ -167,10 +167,9 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
             <Button
               onClick={handleSave}
               disabled={state.loading || !state.macro?.name.trim()}
-              variant="success"
               fullWidth
             >
-              {state.loading ? "Saving..." : "Save"}
+              {state.loading ? "Saving..." : "Save Changes"}
             </Button>
             <Button
               onClick={handleCancel}
@@ -178,7 +177,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
               variant="danger"
               fullWidth
             >
-              Cancel
+              Discard Changes
             </Button>
           </div>
         </div>

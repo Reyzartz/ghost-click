@@ -32,7 +32,7 @@ export const StepListItem = ({
   const IconComponent = StepTypeToIcon[step.type];
   return (
     <li
-      className={`rounded px-3 py-2 text-xs ${
+      className={`rounded px-3 py-2 ${
         isCurrent
           ? "bg-green-100 border border-green-300 font-medium"
           : isCompleted
