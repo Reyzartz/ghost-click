@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { SidePanelApp } from "../SidePanelApp";
 import { Alert, Button, Input, Text } from "@/design-system";
-import { ArrowDown, ArrowLeft } from "lucide-react";
+import { ArrowDown, ArrowLeft, Trash2 } from "lucide-react";
 import { EditStepItem } from "@/components/EditStepItem";
 import { AddStepButton } from "@/components/AddStepButton";
 import { ClickStep, InputStep, KeyPressStep, Macro, MacroStep } from "@/models";
 import { DisplayFavicon } from "@/components/DisplayFavicon";
+import { ConfirmActionButton } from "@/components/ConfirmActionModal";
 
 type EditMacroState = {
   loading: boolean;
@@ -54,6 +55,12 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
     app.editMacroViewModel.reset();
   };
 
+  const handleDelete = async (): Promise<void> => {
+    if (state.macro === null) return;
+    await app.macroListViewModel.deleteMacro(state.macro.id);
+    app.viewService.navigateToView("macroList");
+  };
+
   const handleUpdateStep = (stepId: string, step: Partial<MacroStep>): void => {
     void app.editMacroViewModel.updateStep(stepId, step);
   };
@@ -75,30 +82,44 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
 
   return (
     <div className="p-4 space-y-4 text-sm text-slate-900">
-      <header className="flex items-center justify-between">
-        <Button onClick={handleBack} variant="ghost" size="sm" icon={ArrowLeft}>
-          Back
-        </Button>
-      </header>
+      <Button onClick={handleBack} variant="ghost" size="sm" icon={ArrowLeft}>
+        Back
+      </Button>
 
-      <div>
-        <Text variant="h2" className="mb-1">
-          Edit Macro
-        </Text>
+      <div className="flex justify-between items-end">
+        <div>
+          <Text variant="h2" className="mb-1">
+            Edit Macro
+          </Text>
 
-        <div className="flex items-center gap-1 ">
-          <DisplayFavicon
-            faviconUrl={state.macro?.faviconUrl || null}
-            name={state.macro?.domain || ""}
-            size="small"
-          />
-          {state.macro?.domain && (
-            <Text variant="small" color="muted">
-              {" "}
-              • {state.macro.domain}
-            </Text>
-          )}
+          <div className="flex items-center gap-1 ">
+            <DisplayFavicon
+              faviconUrl={state.macro?.faviconUrl || null}
+              name={state.macro?.domain || ""}
+              size="small"
+            />
+
+            {state.macro?.domain && (
+              <Text variant="small" color="muted">
+                {` • ${state.macro.domain}`}
+              </Text>
+            )}
+          </div>
         </div>
+
+        {state.macro && (
+          <ConfirmActionButton
+            variant="danger"
+            size="sm"
+            icon={Trash2}
+            title="Delete Macro"
+            message="Are you sure you want to delete this macro? This action cannot be undone."
+            confirmText="Delete"
+            onClick={handleDelete}
+          >
+            Delete Macro
+          </ConfirmActionButton>
+        )}
       </div>
 
       {state.error && <Alert variant="error">{state.error}</Alert>}
@@ -164,20 +185,23 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
           </div>
 
           <div className="flex gap-2 pt-2">
+            <ConfirmActionButton
+              variant="danger"
+              fullWidth
+              onClick={handleCancel}
+              title="Discard Changes"
+              message="Are you sure you want to discard your changes?"
+              confirmText="Discard"
+            >
+              Discard Changes
+            </ConfirmActionButton>
+
             <Button
               onClick={handleSave}
               disabled={state.loading || !state.macro?.name.trim()}
               fullWidth
             >
               {state.loading ? "Saving..." : "Save Changes"}
-            </Button>
-            <Button
-              onClick={handleCancel}
-              disabled={state.loading}
-              variant="danger"
-              fullWidth
-            >
-              Discard Changes
             </Button>
           </div>
         </div>
