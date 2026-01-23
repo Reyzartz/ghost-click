@@ -1,16 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { Macro } from "@/models";
 import { SidePanelApp } from "../SidePanelApp";
-import { Alert, Text, Badge } from "@/design-system";
+import { Alert, Text, Button } from "@/design-system";
 import { MacroSection } from "@/components/MacroSection";
-
-type MacroListState = {
-  loading: boolean;
-  macros: Macro[];
-  allMacros: Macro[];
-  currentDomain: string;
-  error?: string | null;
-};
+import { Circle, Square } from "lucide-react";
+import { MacroListState } from "../viewmodels/MacroListViewModel";
 
 export const MacroListView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<MacroListState>({
@@ -18,6 +11,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
     macros: [],
     allMacros: [],
     currentDomain: "",
+    isRecording: false,
     error: null,
   });
 
@@ -26,11 +20,10 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
     return () => unsubscribe();
   }, [app]);
 
-  // Filter out current domain macros from all macros
   const otherDomainMacros = useMemo(
     () =>
       state.allMacros.filter((macro) => macro.domain !== state.currentDomain),
-    [state.allMacros, state.currentDomain]
+    [state.allMacros, state.currentDomain],
   );
 
   const handlePlay = (macroId: string): void => {
@@ -46,6 +39,17 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
     void app.macroListViewModel.deleteMacro(macroId);
   };
 
+  const handleStartRecording = (): void => {
+    app.emitter.emit("START_RECORDING", {
+      sessionId: crypto.randomUUID(),
+      initialUrl: window.location.href,
+    });
+  };
+
+  const handleStopRecording = (): void => {
+    app.emitter.emit("STOP_RECORDING", {}, { currentTab: false });
+  };
+  
   return (
     <div className="p-4 space-y-3 text-sm text-slate-900 bg-white">
       <header className="flex items-center justify-between gap-4">
@@ -59,9 +63,27 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
           )}
         </div>
 
-        <Badge variant="default">
-          {state.loading ? "Loading…" : `${state.macros.length} saved`}
-        </Badge>
+        <div className="flex items-center gap-2 shrink-0">
+          {state.isRecording ? (
+            <Button
+              onClick={handleStopRecording}
+              variant="danger"
+              size="sm"
+              icon={Square}
+            >
+              Stop
+            </Button>
+          ) : (
+            <Button
+              onClick={handleStartRecording}
+              variant="primary"
+              size="sm"
+              icon={Circle}
+            >
+              Record
+            </Button>
+          )}
+        </div>
       </header>
 
       {state.error && <Alert variant="error">{state.error}</Alert>}

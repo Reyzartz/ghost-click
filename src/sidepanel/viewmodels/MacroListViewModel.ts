@@ -8,6 +8,7 @@ export interface MacroListState {
   macros: Macro[];
   allMacros: Macro[];
   currentDomain: string;
+  isRecording: boolean;
   error?: string | null;
 }
 
@@ -20,13 +21,14 @@ export class MacroListViewModel extends BaseViewModel {
     macros: [],
     allMacros: [],
     currentDomain: "",
+    isRecording: false,
     error: null,
   };
   private listeners: Array<(state: MacroListState) => void> = [];
 
   constructor(
     private readonly macroRepository: MacroRepository,
-    protected readonly emitter: Emitter
+    protected readonly emitter: Emitter,
   ) {
     super("MacroListViewModel", emitter);
   }
@@ -52,6 +54,16 @@ export class MacroListViewModel extends BaseViewModel {
         this.logger.info("Tab updated and complete, checking domain");
         this.loadCurrentDomain();
       }
+    });
+
+    this.emitter.on("START_RECORDING", () => {
+      this.logger.info("Recording started");
+      this.setState({ isRecording: true });
+    });
+
+    this.emitter.on("STOP_RECORDING", () => {
+      this.logger.info("Recording stopped");
+      this.setState({ isRecording: false });
     });
   }
 
@@ -82,7 +94,7 @@ export class MacroListViewModel extends BaseViewModel {
 
   private async loadMacros(
     sortBy: MacroSortBy = "updatedAt",
-    sortOrder: MacroSortOrder = "desc"
+    sortOrder: MacroSortOrder = "desc",
   ): Promise<void> {
     this.logger.info("Loading macros", { domain: this.state.currentDomain });
     this.setState({ loading: true, error: null });
@@ -90,13 +102,13 @@ export class MacroListViewModel extends BaseViewModel {
       const macros = MacroListViewModel.sortMacros(
         await this.macroRepository.loadByDomain(this.state.currentDomain),
         sortBy,
-        sortOrder
+        sortOrder,
       );
 
       const allMacros = MacroListViewModel.sortMacros(
         await this.macroRepository.loadAll(),
         sortBy,
-        sortOrder
+        sortOrder,
       );
 
       this.logger.info("Loaded macros", {
@@ -134,7 +146,7 @@ export class MacroListViewModel extends BaseViewModel {
   private static sortMacros(
     macros: Macro[],
     sortBy: MacroSortBy,
-    sortOrder: MacroSortOrder
+    sortOrder: MacroSortOrder,
   ): Macro[] {
     let res = macros;
     switch (sortBy) {

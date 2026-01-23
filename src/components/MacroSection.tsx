@@ -1,6 +1,6 @@
 import { Macro } from "@/models";
 import { MacroCard } from "./MacroCard";
-import { Text, Card } from "@/design-system";
+import { Text, Card, Badge } from "@/design-system";
 
 interface MacroSectionProps {
   title: string;
@@ -23,9 +23,15 @@ export const MacroSection = ({
 }: MacroSectionProps) => {
   return (
     <div className="space-y-2">
-      <Text variant="h5" className="uppercase tracking-wide">
-        {title}
-      </Text>
+      <div className="flex justify-between items-end">
+        <Text variant="h5" className="uppercase tracking-wide">
+          {title}
+        </Text>
+
+        <Text variant="small" color="muted">
+          {loading ? "Loading…" : `${macros.length} saved`}
+        </Text>
+      </div>
       {!loading && macros.length === 0 && (
         <Card className="bg-slate-50 text-slate-600">{emptyMessage}</Card>
       )}
