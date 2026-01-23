@@ -1,6 +1,6 @@
 import { Macro } from "@/models";
 import { MacroCard } from "./MacroCard";
-import { Text, Card, Badge } from "@/design-system";
+import { Text, Card } from "@/design-system";
 
 interface MacroSectionProps {
   title: string;

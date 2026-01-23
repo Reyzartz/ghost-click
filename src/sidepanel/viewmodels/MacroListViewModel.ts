@@ -1,5 +1,6 @@
 import { Macro } from "@/models";
 import { MacroRepository } from "@/repositories/MacroRepository";
+import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
 import { BaseViewModel } from "@/utils/BaseViewModel";
 import { Emitter } from "@/utils/Emitter";
 
@@ -28,6 +29,7 @@ export class MacroListViewModel extends BaseViewModel {
 
   constructor(
     private readonly macroRepository: MacroRepository,
+    private readonly recordingStateRepository: RecordingStateRepository,
     protected readonly emitter: Emitter,
   ) {
     super("MacroListViewModel", emitter);
@@ -36,6 +38,10 @@ export class MacroListViewModel extends BaseViewModel {
   async init(): Promise<void> {
     this.logger.info("Initializing macro list view model");
     this.loadCurrentDomain();
+
+    this.setState({
+      isRecording: await this.recordingStateRepository.isRecording(),
+    });
 
     this.emitter.on("SAVED_MACRO", () => {
       this.logger.info("Detected SAVED_MACRO event; reloading list");

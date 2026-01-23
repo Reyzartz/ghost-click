@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
 import { SidePanelApp } from "../SidePanelApp";
 import { Alert, Button, Input, Text } from "@/design-system";
-import { ArrowDown, ArrowLeft, Trash2 } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowLeft,
+  Trash2,
+  Play,
+  Pause,
+  Square,
+} from "lucide-react";
 import { EditStepItem } from "@/components/EditStepItem";
 import { AddStepButton } from "@/components/AddStepButton";
-import { ClickStep, InputStep, KeyPressStep, Macro, MacroStep } from "@/models";
+import { ClickStep, InputStep, KeyPressStep, MacroStep } from "@/models";
 import { DisplayFavicon } from "@/components/DisplayFavicon";
 import { ConfirmActionButton } from "@/components/ConfirmActionModal";
-
-type EditMacroState = {
-  loading: boolean;
-  macro: Macro | null;
-  error?: string | null;
-  success?: boolean;
-  deletedStepIds: Set<string>;
-};
+import { EditMacroState } from "../viewmodels/EditMacroViewModel";
 
 export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<EditMacroState>({
@@ -23,19 +23,15 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
     error: null,
     success: false,
     deletedStepIds: new Set(),
+    isPlaying: false,
+    isPaused: false,
+    currentStepId: null,
+    erroredStepIds: [],
+    completedStepIds: [],
   });
 
   useEffect(() => {
-    const unsubscribe = app.editMacroViewModel.subscribe((vmState) => {
-      setState({
-        loading: vmState.loading,
-        macro: vmState.macro,
-        error: vmState.error,
-        success: vmState.success,
-        deletedStepIds: vmState.deletedStepIds,
-      });
-    });
-
+    const unsubscribe = app.editMacroViewModel.subscribe(setState);
     return () => unsubscribe();
   }, [app]);
 
@@ -61,6 +57,18 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
     app.viewService.navigateToView("macroList");
   };
 
+  const handlePlayPreview = (): void => {
+    if (state.macro === null) return;
+
+    // Filter out deleted steps before playing
+    const filteredSteps = state.macro.steps.filter(
+      (step) => !state.deletedStepIds.has(step.id),
+    );
+    const macroToPlay = { ...state.macro, steps: filteredSteps };
+
+    app.emitter.emit("PLAY_MACRO_PREVIEW", { macro: macroToPlay });
+  };
+
   const handleUpdateStep = (stepId: string, step: Partial<MacroStep>): void => {
     void app.editMacroViewModel.updateStep(stepId, step);
   };
@@ -78,6 +86,24 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
 
   const handleUndoDelete = (stepId: string): void => {
     app.editMacroViewModel.undoDeleteStep(stepId);
+  };
+
+  const handlePause = (): void => {
+    app.emitter.emit("PAUSE_PLAYBACK", undefined, {
+      currentTab: false,
+    });
+  };
+
+  const handleResume = (): void => {
+    app.emitter.emit("RESUME_PLAYBACK", undefined, {
+      currentTab: false,
+    });
+  };
+
+  const handleStop = (): void => {
+    app.emitter.emit("STOP_PLAYBACK", undefined, {
+      currentTab: false,
+    });
   };
 
   return (
@@ -108,17 +134,59 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
         </div>
 
         {state.macro && (
-          <ConfirmActionButton
-            variant="danger"
-            size="sm"
-            icon={Trash2}
-            title="Delete Macro"
-            message="Are you sure you want to delete this macro? This action cannot be undone."
-            confirmText="Delete"
-            onClick={handleDelete}
-          >
-            Delete Macro
-          </ConfirmActionButton>
+          <div className="flex items-center gap-2">
+            {state.isPlaying ? (
+              <>
+                {state.isPaused ? (
+                  <Button
+                    variant="success"
+                    size="sm"
+                    onClick={handleResume}
+                    icon={Play}
+                  >
+                    Resume
+                  </Button>
+                ) : (
+                  <Button size="sm" onClick={handlePause} icon={Pause}>
+                    Pause
+                  </Button>
+                )}
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={handleStop}
+                  icon={Square}
+                >
+                  Stop
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  onClick={handlePlayPreview}
+                  variant="primary"
+                  size="sm"
+                  icon={Play}
+                  disabled={
+                    !state.macro?.name.trim() || state.macro.steps.length === 0
+                  }
+                >
+                  Test Run
+                </Button>
+                <ConfirmActionButton
+                  variant="danger"
+                  size="sm"
+                  icon={Trash2}
+                  title="Delete Macro"
+                  message="Are you sure you want to delete this macro? This action cannot be undone."
+                  confirmText="Delete"
+                  onClick={handleDelete}
+                >
+                  Delete
+                </ConfirmActionButton>
+              </>
+            )}
+          </div>
         )}
       </div>
 
@@ -168,7 +236,11 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                         handleUpdateStep={handleUpdateStep}
                         handleDeleteStep={handleDeleteStep}
                         isDeleted={state.deletedStepIds.has(step.id)}
+                        isEditDisabled={state.isPlaying}
                         handleUndoDelete={handleUndoDelete}
+                        isCurrent={state.currentStepId === step.id}
+                        isCompleted={state.completedStepIds.includes(step.id)}
+                        isErrored={state.erroredStepIds.includes(step.id)}
                       />
                       <div className="text-slate-300 text-xs">|</div>
                       <AddStepButton

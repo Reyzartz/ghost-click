@@ -8,10 +8,12 @@ import { MacroListViewModel } from "./viewmodels/MacroListViewModel";
 import { PlaybackProgressViewModel } from "./viewmodels/PlaybackProgressViewModel";
 import { EditMacroViewModel } from "./viewmodels/EditMacroViewModel";
 import { ViewService } from "./services/ViewService";
+import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
 
 export class SidePanelApp extends BaseApp {
   readonly macroRepository: MacroRepository;
   readonly playbackStateRepository: PlaybackStateRepository;
+  readonly recordingStateRepository: RecordingStateRepository;
   readonly macroListViewModel: MacroListViewModel;
   readonly playbackProgressViewModel: PlaybackProgressViewModel;
   readonly editMacroViewModel: EditMacroViewModel;
@@ -23,19 +25,29 @@ export class SidePanelApp extends BaseApp {
     const storage = new Storage(chrome.storage.local);
     const macroRepository = new MacroRepository(emitter, storage);
     const playbackStateRepository = new PlaybackStateRepository(storage);
+    const recordingStateRepository = new RecordingStateRepository(storage);
     const viewService = new ViewService(emitter, playbackStateRepository);
-    const macroListViewModel = new MacroListViewModel(macroRepository, emitter);
+    const macroListViewModel = new MacroListViewModel(
+      macroRepository,
+      recordingStateRepository,
+      emitter,
+    );
     const playbackProgressViewModel = new PlaybackProgressViewModel(
       macroRepository,
       playbackStateRepository,
-      emitter
+      emitter,
     );
-    const editMacroViewModel = new EditMacroViewModel(macroRepository, emitter);
+    const editMacroViewModel = new EditMacroViewModel(
+      macroRepository,
+      playbackStateRepository,
+      emitter,
+    );
 
     super(emitter, logger, [viewService]);
 
     this.macroRepository = macroRepository;
     this.playbackStateRepository = playbackStateRepository;
+    this.recordingStateRepository = recordingStateRepository;
     this.viewService = viewService;
     this.macroListViewModel = macroListViewModel;
     this.playbackProgressViewModel = playbackProgressViewModel;

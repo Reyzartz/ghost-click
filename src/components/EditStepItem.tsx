@@ -1,5 +1,5 @@
 import { MacroStep } from "@/models";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useRef, useEffect } from "react";
 import { EditClickStep } from "./EditClickStep";
 import { EditInputStep } from "./EditInputStep";
 import { EditKeyPressStep } from "./EditKeyPressStep";
@@ -9,6 +9,9 @@ import {
   MousePointerClickIcon,
   TextCursorInputIcon,
   KeyboardIcon,
+  Play,
+  Check,
+  AlertCircle,
 } from "lucide-react";
 import { IconButton, Text, Button } from "@/design-system";
 
@@ -19,6 +22,10 @@ interface EditStepItemProps {
   handleUpdateStep: (stepId: string, step: Partial<MacroStep>) => void;
   handleDeleteStep: (stepId: string) => void;
   handleUndoDelete: (stepId: string) => void;
+  isEditDisabled?: boolean;
+  isCurrent?: boolean;
+  isCompleted?: boolean;
+  isErrored?: boolean;
 }
 
 const StepTypeToIcon: Record<
@@ -36,19 +43,66 @@ export const EditStepItem = ({
   handleUpdateStep,
   handleDeleteStep,
   handleUndoDelete,
+  isEditDisabled = false,
+  isCurrent = false,
+  isCompleted = false,
+  isErrored = false,
 }: EditStepItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
+  const stepRef = useRef<HTMLLIElement>(null);
+
+  useEffect(() => {
+    if (isCurrent && stepRef.current) {
+      stepRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+  }, [isCurrent]);
 
   const onClose = (): void => {
     setIsEditing(false);
   };
 
   const onEditHandler = useCallback(() => {
-    if (isDeleted) return;
+    if (isDeleted || isEditDisabled) return;
     setIsEditing(true);
-  }, [isDeleted]);
+  }, [isDeleted, isEditDisabled]);
 
   const IconComponent = StepTypeToIcon[step.type];
+
+  // Determine border and background colors based on status
+  const getStatusStyles = () => {
+    if (isDeleted) return "border-red-300 bg-red-50";
+    if (isErrored) return "border-red-300 bg-red-50 text-red-700";
+    if (isCurrent) return "border-green-300 bg-green-100";
+    if (isCompleted) return "border-slate-200 bg-slate-100";
+    return "border-slate-200 bg-white hover:bg-slate-50";
+  };
+
+  // Determine text color based on status
+  const getTextColor = ():
+    | "default"
+    | "muted"
+    | "success"
+    | "error"
+    | "warning" => {
+    if (isDeleted) return "muted";
+    if (isErrored) return "error";
+    if (isCompleted) return "muted";
+    return "default";
+  };
+
+  // Get status icon
+  const getStatusIcon = () => {
+    if (isErrored)
+      return <AlertCircle size={16} className="shrink-0 text-red-600" />;
+    if (isCurrent)
+      return <Play size={16} className="shrink-0 text-green-600" />;
+    if (isCompleted)
+      return <Check size={16} className="shrink-0 text-green-600" />;
+    return null;
+  };
 
   return (
     <>
@@ -82,42 +136,28 @@ export const EditStepItem = ({
       )}
 
       <li
-        className={`relative max-w-full list-none group/step border rounded bg-white ${
-          isDeleted
-            ? "border-red-300 bg-red-50"
-            : "border-slate-200 cursor-pointer"
+        ref={stepRef}
+        className={`relative max-w-full list-none group/step border rounded ${getStatusStyles()} ${
+          isEditDisabled ? "cursor-not-allowed" : "cursor-pointer"
         }`}
         onClick={onEditHandler}
       >
         <div
-          className={`flex items-center w-full gap-2 px-3 py-1 mx-auto max-w-max transition-all ${
-            isDeleted ? "pr-20 opacity-50" : "opacity-100 group-hover/step:pr-8"
-          }`}
+          className={`flex items-center w-full gap-2 px-3 py-2 mx-auto max-w-max transition-all ${
+            isDeleted ? "pr-20 opacity-50" : "opacity-100"
+          } ${!isEditDisabled && !isDeleted ? "group-hover/step:pr-8" : ""}`}
         >
           <IconComponent size={16} className="shrink-0" />
 
           <Text
+            variant="small"
             className={"grow truncate " + (isDeleted ? "line-through" : "")}
-            color={isDeleted ? "muted" : "default"}
+            color={getTextColor()}
           >
             {step.name}
           </Text>
-        </div>
 
-        <div
-          className={`rounded w-full bg-slate-100 px-3 pb-1 text-slate-600 flex items-center gap-1 border-t-0 rounded-t-none group-last-of-type:/step:hidden ${
-            isDeleted ? "opacity-50" : "opacity-100"
-          }`}
-        >
-          <Text
-            color="muted"
-            variant="small"
-            className={
-              "text-center w-full" + (isDeleted ? " line-through" : "")
-            }
-          >
-            {step.delay}ms
-          </Text>
+          {getStatusIcon()}
         </div>
 
         {isDeleted ? (
@@ -134,7 +174,11 @@ export const EditStepItem = ({
             Undo
           </Button>
         ) : (
-          <div className="z-50 absolute right-0.5 top-1 items-center overflow-hidden w-0 group-hover/step:w-6 transition-all duration-200">
+          <div
+            className={`z-50 absolute right-0.5 top-1 items-center overflow-hidden w-0 transition-all duration-200 ${
+              isEditDisabled ? "hidden" : "group-hover/step:w-6"
+            }`}
+          >
             <IconButton
               onClick={(e) => {
                 e.stopPropagation();
