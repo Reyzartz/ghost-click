@@ -32,13 +32,13 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
 
   const normalizedStepIndex = Math.min(
     state.currentStepIndex,
-    state.totalSteps
+    state.totalSteps,
   );
   const progress =
     state.totalSteps > 0
       ? Math.min(
           100,
-          Math.round((normalizedStepIndex / state.totalSteps) * 100)
+          Math.round((normalizedStepIndex / state.totalSteps) * 100),
         )
       : 0;
   const displayStepNumber = state.totalSteps
@@ -113,12 +113,12 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
               {hasError && state.isPlaying
                 ? "Playback In Progress (Errors)"
                 : hasError
-                ? "Playback Error"
-                : isComplete
-                ? "Playback Completed"
-                : state.isPaused
-                ? "Playback Paused"
-                : "Playback In Progress"}
+                  ? "Playback Error"
+                  : isComplete
+                    ? "Playback Completed"
+                    : state.isPaused
+                      ? "Playback Paused"
+                      : "Playback In Progress"}
             </Text>
             <Text variant="h2">{state.macro?.name}</Text>
           </div>
@@ -134,16 +134,21 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
               onClick={handleResume}
               icon={Play}
             >
-              Resume Playback
+              Resume
             </Button>
           ) : (
-            <Button size="sm" onClick={handlePause} icon={Pause}>
-              Pause Playback
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handlePause}
+              icon={Pause}
+            >
+              Pause
             </Button>
           )}
 
           <Button variant="danger" size="sm" onClick={handleStop} icon={Square}>
-            Stop Playback
+            Stop
           </Button>
         </div>
       ) : (

@@ -112,8 +112,8 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
         Back
       </Button>
 
-      <div className="flex justify-between items-end">
-        <div>
+      <div className="flex flex-col gap-2 items-start grow overflow-hidden">
+        <div className="flex flex-col overflow-hidden">
           <Text variant="h2" className="mb-1">
             Edit Macro
           </Text>
@@ -126,7 +126,11 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
             />
 
             {state.macro?.domain && (
-              <Text variant="small" color="muted">
+              <Text
+                variant="small"
+                color="muted"
+                className="whitespace-nowrap truncate"
+              >
                 {` • ${state.macro.domain}`}
               </Text>
             )}
@@ -134,7 +138,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
         </div>
 
         {state.macro && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             {state.isPlaying ? (
               <>
                 {state.isPaused ? (
@@ -147,7 +151,12 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                     Resume
                   </Button>
                 ) : (
-                  <Button size="sm" onClick={handlePause} icon={Pause}>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={handlePause}
+                    icon={Pause}
+                  >
                     Pause
                   </Button>
                 )}

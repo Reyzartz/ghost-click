@@ -14,6 +14,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { IconButton, Text, Button } from "@/design-system";
+import { TextColor } from "@/design-system/Text";
 
 interface EditStepItemProps {
   step: MacroStep;
@@ -77,19 +78,14 @@ export const EditStepItem = ({
     if (isErrored) return "border-red-300 bg-red-50 text-red-700";
     if (isCurrent) return "border-green-300 bg-green-100";
     if (isCompleted) return "border-slate-200 bg-slate-100";
-    return "border-slate-200 bg-white hover:bg-slate-50";
+    return "border-slate-200 bg-white";
   };
 
   // Determine text color based on status
-  const getTextColor = ():
-    | "default"
-    | "muted"
-    | "success"
-    | "error"
-    | "warning" => {
+  const getTextColor = (): TextColor => {
     if (isDeleted) return "muted";
     if (isErrored) return "error";
-    if (isCompleted) return "muted";
+    if (isCompleted) return "default";
     return "default";
   };
 
@@ -143,19 +139,25 @@ export const EditStepItem = ({
         onClick={onEditHandler}
       >
         <div
-          className={`flex items-center w-full gap-2 px-3 py-2 mx-auto max-w-max transition-all ${
+          className={`flex items-start w-full gap-2 px-3 py-1.5 mx-auto max-w-max transition-all ${
             isDeleted ? "pr-20 opacity-50" : "opacity-100"
           } ${!isEditDisabled && !isDeleted ? "group-hover/step:pr-8" : ""}`}
         >
-          <IconComponent size={16} className="shrink-0" />
-
-          <Text
-            variant="small"
-            className={"grow truncate " + (isDeleted ? "line-through" : "")}
-            color={getTextColor()}
-          >
-            {step.name}
-          </Text>
+          <div>
+            <Text
+              variant="small"
+              className={
+                "flex grow truncate mb-0.5" + (isDeleted ? "line-through" : "")
+              }
+              color={getTextColor()}
+            >
+              <IconComponent size={16} className="shrink-0 mt-0.5 mr-1.5" />
+              {step.name}
+            </Text>
+            <Text variant="small" color="muted" className="ml-6">
+              {step.delay}ms delay
+            </Text>
+          </div>
 
           {getStatusIcon()}
         </div>

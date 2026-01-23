@@ -9,7 +9,7 @@ type TextVariant =
   | "body"
   | "small"
   | "caption";
-type TextColor = "default" | "muted" | "success" | "error" | "warning";
+export type TextColor = "default" | "muted" | "success" | "error" | "warning";
 
 interface TextProps extends HTMLAttributes<HTMLElement> {
   variant?: TextVariant;
