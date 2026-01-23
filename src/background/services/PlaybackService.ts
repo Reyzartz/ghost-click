@@ -16,7 +16,7 @@ export class PlaybackService extends BaseService {
     this.playbackStateRepository = new PlaybackStateRepository(storage);
     this.playbackEngine = new PlaybackEngine(
       emitter,
-      this.playbackStateRepository
+      this.playbackStateRepository,
     );
     this.macroRepository = new MacroRepository(emitter, storage);
   }
@@ -26,6 +26,10 @@ export class PlaybackService extends BaseService {
 
     this.emitter.on("PLAY_MACRO", async (data) => {
       await this.handlePlayMacro(data.macroId);
+    });
+
+    this.emitter.on("PLAY_MACRO_PREVIEW", async (data) => {
+      await this.handlePlayMacroPreview(data.macro);
     });
 
     this.emitter.on("STOP_PLAYBACK", () => {
@@ -56,6 +60,21 @@ export class PlaybackService extends BaseService {
       await this.playbackEngine.playMacro(macro);
     } catch (err) {
       this.logger.error("Playback error", { error: err, macroId });
+    }
+  }
+
+  private async handlePlayMacroPreview(macro: any): Promise<void> {
+    try {
+      this.logger.info("Playing macro preview", {
+        macroId: macro.id,
+        name: macro.name,
+      });
+      await this.playbackEngine.playMacro(macro);
+    } catch (err) {
+      this.logger.error("Macro preview playback error", {
+        error: err,
+        macroId: macro.id,
+      });
     }
   }
 }

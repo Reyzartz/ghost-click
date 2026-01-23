@@ -6,6 +6,7 @@ export type EventType =
   | "USER_ACTION"
   | "SAVED_MACRO"
   | "PLAY_MACRO"
+  | "PLAY_MACRO_PREVIEW"
   | "EXECUTE_ACTION"
   | "PLAYBACK_COMPLETED"
   | "PLAYBACK_ERROR"
