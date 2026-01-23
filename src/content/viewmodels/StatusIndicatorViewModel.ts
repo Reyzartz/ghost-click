@@ -16,7 +16,7 @@ export class StatusIndicatorViewModel extends BaseViewModel {
   constructor(
     protected readonly emitter: Emitter,
     private readonly recordingStateRepository: RecordingStateRepository,
-    private readonly playbackStateRepository: PlaybackStateRepository
+    private readonly playbackStateRepository: PlaybackStateRepository,
   ) {
     super("StatusIndicatorViewModel", emitter);
   }
@@ -51,10 +51,6 @@ export class StatusIndicatorViewModel extends BaseViewModel {
     });
 
     this.emitter.on("PLAYBACK_COMPLETED", () => {
-      this.updateStatus("idle");
-    });
-
-    this.emitter.on("PLAYBACK_ERROR", () => {
       this.updateStatus("idle");
     });
 
