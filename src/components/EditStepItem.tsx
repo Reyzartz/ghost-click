@@ -143,7 +143,7 @@ export const EditStepItem = ({
             isDeleted ? "pr-20 opacity-50" : "opacity-100"
           } ${!isEditDisabled && !isDeleted ? "group-hover/step:pr-8" : ""}`}
         >
-          <div>
+          <div className="flex flex-col grow min-w-0">
             <Text
               variant="small"
               className={

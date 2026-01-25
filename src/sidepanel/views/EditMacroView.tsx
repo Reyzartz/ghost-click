@@ -107,12 +107,18 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
   };
 
   return (
-    <div className="p-4 space-y-4 text-sm text-slate-900">
-      <Button onClick={handleBack} variant="ghost" size="sm" icon={ArrowLeft}>
+    <div className="p-4 gap-4 text-sm text-slate-900 h-full overflow-hidden flex flex-col">
+      <Button
+        onClick={handleBack}
+        variant="ghost"
+        size="sm"
+        icon={ArrowLeft}
+        className="self-start"
+      >
         Back
       </Button>
 
-      <div className="flex flex-col gap-2 items-start grow overflow-hidden">
+      <div className="flex flex-col gap-2 items-start grow overflow-hidden shrink-0 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-col overflow-hidden">
           <Text variant="h2" className="mb-1">
             Edit Macro
@@ -208,7 +214,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
       {state.loading && !state.macro ? (
         <div className="text-center py-8 text-slate-500">Loading...</div>
       ) : state.macro ? (
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4 grow overflow-hidden">
           <Input
             label="Macro Name"
             type="text"
@@ -220,14 +226,11 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
             disabled={state.loading}
           />
 
-          <div>
+          <div className="flex flex-col grow overflow-hidden">
             <Text variant="body" className="font-medium mb-2">
               Steps ({state.macro.steps.length})
             </Text>
-            <div
-              className="rounded-lg border border-slate-200 bg-slate-50 overflow-y-auto"
-              style={{ height: "calc(100vh - 300px)" }}
-            >
+            <div className="grow overflow-scroll rounded-lg border border-slate-200 bg-slate-50">
               {state.macro.steps.length === 0 ? (
                 <div className="px-3 py-4 text-center text-slate-500">
                   <Text>No steps added yet.</Text>
@@ -265,7 +268,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
             </div>
           </div>
 
-          <div className="flex gap-2 pt-2">
+          <div className="flex gap-2 pt-2 shrink-0">
             <ConfirmActionButton
               variant="danger"
               fullWidth

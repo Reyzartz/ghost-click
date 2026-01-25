@@ -17,7 +17,7 @@ export default function App({ app }: { app: SidePanelApp }) {
   }, [app]);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white h-screen flex flex-col">
       {viewState.currentView === "macroList" && <MacroListView app={app} />}
       {viewState.currentView === "playbackProgress" && (
         <PlaybackProgressView app={app} />

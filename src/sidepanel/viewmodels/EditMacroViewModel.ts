@@ -162,34 +162,27 @@ export class EditMacroViewModel extends BaseViewModel {
     }
   }
 
-  updateMacroName(newName: string): void {
+  updateMacroName(name: string): void {
+    let error: string | null = null;
     if (!this.state.macro) {
       this.logger.error("Cannot update name: no macro loaded");
       this.setState({ error: "No macro loaded" });
       return;
     }
 
-    const trimmedName = newName.trim();
-
-    if (!trimmedName) {
-      this.setState({ error: "Name cannot be empty" });
-      return;
-    }
-
-    if (trimmedName === this.state.macro.name) {
-      this.logger.info("Name unchanged, skipping update");
-      return;
+    if (!name.trim()) {
+      error = "Macro name cannot be empty";
     }
 
     this.logger.info("Updating macro name", {
       macroId: this.state.macro.id,
       oldName: this.state.macro.name,
-      newName: trimmedName,
+      newName: name,
     });
 
-    const updatedMacro = { ...this.state.macro, name: trimmedName };
+    const updatedMacro = { ...this.state.macro, name };
 
-    this.setState({ macro: updatedMacro });
+    this.setState({ macro: updatedMacro, error });
   }
 
   updateStep(stepId: string, step: Partial<MacroStep>): void {
