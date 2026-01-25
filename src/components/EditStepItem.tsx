@@ -147,15 +147,17 @@ export const EditStepItem = ({
             <Text
               variant="small"
               className={
-                "flex grow truncate mb-0.5" + (isDeleted ? "line-through" : "")
+                "flex grow truncate mb-0.5 " + (isDeleted ? "line-through" : "")
               }
               color={getTextColor()}
             >
               <IconComponent size={16} className="shrink-0 mt-0.5 mr-1.5" />
               {step.name}
             </Text>
-            <Text variant="small" color="muted" className="ml-6">
-              {step.delay}ms delay
+
+            <Text variant="xs" color="muted" className="ml-5 pl-0.5">
+              {step.delay}ms delay{" "}
+              {step.retryCount > 0 && `• ${step.retryCount} retries`}
             </Text>
           </div>
 

@@ -7,6 +7,7 @@ type TextVariant =
   | "h4"
   | "h5"
   | "body"
+  | "xs"
   | "small"
   | "caption";
 export type TextColor = "default" | "muted" | "success" | "error" | "warning";
@@ -26,6 +27,7 @@ const variantStyles: Record<TextVariant, string> = {
   h5: "text-xs font-medium",
   body: "text-sm",
   small: "text-xs",
+  xs: "text-[10px]",
   caption: "text-xs uppercase tracking-wide",
 };
 
