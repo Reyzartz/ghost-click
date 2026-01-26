@@ -13,9 +13,10 @@ import {
 
 interface AddStepButtonProps {
   onAddStep: (step: ClickStep | InputStep | KeyPressStep) => void;
+  disabled?: boolean;
 }
 
-const AddStepButton = memo<AddStepButtonProps>(({ onAddStep }) => {
+const AddStepButton = memo<AddStepButtonProps>(({ onAddStep, disabled=false }) => {
   const [isAdding, setIsAdding] = useState(false);
   const [selectedType, setSelectedType] = useState<StepType | null>(null);
 
@@ -91,9 +92,10 @@ const AddStepButton = memo<AddStepButtonProps>(({ onAddStep }) => {
     return (
       <div
         className={`group/add flex flex-col gap-2 p-2 border-dashed border-[1.5px] border-slate-300 bg-slate-50 transition-all duration-300 ease-in-out overflow-hidden ${
-          !isAdding
-            ? "cursor-pointer items-center justify-center w-6 h-6 rounded-2xl hover:border-slate-400"
-            : "w-74 h-28 rounded"
+          disabled? "w-0 h-0 cursor-not-allowed overflow-hidden px-0 py-0" :
+            !isAdding
+              ? "cursor-pointer items-center justify-center w-6 h-6 rounded-2xl hover:border-slate-400"
+              : "w-74 h-28 rounded"
         }`}
       >
         {!selectedType && isAdding && (
@@ -138,7 +140,8 @@ const AddStepButton = memo<AddStepButtonProps>(({ onAddStep }) => {
           <button
             onClick={() => setIsAdding(true)}
             title="Add new step"
-            className="cursor-pointer duration-300 text-slate-300 group-hover/add:text-slate-400"
+            className={`duration-300 flex justify-center items-center text-slate-300 group-hover/add:text-slate-400 ${disabled ? "cursor-not-allowed" : "cursor-pointer" }`}
+            disabled={disabled}
           >
             <PlusIcon size={14} />
           </button>

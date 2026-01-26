@@ -257,6 +257,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                       <div className="text-slate-300 text-xs">|</div>
                       <AddStepButton
                         onAddStep={(step) => handleAddStep(step, index + 1)}
+                        disabled={state.isPlaying}
                       />
                       <div className="text-slate-300 group-last:hidden">
                         <ArrowDown size={16} />
