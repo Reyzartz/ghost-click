@@ -13,13 +13,14 @@ import {
   Check,
   AlertCircle,
 } from "lucide-react";
-import { IconButton, Text, Button } from "@/design-system";
+import { IconButton, Text, Button, Badge } from "@/design-system";
 import { TextColor } from "@/design-system/Text";
 
 interface EditStepItemProps {
   step: MacroStep;
   index: number;
   isDeleted: boolean;
+  isNew?: boolean;
   handleUpdateStep: (stepId: string, step: Partial<MacroStep>) => void;
   handleDeleteStep: (stepId: string) => void;
   handleUndoDelete: (stepId: string) => void;
@@ -41,6 +42,7 @@ const StepTypeToIcon: Record<
 export const EditStepItem = ({
   step,
   isDeleted,
+  isNew = false,
   handleUpdateStep,
   handleDeleteStep,
   handleUndoDelete,
@@ -139,25 +141,34 @@ export const EditStepItem = ({
         onClick={onEditHandler}
       >
         <div
-          className={`flex items-start w-full gap-2 px-3 py-1.5 mx-auto max-w-max transition-all ${
-            isDeleted ? "pr-20 opacity-50" : "opacity-100"
-          } ${!isEditDisabled && !isDeleted ? "group-hover/step:pr-8" : ""}`}
+          className={`flex items-start w-full gap-2 p-3 py-1.5 mx-auto max-w-max transition-all duration-200
+            ${ isDeleted ? "pr-20 opacity-50" : "opacity-100" }
+            ${!isEditDisabled && !isDeleted ? "group-hover/step:pr-8" : ""}`}
         >
           <div className="flex flex-col grow min-w-0">
-            <Text
-              variant="small"
-              className={
-                "flex grow truncate mb-0.5 " + (isDeleted ? "line-through" : "")
-              }
-              color={getTextColor()}
-            >
-              <IconComponent size={16} className="shrink-0 mt-0.5 mr-1.5" />
-              {step.name}
-            </Text>
+            <div className="flex items-center gap-1.5">
+              <Text
+                variant="small"
+                className={
+                  "flex grow truncate mb-0.5 " + (isDeleted ? "line-through" : "")
+                }
+                color={getTextColor()}
+              >
+                <IconComponent size={16} className="shrink-0 mt-0.5 mr-1.5" />
+                {step.name}
+              </Text>
+
+               {isNew && !isDeleted && (
+              <Badge variant="success" className="shrink-0 w-8 -mr-1.5 group-hover/step:w-0 group-hover/step:px-0 group-hover/step:border-0 overflow-hidden transition-all duration-200">
+                New
+              </Badge>
+            )}
+            </div>
 
             <Text variant="xs" color="muted" className="ml-5 pl-0.5">
               {step.delay}ms delay{" "}
               {step.retryCount > 0 && `• ${step.retryCount} retries`}
+              
             </Text>
           </div>
 
@@ -183,6 +194,7 @@ export const EditStepItem = ({
               isEditDisabled ? "hidden" : "group-hover/step:w-6"
             }`}
           >
+
             <IconButton
               onClick={(e) => {
                 e.stopPropagation();

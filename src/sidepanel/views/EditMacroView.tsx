@@ -23,6 +23,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
     error: null,
     success: false,
     deletedStepIds: new Set(),
+    newStepIds: new Set(),
     isPlaying: false,
     isPaused: false,
     currentStepId: null,
@@ -107,7 +108,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
   };
 
   return (
-    <div className="p-4 gap-4 text-sm text-slate-900 h-full overflow-hidden flex flex-col">
+    <div className="p-4 gap-3 text-sm text-slate-900 h-full overflow-hidden flex flex-col">
       <Button
         onClick={handleBack}
         variant="ghost"
@@ -118,7 +119,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
         Back
       </Button>
 
-      <div className="flex flex-col gap-2 items-start grow overflow-hidden shrink-0 md:flex-row md:items-center md:justify-between">
+      <div className="flex justify-between gap-2 items-end overflow-hidden shrink-0">
         <div className="flex flex-col overflow-hidden">
           <Text variant="h2" className="mb-1">
             Edit Macro
@@ -214,7 +215,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
       {state.loading && !state.macro ? (
         <div className="text-center py-8 text-slate-500">Loading...</div>
       ) : state.macro ? (
-        <div className="flex flex-col gap-4 grow overflow-hidden">
+        <div className="flex flex-col gap-3 grow overflow-hidden">
           <Input
             label="Macro Name"
             type="text"
@@ -248,6 +249,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                         handleUpdateStep={handleUpdateStep}
                         handleDeleteStep={handleDeleteStep}
                         isDeleted={state.deletedStepIds.has(step.id)}
+                        isNew={state.newStepIds.has(step.id)}
                         isEditDisabled={state.isPlaying}
                         handleUndoDelete={handleUndoDelete}
                         isCurrent={state.currentStepId === step.id}

@@ -10,6 +10,7 @@ export interface EditMacroState {
   error?: string | null;
   success?: boolean;
   deletedStepIds: Set<string>;
+  newStepIds: Set<string>;
   isPlaying: boolean;
   isPaused: boolean;
   currentStepId: string | null;
@@ -24,6 +25,7 @@ export class EditMacroViewModel extends BaseViewModel {
     error: null,
     success: false,
     deletedStepIds: new Set(),
+    newStepIds: new Set(),
     isPlaying: false,
     isPaused: false,
     currentStepId: null,
@@ -250,9 +252,13 @@ export class EditMacroViewModel extends BaseViewModel {
       ...this.state.macro.steps.slice(position),
     ];
 
+    const newStepIds = new Set(this.state.newStepIds);
+    newStepIds.add(newStep.id);
+
     const updatedMacro = { ...this.state.macro, steps: updatedSteps };
-    this.setState({ macro: updatedMacro });
+    this.setState({ macro: updatedMacro, newStepIds });
   }
+  
   deleteStep(stepId: string): void {
     if (!this.state.macro) {
       this.logger.error("Cannot delete step: no macro loaded");
@@ -263,6 +269,19 @@ export class EditMacroViewModel extends BaseViewModel {
       macroId: this.state.macro.id,
       stepId,
     });
+
+    if(this.isStepNew(stepId)) {
+      const updatedSteps = this.state.macro.steps.filter(
+        (step) => step.id !== stepId,
+      );
+
+      const newStepIds = new Set(this.state.newStepIds);
+      newStepIds.delete(stepId);
+
+      const updatedMacro = { ...this.state.macro, steps: updatedSteps };
+      this.setState({ macro: updatedMacro, newStepIds });
+      return;
+    }
 
     const deletedStepIds = new Set(this.state.deletedStepIds);
     deletedStepIds.add(stepId);
@@ -291,6 +310,10 @@ export class EditMacroViewModel extends BaseViewModel {
     return this.state.deletedStepIds.has(stepId);
   }
 
+  isStepNew(stepId: string): boolean {
+    return this.state.newStepIds.has(stepId);
+  }
+
   async updateMacro(macro: Macro): Promise<void> {
     this.logger.info("Updating macro", { macroId: macro.id });
     this.setState({ loading: true, error: null, success: false });
@@ -310,6 +333,7 @@ export class EditMacroViewModel extends BaseViewModel {
         success: true,
         error: null,
         deletedStepIds: new Set(),
+        newStepIds: new Set(),
       });
 
       this.logger.info("Updated macro", { macroId: macro.id });
