@@ -29,33 +29,28 @@ export const QuickActionsView = ({ app }: { app: ContentApp }) => {
     }
   }, [state.isOpen]);
 
-  useEffect(() => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (!state.isOpen) return;
 
-    const handleKeyDown = (e: KeyboardEvent): void => {
-      switch (e.key) {
-        case "ArrowUp":
-          e.preventDefault();
-          app.quickActionsViewModel.moveSelectionUp();
-          break;
-        case "ArrowDown":
-          e.preventDefault();
-          app.quickActionsViewModel.moveSelectionDown();
-          break;
-        case "Enter":
-          e.preventDefault();
-          app.quickActionsViewModel.selectCurrentMacro();
-          break;
-        case "Escape":
-          e.preventDefault();
-          app.quickActionsViewModel.close();
-          break;
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [state.isOpen, app]);
+    switch (e.key) {
+      case "ArrowUp":
+        e.preventDefault();
+        app.quickActionsViewModel.moveSelectionUp();
+        break;
+      case "ArrowDown":
+        e.preventDefault();
+        app.quickActionsViewModel.moveSelectionDown();
+        break;
+      case "Enter":
+        e.preventDefault();
+        app.quickActionsViewModel.selectCurrentMacro();
+        break;
+      case "Escape":
+        e.preventDefault();
+        app.quickActionsViewModel.close();
+        break;
+    }
+  };
 
   if (!state.isOpen) return null;
 
@@ -87,6 +82,7 @@ export const QuickActionsView = ({ app }: { app: ContentApp }) => {
               app.quickActionsViewModel.setSearchQuery(value)
             }
             placeholder="Search macros..."
+            onKeyDown={handleKeyDown}
             ref={searchInputRef}
           />
 

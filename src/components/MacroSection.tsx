@@ -10,6 +10,7 @@ interface MacroSectionProps {
   onPlay: (macroId: string) => void;
   onEdit: (macroId: string) => void;
   onDelete: (macroId: string) => void;
+  selectedIndex?: number;
 }
 
 export const MacroSection = ({
@@ -20,6 +21,7 @@ export const MacroSection = ({
   onPlay,
   onEdit,
   onDelete,
+  selectedIndex,
 }: MacroSectionProps) => {
   return (
     <div className="space-y-2">
@@ -36,13 +38,14 @@ export const MacroSection = ({
         <Card className="bg-slate-50 text-slate-600">{emptyMessage}</Card>
       )}
       <ul className="space-y-2">
-        {macros.map((macro) => (
+        {macros.map((macro, index) => (
           <MacroCard
             key={macro.id}
             macro={macro}
             onEdit={() => onEdit(macro.id)}
             onPlay={() => onPlay(macro.id)}
             onDelete={() => onDelete(macro.id)}
+            isSelected={selectedIndex !== undefined && index === selectedIndex}
           />
         ))}
       </ul>

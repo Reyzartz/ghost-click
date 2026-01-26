@@ -11,6 +11,9 @@ export interface MacroListState {
   currentDomain: string;
   isRecording: boolean;
   error?: string | null;
+  searchQuery: string;
+  filteredMacros: Macro[];
+  selectedIndex: number;
 }
 
 export type MacroSortBy = "createdAt" | "updatedAt";
@@ -24,6 +27,9 @@ export class MacroListViewModel extends BaseViewModel {
     currentDomain: "",
     isRecording: false,
     error: null,
+    searchQuery: "",
+    filteredMacros: [],
+    selectedIndex: 0,
   };
   private listeners: Array<(state: MacroListState) => void> = [];
 
@@ -98,6 +104,59 @@ export class MacroListViewModel extends BaseViewModel {
     }
   }
 
+  setSearchQuery(query: string): void {
+    this.logger.info("Setting search query", { query });
+    const filteredMacros = this.filterMacros(query);
+
+    this.setState({
+      searchQuery: query,
+      filteredMacros,
+      selectedIndex: 0,
+    });
+  }
+
+  private filterMacros(query: string): Macro[] {
+    if (!query.trim()) {
+      return [];
+    }
+
+    const lowerQuery = query.toLowerCase();
+
+    const results = this.state.allMacros.filter(
+      (macro) =>
+        macro.name.toLowerCase().includes(lowerQuery) ||
+        macro.domain?.toLowerCase().includes(lowerQuery)
+    );
+
+    return results;
+  }
+
+  moveSelectionUp(): void {
+    if (this.state.filteredMacros.length === 0) return;
+    const newIndex =
+      this.state.selectedIndex === 0
+        ? this.state.filteredMacros.length - 1
+        : this.state.selectedIndex - 1;
+    this.setState({ selectedIndex: newIndex });
+  }
+
+  moveSelectionDown(): void {
+    if (this.state.filteredMacros.length === 0) return;
+    const newIndex =
+      this.state.selectedIndex === this.state.filteredMacros.length - 1
+        ? 0
+        : this.state.selectedIndex + 1;
+    this.setState({ selectedIndex: newIndex });
+  }
+
+  selectCurrentMacro(): void {
+    const macro = this.state.filteredMacros[this.state.selectedIndex];
+    if (macro) {
+      this.logger.info("Selecting macro via keyboard", { macroId: macro.id });
+      this.emitter.emit("PLAY_MACRO", { macroId: macro.id });
+    }
+  }
+
   private async loadMacros(
     sortBy: MacroSortBy = "updatedAt",
     sortOrder: MacroSortOrder = "desc",
@@ -123,7 +182,12 @@ export class MacroListViewModel extends BaseViewModel {
         currentDomainCount: macros.length,
         allCount: allMacros.length,
       });
-      this.setState({ macros, allMacros, loading: false });
+      
+      const filteredMacros = this.state.searchQuery
+        ? this.filterMacros(this.state.searchQuery)
+        : [];
+      
+      this.setState({ macros, allMacros, loading: false, filteredMacros });
     } catch (err) {
       this.logger.error("Failed to load macros", { err });
       this.setState({ error: "Failed to load macros", loading: false });

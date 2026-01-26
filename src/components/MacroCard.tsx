@@ -9,6 +9,7 @@ interface MacroCardProps {
   onPlay: () => void;
   onEdit?: () => void;
   onDelete: () => void;
+  isSelected?: boolean;
 }
 
 export const MacroCard = ({
@@ -16,6 +17,7 @@ export const MacroCard = ({
   onPlay,
   onEdit,
   onDelete,
+  isSelected = false,
 }: MacroCardProps) => {
   const dropdownItems: DropdownItem[] = [
     {
@@ -42,19 +44,33 @@ export const MacroCard = ({
 
   return (
     <li
-      className="rounded group cursor-pointer border transition-colors hover:bg-slate-100 p-2 border-slate-200"
+      className={`rounded group cursor-pointer border transition-colors p-2 ${
+        isSelected
+          ? "bg-slate-100 border-slate-300"
+          : "hover:bg-slate-100 border-slate-200"
+      }`}
       onClick={onPlay}
+      ref={(el) => {
+        if (isSelected && el) {
+          el.scrollIntoView({
+            block: "nearest",
+            behavior: "smooth",
+          });
+        }
+      }}
     >
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-start gap-3 grow overflow-hidden">
           <DisplayFavicon
             name={macro.name}
             faviconUrl={macro.faviconUrl}
-            className="mt-0.5 transition-colors group-hover:bg-white"
+            className={`mt-0.5 transition-colors ${
+              isSelected ? "bg-white" : "group-hover:bg-white"
+            }`}
           />
 
           <div className="grow overflow-hidden">
-            <Text className="font-medium">{macro.name}</Text>
+            <Text className="font-medium line-clamp-1">{macro.name}</Text>
             <div className="flex gap-2 items-center">
               <Text variant="small" color="muted" className="shrink-0">
                 {macro.steps.length} step

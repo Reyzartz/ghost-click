@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { SidePanelApp } from "../SidePanelApp";
 import { Alert, Text, Button } from "@/design-system";
 import { MacroSection } from "@/components/MacroSection";
-import { Circle, Square } from "lucide-react";
+import { Circle, Square, ArrowUp, ArrowDown } from "lucide-react";
 import { MacroListState } from "../viewmodels/MacroListViewModel";
+import { SearchInput } from "@/components/SearchInput";
 
 export const MacroListView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<MacroListState>({
@@ -13,12 +14,40 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
     currentDomain: "",
     isRecording: false,
     error: null,
+    searchQuery: "",
+    filteredMacros: [],
+    selectedIndex: 0,
   });
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const unsubscribe = app.macroListViewModel.subscribe(setState);
     return () => unsubscribe();
   }, [app]);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (!state.searchQuery) return;
+
+    switch (e.key) {
+      case "ArrowUp":
+        e.preventDefault();
+        app.macroListViewModel.moveSelectionUp();
+        break;
+      case "ArrowDown":
+        e.preventDefault();
+        app.macroListViewModel.moveSelectionDown();
+        break;
+      case "Enter":
+        e.preventDefault();
+        app.macroListViewModel.selectCurrentMacro();
+        break;
+      case "Escape":
+        e.preventDefault();
+        app.macroListViewModel.setSearchQuery("");
+        searchInputRef.current?.blur();
+        break;
+    }
+  };
 
   const otherDomainMacros = useMemo(
     () =>
@@ -49,6 +78,9 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
   const handleStopRecording = (): void => {
     app.emitter.emit("STOP_RECORDING", {}, { currentTab: false });
   };
+
+  // Determine which macros to show
+  const showSearchResults = state.searchQuery.trim() !== "";
   
   return (
     <div className="p-4 space-y-3 text-sm text-slate-900 bg-white">
@@ -56,7 +88,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
         <div className="grow overflow-hidden">
           <Text variant="h2">Macros</Text>
 
-          {state.currentDomain && (
+          {state.currentDomain && !showSearchResults && (
             <Text variant="small" color="muted" className="truncate">
               Domain: {state.currentDomain}
             </Text>
@@ -88,26 +120,61 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
 
       {state.error && <Alert variant="error">{state.error}</Alert>}
 
-      <MacroSection
-        title="Current Domain"
-        macros={state.macros}
-        loading={state.loading}
-        emptyMessage="No macros saved for this domain."
-        onPlay={handlePlay}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
+      <SearchInput
+        value={state.searchQuery}
+        onChange={(value) => app.macroListViewModel.setSearchQuery(value)}
+        placeholder="Search macros..."
+        onKeyDown={handleKeyDown}
+        ref={searchInputRef}
       />
 
-      {!state.loading && otherDomainMacros.length > 0 && (
+      {showSearchResults && (
+        <Text
+          variant="small"
+          color="muted"
+          className="flex items-center gap-0.5"
+        >
+          Use <ArrowUp size={12} className="inline" />
+          <ArrowDown size={12} className="inline" /> to navigate, Enter to
+          play, Esc to clear
+        </Text>
+      )}
+
+      {showSearchResults ? (
         <MacroSection
-          title="All Domains"
-          macros={otherDomainMacros}
+          title="Search Results"
+          macros={state.filteredMacros}
           loading={state.loading}
-          emptyMessage="No macros from other domains."
+          emptyMessage={`No macros found for "${state.searchQuery}"`}
           onPlay={handlePlay}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          selectedIndex={state.selectedIndex}
         />
+      ) : (
+        <>
+          <MacroSection
+            title="Current Domain"
+            macros={state.macros}
+            loading={state.loading}
+            emptyMessage="No macros saved for this domain."
+            onPlay={handlePlay}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+
+          {!state.loading && otherDomainMacros.length > 0 && (
+            <MacroSection
+              title="All Domains"
+              macros={otherDomainMacros}
+              loading={state.loading}
+              emptyMessage="No macros from other domains."
+              onPlay={handlePlay}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          )}
+        </>
       )}
     </div>
   );

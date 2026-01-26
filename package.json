@@ -4,9 +4,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "dev": "bun vite",
+    "build": "tsc -b && bun vite build",
+    "preview": "bun vite preview"
   },
   "dependencies": {
     "lucide-react": "^0.562.0",
