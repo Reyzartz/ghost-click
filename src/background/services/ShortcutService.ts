@@ -9,6 +9,8 @@ export class ShortcutService extends BaseService {
     TOGGLE_QUICK_ACTIONS: "toggle-quick-actions",
   };
 
+  private static isPanelOpen = false;
+
   constructor(protected readonly emitter: Emitter) {
     super("ShortcutService", emitter);
   }
@@ -18,6 +20,15 @@ export class ShortcutService extends BaseService {
 
     chrome.commands.onCommand.addListener((command) => {
       this.onCommandListener(command);
+    });
+
+    chrome.sidePanel.setPanelBehavior({
+      openPanelOnActionClick: true
+    });
+
+    chrome.sidePanel.onOpened.addListener(() => {
+      ShortcutService.isPanelOpen = true;
+      this.logger.info("Side panel opened");
     });
   }
 
@@ -63,8 +74,18 @@ export class ShortcutService extends BaseService {
     });
   }
 
+  private static async openSidePanel(tabId: number, windowId?: number): Promise<void> {
+    await chrome.sidePanel.open({ tabId, windowId });
+  }
+
+  private static async closeSidePanel(): Promise<void> {
+    await chrome.sidePanel.setOptions({ enabled: false });
+    await chrome.sidePanel.setOptions({ enabled: true });
+    ShortcutService.isPanelOpen = false;
+  }
+
   static toggleSidePanel(): void {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
       const tabId = tabs[0]?.id;
 
       if (!tabId) {
@@ -72,13 +93,16 @@ export class ShortcutService extends BaseService {
         return;
       }
 
-      chrome.sidePanel.open({
-        tabId,
-      });
-
-      console.info("Toggled side panel", {
-        tabId,
-      });
+      /*
+      * currently, chrome.sidePanel API does not provide a direct method to check if the side panel is open for a specific tab.
+      * As a workaround, we maintain the state within the ShortcutService class.
+      * https://github.com/w3c/webextensions/issues/521#issuecomment-2560936431
+      */ 
+      if (ShortcutService.isPanelOpen) {
+        await ShortcutService.closeSidePanel();
+      } else {
+        await ShortcutService.openSidePanel(tabId);
+      }
     });
   }
 }
