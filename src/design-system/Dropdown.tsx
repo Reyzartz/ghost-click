@@ -54,13 +54,13 @@ export const Dropdown = ({ items, trigger }: DropdownProps) => {
       </div>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-1 z-10 min-w-30 rounded border border-slate-200 bg-white shadow-lg">
+        <div className="absolute top-full right-0 z-10 mt-1 min-w-30 rounded border border-slate-200 bg-white shadow-lg">
           {items.map((item, index) => {
             const IconComponent = item.icon;
             return (
               <button
                 key={index}
-                className="cursor-pointer w-full px-3 py-2 text-left text-sm hover:bg-slate-50 first:rounded-t last:rounded-b flex items-center gap-2"
+                className="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm first:rounded-t last:rounded-b hover:bg-slate-50"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleItemClick(item.onClick);

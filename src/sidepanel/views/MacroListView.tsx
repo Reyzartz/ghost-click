@@ -52,7 +52,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
   const otherDomainMacros = useMemo(
     () =>
       state.allMacros.filter((macro) => macro.domain !== state.currentDomain),
-    [state.allMacros, state.currentDomain],
+    [state.allMacros, state.currentDomain]
   );
 
   const handlePlay = (macroId: string): void => {
@@ -101,7 +101,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
   const showSearchResults = state.searchQuery.trim() !== "";
 
   return (
-    <div className="p-4 space-y-3 text-sm text-slate-900 bg-white">
+    <div className="space-y-3 bg-white p-4 text-sm text-slate-900">
       <header className="flex items-end justify-between gap-4">
         <div className="grow overflow-hidden">
           <Text variant="h2">Macros</Text>
@@ -113,7 +113,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
           )}
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex shrink-0 items-center gap-2">
           <Button
             onClick={handleImport}
             variant="secondary"

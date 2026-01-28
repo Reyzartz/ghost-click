@@ -135,40 +135,41 @@ export const EditStepItem = ({
 
       <li
         ref={stepRef}
-        className={`relative max-w-full list-none group/step border rounded ${getStatusStyles()} ${
+        className={`group/step relative max-w-full list-none rounded border ${getStatusStyles()} ${
           isEditDisabled ? "cursor-not-allowed" : "cursor-pointer"
         }`}
         onClick={onEditHandler}
       >
         <div
-          className={`flex items-start w-full gap-2 p-3 py-1.5 mx-auto max-w-max transition-all duration-200
-            ${ isDeleted ? "pr-20 opacity-50" : "opacity-100" }
-            ${!isEditDisabled && !isDeleted ? "group-hover/step:pr-8" : ""}`}
+          className={`mx-auto flex w-full max-w-max items-start gap-2 p-3 py-1.5 transition-all duration-200 ${isDeleted ? "pr-20 opacity-50" : "opacity-100"} ${!isEditDisabled && !isDeleted ? "group-hover/step:pr-8" : ""}`}
         >
-          <div className="flex flex-col grow min-w-0">
+          <div className="flex min-w-0 grow flex-col">
             <div className="flex items-center gap-1.5">
               <Text
                 variant="small"
                 className={
-                  "flex grow truncate mb-0.5 " + (isDeleted ? "line-through" : "")
+                  "mb-0.5 flex grow truncate " +
+                  (isDeleted ? "line-through" : "")
                 }
                 color={getTextColor()}
               >
-                <IconComponent size={16} className="shrink-0 mt-0.5 mr-1.5" />
+                <IconComponent size={16} className="mt-0.5 mr-1.5 shrink-0" />
                 {step.name}
               </Text>
 
-               {isNew && !isDeleted && (
-              <Badge variant="success" className="shrink-0 w-8 -mr-1.5 group-hover/step:w-0 group-hover/step:px-0 group-hover/step:border-0 overflow-hidden transition-all duration-200">
-                New
-              </Badge>
-            )}
+              {isNew && !isDeleted && (
+                <Badge
+                  variant="success"
+                  className="-mr-1.5 w-8 shrink-0 overflow-hidden transition-all duration-200 group-hover/step:w-0 group-hover/step:border-0 group-hover/step:px-0"
+                >
+                  New
+                </Badge>
+              )}
             </div>
 
             <Text variant="xs" color="muted" className="ml-5 pl-0.5">
               {step.delay}ms delay{" "}
               {step.retryCount > 0 && `• ${step.retryCount} retries`}
-              
             </Text>
           </div>
 
@@ -184,17 +185,16 @@ export const EditStepItem = ({
             variant="ghost"
             size="sm"
             icon={Undo2}
-            className="absolute right-0 top-0"
+            className="absolute top-0 right-0"
           >
             Undo
           </Button>
         ) : (
           <div
-            className={`z-50 absolute right-0.5 top-1 items-center overflow-hidden w-0 transition-all duration-200 ${
+            className={`absolute top-1 right-0.5 z-50 w-0 items-center overflow-hidden transition-all duration-200 ${
               isEditDisabled ? "hidden" : "group-hover/step:w-6"
             }`}
           >
-
             <IconButton
               onClick={(e) => {
                 e.stopPropagation();

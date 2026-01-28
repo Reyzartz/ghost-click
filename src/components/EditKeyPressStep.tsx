@@ -113,7 +113,7 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
             onBlur={onStopRecording}
             readOnly
             className={`cursor-pointer ${
-              isRecording ? "bg-blue-50 border-blue-400" : "bg-slate-50"
+              isRecording ? "border-blue-400 bg-blue-50" : "bg-slate-50"
             }`}
             placeholder="Click to record"
           />
@@ -146,7 +146,7 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
         </ModalFooter>
       </Modal>
     );
-  },
+  }
 );
 
 export { EditKeyPressStep };

@@ -21,9 +21,9 @@ export const ProgressBar = ({
           {percentage}%
         </Text>
       </div>
-      <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+      <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200">
         <div
-          className="bg-green-600 h-2 rounded-full transition-all duration-300"
+          className="h-2 rounded-full bg-green-600 transition-all duration-300"
           style={{ width: `${percentage}%` }}
         />
       </div>

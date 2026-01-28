@@ -15,7 +15,7 @@ const StepRetryInput = memo<StepRetryInputProps>(
           Retry Settings:
         </Text>
 
-        <div className="flex flex-col gap-2 border border-slate-200 rounded p-2 bg-slate-50">
+        <div className="flex flex-col gap-2 rounded border border-slate-200 bg-slate-50 p-2">
           <Input
             type="number"
             min={0}

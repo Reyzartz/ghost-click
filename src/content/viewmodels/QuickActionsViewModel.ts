@@ -25,7 +25,7 @@ export class QuickActionsViewModel extends BaseViewModel {
 
   constructor(
     private readonly macroRepository: MacroRepository,
-    protected readonly emitter: Emitter,
+    protected readonly emitter: Emitter
   ) {
     super("QuickActionsViewModel", emitter);
   }
@@ -101,7 +101,7 @@ export class QuickActionsViewModel extends BaseViewModel {
     const results = this.state.macros.filter(
       (macro) =>
         macro.name.toLowerCase().includes(lowerQuery) ||
-        macro.domain?.toLowerCase().includes(lowerQuery),
+        macro.domain?.toLowerCase().includes(lowerQuery)
     );
 
     return results;

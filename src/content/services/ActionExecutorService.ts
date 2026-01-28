@@ -14,7 +14,7 @@ export class ActionExecutorService extends BaseService {
 
   constructor(
     protected readonly emitter: Emitter,
-    protected readonly playbackStateRepository: PlaybackStateRepository,
+    protected readonly playbackStateRepository: PlaybackStateRepository
   ) {
     super("ActionExecutorService", emitter);
   }
@@ -51,7 +51,7 @@ export class ActionExecutorService extends BaseService {
 
       if (!macroId) {
         this.logger.error(
-          "No macroId found in playback state during error handling",
+          "No macroId found in playback state during error handling"
         );
         return;
       }
@@ -68,12 +68,12 @@ export class ActionExecutorService extends BaseService {
     const element = await this.findElementWithRetry(
       step.target,
       step.retryCount,
-      step.retryInterval,
+      step.retryInterval
     );
 
     if (!element) {
       throw new Error(
-        `Element not found for target: ${JSON.stringify(step.target)}`,
+        `Element not found for target: ${JSON.stringify(step.target)}`
       );
     }
 
@@ -105,7 +105,7 @@ export class ActionExecutorService extends BaseService {
         },
         {
           threshold: 0.8, // Element must be at least 80% visible
-        },
+        }
       );
 
       observer.observe(element);
@@ -115,7 +115,7 @@ export class ActionExecutorService extends BaseService {
   private async findElementWithRetry(
     target: ClickStep["target"],
     retryCount: number,
-    retryInterval: number,
+    retryInterval: number
   ): Promise<Element | null> {
     let attempts = 0;
     const maxAttempts = retryCount + 1; // Initial attempt + retries
@@ -171,12 +171,12 @@ export class ActionExecutorService extends BaseService {
     const element = await this.findElementWithRetry(
       step.target,
       step.retryCount,
-      step.retryInterval,
+      step.retryInterval
     );
 
     if (!element) {
       throw new Error(
-        `Element not found for target: ${JSON.stringify(step.target)}`,
+        `Element not found for target: ${JSON.stringify(step.target)}`
       );
     }
 
@@ -218,12 +218,12 @@ export class ActionExecutorService extends BaseService {
     const element = await this.findElementWithRetry(
       step.target,
       step.retryCount,
-      step.retryInterval,
+      step.retryInterval
     );
 
     if (!element) {
       throw new Error(
-        `Element not found for target: ${JSON.stringify(step.target)}`,
+        `Element not found for target: ${JSON.stringify(step.target)}`
       );
     }
 

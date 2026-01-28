@@ -64,7 +64,7 @@ export class NotificationViewModel extends BaseViewModel {
 
   private showNotification(
     message: string,
-    type: "success" | "error" | "info",
+    type: "success" | "error" | "info"
   ): void {
     const id = `${Date.now()}-${Math.random()}`;
     const notification: Notification = { id, message, type };

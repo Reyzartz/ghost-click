@@ -42,7 +42,7 @@ shadowRoot.appendChild(mount);
 createRoot(mount).render(
   <StrictMode>
     <App app={contentApp} />
-  </StrictMode>,
+  </StrictMode>
 );
 
 // TODO:

@@ -68,7 +68,7 @@ const StepTargetInput = memo<StepTargetInputProps>(({ target, onChange }) => {
 
   return (
     <div>
-      <div className="flex items-end justify-between mb-2">
+      <div className="mb-2 flex items-end justify-between">
         <Text variant="small" color="muted" className="font-medium">
           Target Selector:
         </Text>
@@ -102,7 +102,7 @@ const StepTargetInput = memo<StepTargetInputProps>(({ target, onChange }) => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-2 border border-slate-200 rounded p-2 bg-slate-50">
+      <div className="flex flex-col gap-2 rounded border border-slate-200 bg-slate-50 p-2">
         <Input
           type="text"
           label="Element ID"

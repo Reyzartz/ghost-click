@@ -76,7 +76,7 @@ const EditClickStep = memo<EditClickStepProps>(
         </ModalFooter>
       </Modal>
     );
-  },
+  }
 );
 
 export { EditClickStep };

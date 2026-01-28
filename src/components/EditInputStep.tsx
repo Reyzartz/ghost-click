@@ -87,7 +87,7 @@ const EditInputStep = memo<EditInputStepProps>(
         </ModalFooter>
       </Modal>
     );
-  },
+  }
 );
 
 export { EditInputStep };

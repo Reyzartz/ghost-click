@@ -32,13 +32,13 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
 
   const normalizedStepIndex = Math.min(
     state.currentStepIndex,
-    state.totalSteps,
+    state.totalSteps
   );
   const progress =
     state.totalSteps > 0
       ? Math.min(
           100,
-          Math.round((normalizedStepIndex / state.totalSteps) * 100),
+          Math.round((normalizedStepIndex / state.totalSteps) * 100)
         )
       : 0;
   const displayStepNumber = state.totalSteps
@@ -90,7 +90,7 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
   };
 
   return (
-    <div className="p-4 gap-4 text-sm text-slate-900 flex flex-col h-screen overflow-hidden">
+    <div className="flex h-screen flex-col gap-4 overflow-hidden p-4 text-sm text-slate-900">
       <Button
         onClick={handleGoBack}
         variant="ghost"
@@ -195,7 +195,7 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
         </Alert>
       )}
 
-      <div className="space-y-2 grow overflow-y-auto max-h-full">
+      <div className="max-h-full grow space-y-2 overflow-y-auto">
         <Text variant="caption" color="muted" className="sticky top-0 bg-white">
           All Steps
         </Text>

@@ -63,7 +63,7 @@ const ConfirmActionButton = memo<ConfirmActionModalProps>(
         </Modal>
       </>
     );
-  },
+  }
 );
 
 ConfirmActionButton.displayName = "ConfirmActionButton";

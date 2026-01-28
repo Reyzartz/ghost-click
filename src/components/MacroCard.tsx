@@ -38,20 +38,19 @@ export const MacroCard = ({
       icon: Copy,
     },
     {
-    label: "Delete",
-    onClick: onDelete,
-    variant: "danger" as const,
-    icon: Trash2,
-  }
+      label: "Delete",
+      onClick: onDelete,
+      variant: "danger" as const,
+      icon: Trash2,
+    },
   ];
-
 
   return (
     <li
-      className={`rounded group cursor-pointer border transition-colors p-2 ${
+      className={`group cursor-pointer rounded border p-2 transition-colors ${
         isSelected
-          ? "bg-slate-100 border-slate-300"
-          : "hover:bg-slate-100 border-slate-200"
+          ? "border-slate-300 bg-slate-100"
+          : "border-slate-200 hover:bg-slate-100"
       }`}
       onClick={onPlay}
       ref={(el) => {
@@ -64,7 +63,7 @@ export const MacroCard = ({
       }}
     >
       <div className="flex items-center justify-between gap-4">
-        <div className="flex items-start gap-3 grow overflow-hidden">
+        <div className="flex grow items-start gap-3 overflow-hidden">
           <DisplayFavicon
             name={macro.name}
             faviconUrl={macro.faviconUrl}
@@ -74,15 +73,15 @@ export const MacroCard = ({
           />
 
           <div className="grow overflow-hidden">
-            <Text className="font-medium line-clamp-1">{macro.name}</Text>
-            <div className="flex gap-2 items-center">
+            <Text className="line-clamp-1 font-medium">{macro.name}</Text>
+            <div className="flex items-center gap-2">
               <Text variant="small" color="muted" className="shrink-0">
                 {macro.steps.length} step
                 {macro.steps.length === 1 ? "" : "s"}
               </Text>
 
               {macro.domain && (
-                <Text variant="small" className="text-slate-400 truncate">
+                <Text variant="small" className="truncate text-slate-400">
                   • {macro.domain}
                 </Text>
               )}

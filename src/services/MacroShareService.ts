@@ -57,7 +57,7 @@ export class MacroShareService extends BaseService {
             .test(
               "at-least-one-selector",
               "At least one of id, className, or xpath is required",
-              (value) => !!(value?.id || value?.className || value?.xpath),
+              (value) => !!(value?.id || value?.className || value?.xpath)
             )
             .required("Target is required"),
           value: yup.string().when("type", {
@@ -102,7 +102,7 @@ export class MacroShareService extends BaseService {
               schema.required("metaKey is required for KEYPRESS steps"),
             otherwise: (schema) => schema.optional(),
           }),
-        }),
+        })
       )
       .required("Steps are required")
       .min(1, "At least one step is required"),
@@ -137,7 +137,7 @@ export class MacroShareService extends BaseService {
    * Create a new macro from a shareable JSON string
    */
   fromShareableString(
-    shareableString: string,
+    shareableString: string
   ): Omit<Macro, "id" | "createdAt" | "updatedAt"> {
     let shareable: ShareableMacro;
 
@@ -166,7 +166,7 @@ export class MacroShareService extends BaseService {
     // Validate version
     if (shareable.version !== MacroShareService.SHARE_VERSION) {
       throw new Error(
-        `Unsupported macro version: ${shareable.version}. Expected ${MacroShareService.SHARE_VERSION}`,
+        `Unsupported macro version: ${shareable.version}. Expected ${MacroShareService.SHARE_VERSION}`
       );
     }
 

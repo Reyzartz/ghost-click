@@ -22,7 +22,7 @@ export class Emitter {
   private messageListenerSetup = false;
 
   constructor(
-    private readonly appType: "background" | "content" | "popup" | "sidepanel",
+    private readonly appType: "background" | "content" | "popup" | "sidepanel"
   ) {
     this.logger = new Logger(`${this.appType}/Emitter`);
     this.setupChromeMessageListener();
@@ -39,7 +39,7 @@ export class Emitter {
         if (message.type === "EMIT_EVENT") {
           this.logger.info(
             `Received event '${message.event}' from ${message.source}`,
-            { data: message.data },
+            { data: message.data }
           );
 
           this.emitLocally(message.event, message.data);
@@ -47,7 +47,7 @@ export class Emitter {
           sendResponse({ status: "ok" });
         }
         return true;
-      },
+      }
     );
 
     this.messageListenerSetup = true;
@@ -71,7 +71,7 @@ export class Emitter {
     const listeners = this.events[event] as EventDispatcher<T>[] | undefined;
     if (listeners) {
       this.events[event] = listeners.filter(
-        (l) => l !== listener,
+        (l) => l !== listener
       ) as (typeof this.events)[T];
     }
   }
@@ -79,7 +79,7 @@ export class Emitter {
   emit<T extends EventType>(
     event: T,
     data?: EventOf<T>["data"],
-    options?: EmitOptions,
+    options?: EmitOptions
   ): void {
     this.logger.info(`Emitting event: ${event}`, { data });
 
@@ -90,12 +90,12 @@ export class Emitter {
 
   private emitLocally<T extends EventType>(
     event: T,
-    data?: EventOf<T>["data"],
+    data?: EventOf<T>["data"]
   ): void {
     if (this.events[event] === undefined) return;
 
     this.events[event].forEach((listener) =>
-      listener(data as EventOf<T>["data"]),
+      listener(data as EventOf<T>["data"])
     );
   }
 
@@ -105,7 +105,7 @@ export class Emitter {
   private bridgeToOtherContexts<T extends EventType>(
     event: T,
     data?: EventOf<T>["data"],
-    { currentTab = true }: EmitOptions = {},
+    { currentTab = true }: EmitOptions = {}
   ): void {
     const message: ChromeMessage<T> = {
       type: "EMIT_EVENT",
@@ -138,7 +138,7 @@ export class Emitter {
   }
 
   private sendMessageToCurrentTab<T extends EventType>(
-    message: ChromeMessage<T>,
+    message: ChromeMessage<T>
   ): void {
     chrome.tabs.query(
       {
@@ -152,16 +152,16 @@ export class Emitter {
           chrome.tabs.sendMessage(tab.id, message).catch((err: unknown) => {
             this.logger.info(
               `Failed to send message to content script in tab ${tab.id}`,
-              { error: err },
+              { error: err }
             );
           });
         });
-      },
+      }
     );
   }
 
   private sendMessageToAllTabs<T extends EventType>(
-    message: ChromeMessage<T>,
+    message: ChromeMessage<T>
   ): void {
     chrome.tabs.query({}, (tabs) => {
       tabs.forEach((tab) => {
@@ -170,7 +170,7 @@ export class Emitter {
         chrome.tabs.sendMessage(tab.id, message).catch((err: unknown) => {
           this.logger.info(
             `Failed to send message to content script in tab ${tab.id}`,
-            { error: err },
+            { error: err }
           );
         });
       });

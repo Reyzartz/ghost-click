@@ -64,7 +64,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
 
     // Filter out deleted steps before playing
     const filteredSteps = state.macro.steps.filter(
-      (step) => !state.deletedStepIds.has(step.id),
+      (step) => !state.deletedStepIds.has(step.id)
     );
     const macroToPlay = { ...state.macro, steps: filteredSteps };
 
@@ -77,7 +77,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
 
   const handleAddStep = (
     newStep: ClickStep | InputStep | KeyPressStep,
-    position: number,
+    position: number
   ): void => {
     app.editMacroViewModel.addStep(newStep, position);
   };
@@ -109,7 +109,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
   };
 
   return (
-    <div className="p-4 gap-3 text-sm text-slate-900 h-full overflow-hidden flex flex-col">
+    <div className="flex h-full flex-col gap-3 overflow-hidden p-4 text-sm text-slate-900">
       <Button
         onClick={handleBack}
         variant="ghost"
@@ -120,13 +120,13 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
         Back
       </Button>
 
-      <div className="flex justify-between gap-2 items-end overflow-hidden shrink-0">
+      <div className="flex shrink-0 items-end justify-between gap-2 overflow-hidden">
         <div className="flex flex-col overflow-hidden">
           <Text variant="h2" className="mb-1">
             {state.isCreating ? "Create Macro" : "Edit Macro"}
           </Text>
 
-          <div className="flex items-center gap-1 ">
+          <div className="flex items-center gap-1">
             <DisplayFavicon
               faviconUrl={state.macro?.faviconUrl || null}
               name={state.macro?.domain || ""}
@@ -137,7 +137,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
               <Text
                 variant="small"
                 color="muted"
-                className="whitespace-nowrap truncate"
+                className="truncate whitespace-nowrap"
               >
                 {` • ${state.macro.domain}`}
               </Text>
@@ -146,7 +146,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
         </div>
 
         {state.macro && (
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex shrink-0 items-center gap-2">
             {state.isPlaying ? (
               <>
                 {state.isPaused ? (
@@ -217,9 +217,9 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
       )}
 
       {state.loading && !state.macro ? (
-        <div className="text-center py-8 text-slate-500">Loading...</div>
+        <div className="py-8 text-center text-slate-500">Loading...</div>
       ) : state.macro ? (
-        <div className="flex flex-col gap-3 grow overflow-hidden">
+        <div className="flex grow flex-col gap-3 overflow-hidden">
           <Input
             label="Macro Name"
             type="text"
@@ -231,8 +231,8 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
             disabled={state.loading}
           />
 
-          <div className="flex flex-col grow overflow-hidden">
-            <Text variant="body" className="font-medium mb-2">
+          <div className="flex grow flex-col overflow-hidden">
+            <Text variant="body" className="mb-2 font-medium">
               Steps ({state.macro.steps.length})
             </Text>
             <div className="grow overflow-scroll rounded-lg border border-slate-200 bg-slate-50">
@@ -245,7 +245,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                   {state.macro.steps.map((step, index) => (
                     <div
                       key={step.id}
-                      className="items-center flex flex-col group w-full"
+                      className="group flex w-full flex-col items-center"
                     >
                       <EditStepItem
                         step={step}
@@ -260,7 +260,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                         isCompleted={state.completedStepIds.includes(step.id)}
                         isErrored={state.erroredStepIds.includes(step.id)}
                       />
-                      <div className="text-slate-300 text-xs">|</div>
+                      <div className="text-xs text-slate-300">|</div>
                       <AddStepButton
                         onAddStep={(step) => handleAddStep(step, index + 1)}
                         disabled={state.isPlaying}
@@ -275,7 +275,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
             </div>
           </div>
 
-          <div className="flex gap-2 pt-2 shrink-0">
+          <div className="flex shrink-0 gap-2 pt-2">
             <ConfirmActionButton
               variant="danger"
               fullWidth
@@ -305,7 +305,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
           </div>
         </div>
       ) : (
-        <div className="text-center py-8 text-slate-500">No macro selected</div>
+        <div className="py-8 text-center text-slate-500">No macro selected</div>
       )}
     </div>
   );

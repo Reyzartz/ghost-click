@@ -19,7 +19,7 @@ export class RecorderService extends BaseService {
   constructor(
     protected readonly emitter: Emitter,
     private readonly macroRepository: MacroRepository,
-    private readonly recordingStateRepository: RecordingStateRepository,
+    private readonly recordingStateRepository: RecordingStateRepository
   ) {
     super("RecorderService", emitter);
   }
@@ -84,7 +84,7 @@ export class RecorderService extends BaseService {
   private startRecording(
     sessionId: string,
     initialUrl: string,
-    tabId?: number,
+    tabId?: number
   ): void {
     if (this.isRecording) {
       this.logger.warn("Recording already in progress", {
@@ -222,7 +222,7 @@ export class RecorderService extends BaseService {
     sessionId: string,
     initialUrl: string,
     steps: MacroStep[],
-    name?: string,
+    name?: string
   ): Promise<void> {
     const now = Date.now();
     const existing = await this.macroRepository.findById(sessionId);
@@ -382,7 +382,7 @@ export class RecorderService extends BaseService {
   }
 
   private async handleSaveRecordingConfirmed(
-    data: SaveRecordingConfirmedEvent["data"],
+    data: SaveRecordingConfirmedEvent["data"]
   ): Promise<void> {
     this.logger.info("Save recording confirmed", {
       sessionId: data.sessionId,
@@ -393,12 +393,12 @@ export class RecorderService extends BaseService {
       data.sessionId,
       data.initialUrl,
       data.steps,
-      data.name,
+      data.name
     );
   }
 
   private handleSaveRecordingCancelled(
-    data: SaveRecordingCancelledEvent["data"],
+    data: SaveRecordingCancelledEvent["data"]
   ): void {
     this.logger.info("Save recording cancelled", { sessionId: data.sessionId });
     // Recording is already cleared, nothing to do

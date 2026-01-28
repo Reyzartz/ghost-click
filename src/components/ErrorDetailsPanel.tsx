@@ -15,14 +15,14 @@ export const ErrorDetailsPanel = ({
   const [showDetails, setShowDetails] = useState(false);
 
   return (
-    <div className="shrink-0 rounded border border-red-300 bg-red-50 overflow-hidden">
+    <div className="shrink-0 overflow-hidden rounded border border-red-300 bg-red-50">
       <div
-        className="flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-red-100"
+        className="flex cursor-pointer items-center justify-between px-3 py-2 hover:bg-red-100"
         onClick={() => setShowDetails(!showDetails)}
       >
         <div className="flex items-center gap-2">
           <AlertTriangle size={16} className="text-red-600" />
-          <Text variant="small" className="text-red-900 font-medium">
+          <Text variant="small" className="font-medium text-red-900">
             {errorMessage}
           </Text>
         </div>
@@ -35,7 +35,7 @@ export const ErrorDetailsPanel = ({
       </div>
 
       <div
-        className={`border-red-200 bg-red-50 overflow-auto transition-[max-height] duration-300 ${
+        className={`overflow-auto border-red-200 bg-red-50 transition-[max-height] duration-300 ${
           showDetails ? "max-h-48 border-t" : "max-h-0"
         }`}
       >
@@ -46,7 +46,7 @@ export const ErrorDetailsPanel = ({
                 <Text variant="small" color="error" className="mt-0.5">
                   •
                 </Text>
-                <div className="flex-1 min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <Text variant="small" className="font-medium text-red-900">
                       {err.stepName}
@@ -54,7 +54,7 @@ export const ErrorDetailsPanel = ({
                     <Text
                       variant="small"
                       color="error"
-                      className="px-1.5 py-0.5 rounded bg-red-100"
+                      className="rounded bg-red-100 px-1.5 py-0.5"
                     >
                       {err.stepType}
                     </Text>

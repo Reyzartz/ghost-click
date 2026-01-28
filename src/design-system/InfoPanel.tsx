@@ -17,7 +17,7 @@ export const InfoPanel = ({
   return (
     <Card
       padding="md"
-      className={["bg-slate-50 space-y-2", className].filter(Boolean).join(" ")}
+      className={["space-y-2 bg-slate-50", className].filter(Boolean).join(" ")}
       {...props}
     >
       {items.map((item, index) => (

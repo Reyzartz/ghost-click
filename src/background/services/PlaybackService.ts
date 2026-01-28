@@ -17,7 +17,7 @@ export class PlaybackService extends BaseService {
     this.playbackStateRepository = new PlaybackStateRepository(storage);
     this.playbackEngine = new PlaybackEngine(
       emitter,
-      this.playbackStateRepository,
+      this.playbackStateRepository
     );
     this.macroRepository = new MacroRepository(emitter, storage);
   }

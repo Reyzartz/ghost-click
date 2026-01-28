@@ -41,7 +41,7 @@ export class PlaybackProgressViewModel extends BaseViewModel {
   constructor(
     private readonly macroRepository: MacroRepository,
     private readonly playbackStateRepository: PlaybackStateRepository,
-    protected readonly emitter: Emitter,
+    protected readonly emitter: Emitter
   ) {
     super("PlaybackProgressViewModel", emitter);
   }
@@ -114,13 +114,13 @@ export class PlaybackProgressViewModel extends BaseViewModel {
 
       if (playbackState?.isPlaying && playbackState.macroId) {
         const macro = await this.macroRepository.findById(
-          playbackState.macroId,
+          playbackState.macroId
         );
 
         if (macro) {
           const currentStepIndex = this.findStepIndex(
             macro.steps,
-            playbackState.currentStepId,
+            playbackState.currentStepId
           );
 
           this.setState({
@@ -160,7 +160,7 @@ export class PlaybackProgressViewModel extends BaseViewModel {
   }
 
   private async handlePlaybackError(
-    data: PlaybackErrorEvent["data"],
+    data: PlaybackErrorEvent["data"]
   ): Promise<void> {
     this.logger.error("Playback error event received", { error: data.error });
     const erroredStepIds = data.stepId
@@ -214,7 +214,7 @@ export class PlaybackProgressViewModel extends BaseViewModel {
       if (currentStepId !== this.state.currentStepId && this.state.macro) {
         const currentStepIndex = this.findStepIndex(
           this.state.macro.steps,
-          currentStepId,
+          currentStepId
         );
 
         this.setState({

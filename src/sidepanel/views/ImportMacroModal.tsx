@@ -94,17 +94,17 @@ export const ImportMacroModal = ({ app }: { app: SidePanelApp }) => {
             app.importMacroViewModel.updatePastedText(e.target.value)
           }
           placeholder="Paste macro JSON here..."
-          className="font-mono grow text-xs"
+          className="grow font-mono text-xs"
           containerClassName={`flex flex-col transition-all duration-200 ${state.parsedMacro ? "h-34" : "h-60"}`}
           autoFocus
           error={state.error}
         />
 
         <div
-          className={`transition-[opacity,height] duration-200 overflow-hidden ${state.parsedMacro ? "opacity-100 h-26" : "opacity-0 h-0"}`}
+          className={`overflow-hidden transition-[opacity,height] duration-200 ${state.parsedMacro ? "h-26 opacity-100" : "h-0 opacity-0"}`}
         >
           {state.parsedMacro && (
-            <div className="bg-white border border-slate-200 rounded-lg px-3 py-2 divide-y divide-slate-200">
+            <div className="divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white px-3 py-2">
               <MacroMetadataRow
                 label="Steps"
                 value={state.parsedMacro.steps.length}

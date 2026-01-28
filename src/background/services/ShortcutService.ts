@@ -78,7 +78,7 @@ export class ShortcutService extends BaseService {
 
   private static async openSidePanel(
     tabId: number,
-    windowId?: number,
+    windowId?: number
   ): Promise<void> {
     await chrome.sidePanel.open({ tabId, windowId });
   }

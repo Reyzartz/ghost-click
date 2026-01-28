@@ -48,14 +48,14 @@ function App({ app }: { app: ContentApp }) {
         style={{
           zIndex: 9999,
         }}
-        className={`fixed inset-0 box-border pointer-events-none w-screen h-screen ${
+        className={`pointer-events-none fixed inset-0 box-border h-screen w-screen ${
           statusStyles[statusState.status]
         }`}
       />
 
       <div
         style={{ zIndex: 10000 }}
-        className="fixed top-4 mx-auto flex-col gap-2 pointer-events-none w-screen flex items-center"
+        className="pointer-events-none fixed top-4 mx-auto flex w-screen flex-col items-center gap-2"
       >
         {notificationState.notifications.map((notification) => (
           <div
@@ -63,7 +63,7 @@ function App({ app }: { app: ContentApp }) {
             style={{
               animation: "slideDown 0.3s ease-out",
             }}
-            className={`px-4 py-2 rounded shadow-lg text-sm font-medium pointer-events-auto w-60 flex justify-center ${
+            className={`pointer-events-auto flex w-60 justify-center rounded px-4 py-2 text-sm font-medium shadow-lg ${
               notificationTypeStyles[notification.type]
             }`}
           >

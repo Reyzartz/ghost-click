@@ -56,14 +56,14 @@ export const QuickActionsView = ({ app }: { app: ContentApp }) => {
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm h-screen w-screen"
+      className="fixed inset-0 flex h-screen w-screen items-center justify-center bg-black/50 backdrop-blur-sm"
       style={{
         zIndex: 99999,
       }}
       onClick={() => app.quickActionsViewModel.close()}
     >
       <div
-        className="bg-white rounded-lg shadow-2xl overflow-hidden p-4"
+        className="overflow-hidden rounded-lg bg-white p-4 shadow-2xl"
         style={{
           width: 600,
           maxHeight: 800,
@@ -71,7 +71,7 @@ export const QuickActionsView = ({ app }: { app: ContentApp }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <div>
-          <header className="flex items-center gap-2 mb-3">
+          <header className="mb-3 flex items-center gap-2">
             <TimerIcon size={20} className="text-slate-800" />
             <Text variant="h2">Quick Actions</Text>
           </header>
@@ -89,7 +89,7 @@ export const QuickActionsView = ({ app }: { app: ContentApp }) => {
           <Text
             variant="small"
             color="muted"
-            className="flex items-center gap-0.5 mt-2"
+            className="mt-2 flex items-center gap-0.5"
           >
             Use <ArrowUp size={12} className="inline" />
             <ArrowDown size={12} className="inline" /> to navigate, Enter to
@@ -97,7 +97,7 @@ export const QuickActionsView = ({ app }: { app: ContentApp }) => {
           </Text>
         </div>
 
-        <div className="overflow-y-auto mt-3" style={{ maxHeight: 400 }}>
+        <div className="mt-3 overflow-y-auto" style={{ maxHeight: 400 }}>
           {state.loading && (
             <div className="py-8 text-center">
               <Text color="muted">Loading macros...</Text>

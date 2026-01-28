@@ -38,7 +38,7 @@ export class MacroListViewModel extends BaseViewModel {
     private readonly macroRepository: MacroRepository,
     private readonly recordingStateRepository: RecordingStateRepository,
     private readonly macroShareService: MacroShareService,
-    protected readonly emitter: Emitter,
+    protected readonly emitter: Emitter
   ) {
     super("MacroListViewModel", emitter);
   }
@@ -142,7 +142,7 @@ export class MacroListViewModel extends BaseViewModel {
     const results = this.state.allMacros.filter(
       (macro) =>
         macro.name.toLowerCase().includes(lowerQuery) ||
-        macro.domain?.toLowerCase().includes(lowerQuery),
+        macro.domain?.toLowerCase().includes(lowerQuery)
     );
 
     return results;
@@ -176,7 +176,7 @@ export class MacroListViewModel extends BaseViewModel {
 
   private async loadMacros(
     sortBy: MacroSortBy = "updatedAt",
-    sortOrder: MacroSortOrder = "desc",
+    sortOrder: MacroSortOrder = "desc"
   ): Promise<void> {
     this.logger.info("Loading macros", { domain: this.state.currentDomain });
     this.setState({ loading: true, error: null });
@@ -184,13 +184,13 @@ export class MacroListViewModel extends BaseViewModel {
       const macros = MacroListViewModel.sortMacros(
         await this.macroRepository.loadByDomain(this.state.currentDomain),
         sortBy,
-        sortOrder,
+        sortOrder
       );
 
       const allMacros = MacroListViewModel.sortMacros(
         await this.macroRepository.loadAll(),
         sortBy,
-        sortOrder,
+        sortOrder
       );
 
       this.logger.info("Loaded macros", {
@@ -233,7 +233,7 @@ export class MacroListViewModel extends BaseViewModel {
   private static sortMacros(
     macros: Macro[],
     sortBy: MacroSortBy,
-    sortOrder: MacroSortOrder,
+    sortOrder: MacroSortOrder
   ): Macro[] {
     let res = macros;
     switch (sortBy) {

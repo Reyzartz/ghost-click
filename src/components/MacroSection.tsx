@@ -27,8 +27,8 @@ export const MacroSection = ({
 }: MacroSectionProps) => {
   return (
     <div className="space-y-2">
-      <div className="flex justify-between items-end">
-        <Text variant="h5" className="uppercase tracking-wide">
+      <div className="flex items-end justify-between">
+        <Text variant="h5" className="tracking-wide uppercase">
           {title}
         </Text>
 

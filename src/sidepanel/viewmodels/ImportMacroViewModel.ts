@@ -25,7 +25,7 @@ export class ImportMacroViewModel extends BaseViewModel {
   constructor(
     private readonly macroRepository: MacroRepository,
     private readonly macroShareService: MacroShareService,
-    protected readonly emitter: Emitter,
+    protected readonly emitter: Emitter
   ) {
     super("ImportMacroViewModel", emitter);
   }

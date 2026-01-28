@@ -23,7 +23,7 @@ const DisplayFavicon = memo(
       <div
         className={
           sizeMap[size] +
-          " flex items-center justify-center rounded bg-slate-100 shrink-0 " +
+          " flex shrink-0 items-center justify-center rounded bg-slate-100 " +
           className
         }
       >
@@ -31,7 +31,7 @@ const DisplayFavicon = memo(
           <img
             src={faviconUrl}
             alt="Favicon"
-            className="w-full h-full object-center object-contain"
+            className="h-full w-full object-contain object-center"
           />
         ) : (
           <Text variant="small" color="muted" className="select-none">

@@ -31,7 +31,7 @@ const AddStepButton = memo<AddStepButtonProps>(
     };
 
     const createEmptyStep = (
-      type: StepType,
+      type: StepType
     ): ClickStep | InputStep | KeyPressStep => {
       const baseStep = {
         id: crypto.randomUUID(),
@@ -76,7 +76,7 @@ const AddStepButton = memo<AddStepButtonProps>(
 
     const handleAddStep = (
       _stepId: string,
-      updates: Partial<ClickStep | InputStep | KeyPressStep>,
+      updates: Partial<ClickStep | InputStep | KeyPressStep>
     ): void => {
       if (!selectedType) return;
 
@@ -92,12 +92,12 @@ const AddStepButton = memo<AddStepButtonProps>(
     if (!selectedType || !isAdding) {
       return (
         <div
-          className={`group/add flex flex-col gap-2 p-2 border-dashed border-[1.5px] border-slate-300 bg-slate-50 transition-all duration-300 ease-in-out overflow-hidden ${
+          className={`group/add flex flex-col gap-2 overflow-hidden border-[1.5px] border-dashed border-slate-300 bg-slate-50 p-2 transition-all duration-300 ease-in-out ${
             disabled
-              ? "w-0 h-0 cursor-not-allowed overflow-hidden px-0 py-0"
+              ? "h-0 w-0 cursor-not-allowed overflow-hidden px-0 py-0"
               : !isAdding
-                ? "cursor-pointer items-center justify-center w-6 h-6 rounded-2xl hover:border-slate-400"
-                : "w-74 h-28 rounded"
+                ? "h-6 w-6 cursor-pointer items-center justify-center rounded-2xl hover:border-slate-400"
+                : "h-28 w-74 rounded"
           }`}
         >
           {!selectedType && isAdding && (
@@ -142,7 +142,7 @@ const AddStepButton = memo<AddStepButtonProps>(
             <button
               onClick={() => setIsAdding(true)}
               title="Add new step"
-              className={`duration-300 flex justify-center items-center text-slate-300 group-hover/add:text-slate-400 ${disabled ? "cursor-not-allowed" : "cursor-pointer"}`}
+              className={`flex items-center justify-center text-slate-300 duration-300 group-hover/add:text-slate-400 ${disabled ? "cursor-not-allowed" : "cursor-pointer"}`}
               disabled={disabled}
             >
               <PlusIcon size={14} />
@@ -182,7 +182,7 @@ const AddStepButton = memo<AddStepButtonProps>(
         )}
       </div>
     );
-  },
+  }
 );
 
 export { AddStepButton };

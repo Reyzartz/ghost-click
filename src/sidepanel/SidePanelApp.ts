@@ -36,22 +36,22 @@ export class SidePanelApp extends BaseApp {
       macroRepository,
       recordingStateRepository,
       macroShareService,
-      emitter,
+      emitter
     );
     const playbackProgressViewModel = new PlaybackProgressViewModel(
       macroRepository,
       playbackStateRepository,
-      emitter,
+      emitter
     );
     const editMacroViewModel = new EditMacroViewModel(
       macroRepository,
       playbackStateRepository,
-      emitter,
+      emitter
     );
     const importMacroViewModel = new ImportMacroViewModel(
       macroRepository,
       macroShareService,
-      emitter,
+      emitter
     );
 
     super(emitter, logger, [viewService]);

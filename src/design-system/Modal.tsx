@@ -37,7 +37,7 @@ export const Modal = ({
     >
       <div
         className={[
-          "bg-white rounded-lg shadow-xl w-full mx-4 overflow-hidden relative",
+          "relative mx-4 w-full overflow-hidden rounded-lg bg-white shadow-xl",
           maxWidthStyles[maxWidth],
           className,
         ]
@@ -49,7 +49,7 @@ export const Modal = ({
           <IconButton
             icon={X}
             onClick={onClose}
-            className="absolute right-3 top-3"
+            className="absolute top-3 right-3"
             variant="ghost"
           />
         )}
@@ -90,7 +90,7 @@ export const ModalBody = ({
 }: ModalBodyProps) => {
   return (
     <div
-      className={["px-4 my-4 max-h-120 overflow-scroll scrollbar", className]
+      className={["scrollbar my-4 max-h-120 overflow-scroll px-4", className]
         .filter(Boolean)
         .join(" ")}
       {...props}
@@ -111,7 +111,7 @@ export const ModalFooter = ({
 }: ModalFooterProps) => {
   return (
     <div
-      className={["p-4 pt-0 flex gap-2", className].filter(Boolean).join(" ")}
+      className={["flex gap-2 p-4 pt-0", className].filter(Boolean).join(" ")}
       {...props}
     >
       {children}

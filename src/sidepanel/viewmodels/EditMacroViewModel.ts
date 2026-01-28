@@ -44,7 +44,7 @@ export class EditMacroViewModel extends BaseViewModel {
   constructor(
     private readonly macroRepository: MacroRepository,
     private readonly playbackStateRepository: PlaybackStateRepository,
-    protected readonly emitter: Emitter,
+    protected readonly emitter: Emitter
   ) {
     super("EditMacroViewModel", emitter);
   }
@@ -242,7 +242,7 @@ export class EditMacroViewModel extends BaseViewModel {
     });
 
     const updatedSteps = this.state.macro.steps.map((s) =>
-      s.id === stepId ? { ...s, ...step } : s,
+      s.id === stepId ? { ...s, ...step } : s
     );
 
     const updatedMacro = {
@@ -270,7 +270,7 @@ export class EditMacroViewModel extends BaseViewModel {
     });
 
     const updatedSteps = this.state.macro.steps.map((step) =>
-      step.id === stepId ? { ...step, delay: newDelay } : step,
+      step.id === stepId ? { ...step, delay: newDelay } : step
     );
 
     const updatedMacro = { ...this.state.macro, steps: updatedSteps };
@@ -314,7 +314,7 @@ export class EditMacroViewModel extends BaseViewModel {
 
     if (this.isStepNew(stepId)) {
       const updatedSteps = this.state.macro.steps.filter(
-        (step) => step.id !== stepId,
+        (step) => step.id !== stepId
       );
 
       const newStepIds = new Set(this.state.newStepIds);
@@ -363,7 +363,7 @@ export class EditMacroViewModel extends BaseViewModel {
     try {
       // Filter out deleted steps before saving
       const filteredSteps = macro.steps.filter(
-        (step) => !this.state.deletedStepIds.has(step.id),
+        (step) => !this.state.deletedStepIds.has(step.id)
       );
       const macroToSave = { ...macro, steps: filteredSteps };
 
