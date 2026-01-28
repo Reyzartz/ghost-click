@@ -31,12 +31,14 @@ export class SaveRecordingViewModel extends BaseViewModel {
     super("SaveRecordingViewModel", emitter);
   }
 
-  async init(): Promise<void> {
+  init(): Promise<void> {
     this.logger.info("SaveRecordingViewModel initialized");
 
     this.emitter.on("SHOW_SAVE_RECORDING_MODAL", (data) => {
       this.showModal(data);
     });
+
+    return Promise.resolve();
   }
 
   subscribe(listener: (state: SaveRecordingState) => void): () => void {
@@ -66,10 +68,11 @@ export class SaveRecordingViewModel extends BaseViewModel {
     const faviconUrl = this.getFaviconUrl();
 
     // Calculate duration (difference between first and last step)
+    const startTimestamp = this.steps.length > 0 ? this.steps[0].timestamp : 0;
+    const endTimestamp =
+      this.steps.length > 0 ? this.steps[this.steps.length - 1].timestamp : 0;
     const duration =
-      this.steps.length > 0
-        ? this.steps[this.steps.length - 1].timestamp - this.steps[0].timestamp
-        : 0;
+      startTimestamp && endTimestamp ? endTimestamp - startTimestamp : 0;
 
     // Generate default name
     const defaultName = `Untitled Macro ${new Date().toLocaleString()}`;

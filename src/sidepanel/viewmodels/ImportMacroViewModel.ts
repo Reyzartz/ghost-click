@@ -30,12 +30,14 @@ export class ImportMacroViewModel extends BaseViewModel {
     super("ImportMacroViewModel", emitter);
   }
 
-  async init(): Promise<void> {
+  init(): Promise<void> {
     this.logger.info("ImportMacroViewModel initialized");
 
     this.emitter.on("OPEN_IMPORT_MACRO_MODAL", () => {
       this.openModal();
     });
+
+    return Promise.resolve();
   }
 
   subscribe(listener: (state: ImportMacroState) => void): () => void {

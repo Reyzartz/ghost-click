@@ -45,6 +45,8 @@ export class NotificationViewModel extends BaseViewModel {
     this.emitter.on("STOP_PLAYBACK", () => {
       this.showNotification("Playback stopped", "info");
     });
+
+    return Promise.resolve();
   }
 
   subscribe(listener: (state: NotificationState) => void): () => void {
@@ -62,7 +64,7 @@ export class NotificationViewModel extends BaseViewModel {
 
   private showNotification(
     message: string,
-    type: "success" | "error" | "info"
+    type: "success" | "error" | "info",
   ): void {
     const id = `${Date.now()}-${Math.random()}`;
     const notification: Notification = { id, message, type };

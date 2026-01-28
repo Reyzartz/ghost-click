@@ -3,7 +3,11 @@ import { MacroRepository } from "@/repositories/MacroRepository";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
 import { BaseService } from "../../utils/BaseService";
 import { Emitter } from "@/utils/Emitter";
-import { UserActionEvent } from "@/utils/Event";
+import {
+  SaveRecordingCancelledEvent,
+  SaveRecordingConfirmedEvent,
+  UserActionEvent,
+} from "@/utils/Event";
 
 export class RecorderService extends BaseService {
   private isRecording = false;
@@ -20,10 +24,10 @@ export class RecorderService extends BaseService {
     super("RecorderService", emitter);
   }
 
-  async init(): Promise<void> {
+  init(): Promise<void> {
     this.logger.info("RecorderService initialized");
 
-    this.setInitialRecordingState();
+    void this.setInitialRecordingState();
 
     this.emitter.on("START_RECORDING", (data) => {
       this.startRecording(data.sessionId, data.initialUrl, data.tabId);
@@ -56,6 +60,8 @@ export class RecorderService extends BaseService {
         void this.stopRecording();
       }
     });
+
+    return Promise.resolve();
   }
 
   private async setInitialRecordingState(): Promise<void> {
@@ -194,9 +200,15 @@ export class RecorderService extends BaseService {
 
     return steps.map((step, index) => {
       // Calculate delay to next step (0 for last step)
-      const delay =
+
+      const currentTimestamp = step.timestamp;
+      const nextTimestamp =
         index < steps.length - 1
-          ? steps[index + 1].timestamp - step.timestamp
+          ? steps[index + 1].timestamp
+          : currentTimestamp;
+      const delay =
+        nextTimestamp !== null && currentTimestamp !== null
+          ? nextTimestamp - currentTimestamp
           : 200;
 
       return {
@@ -369,13 +381,9 @@ export class RecorderService extends BaseService {
       : displayName;
   }
 
-  private async handleSaveRecordingConfirmed(data: {
-    sessionId: string;
-    name: string;
-    initialUrl: string;
-    steps: MacroStep[];
-    faviconUrl: string;
-  }): Promise<void> {
+  private async handleSaveRecordingConfirmed(
+    data: SaveRecordingConfirmedEvent["data"],
+  ): Promise<void> {
     this.logger.info("Save recording confirmed", {
       sessionId: data.sessionId,
       name: data.name,
@@ -389,7 +397,9 @@ export class RecorderService extends BaseService {
     );
   }
 
-  private handleSaveRecordingCancelled(data: { sessionId: string }): void {
+  private handleSaveRecordingCancelled(
+    data: SaveRecordingCancelledEvent["data"],
+  ): void {
     this.logger.info("Save recording cancelled", { sessionId: data.sessionId });
     // Recording is already cleared, nothing to do
   }

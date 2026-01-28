@@ -35,7 +35,7 @@ export interface StartRecordingEvent extends BaseEvent {
   data: {
     sessionId: string;
     initialUrl: string;
-    tabId: number;
+    tabId?: number;
   };
 }
 
@@ -116,7 +116,7 @@ export interface PlaybackErrorEvent extends BaseEvent {
   data: {
     macroId: string;
     stepId: string | null;
-    error: any;
+    error: string;
   };
 }
 
@@ -147,6 +147,7 @@ export interface SaveRecordingConfirmedEvent extends BaseEvent {
     name: string;
     initialUrl: string;
     steps: MacroStep[];
+    faviconUrl: string;
   };
 }
 

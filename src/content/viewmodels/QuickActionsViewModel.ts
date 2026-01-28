@@ -25,12 +25,12 @@ export class QuickActionsViewModel extends BaseViewModel {
 
   constructor(
     private readonly macroRepository: MacroRepository,
-    protected readonly emitter: Emitter
+    protected readonly emitter: Emitter,
   ) {
     super("QuickActionsViewModel", emitter);
   }
 
-  async init(): Promise<void> {
+  init(): Promise<void> {
     this.logger.info("Initializing quick actions view model");
 
     this.emitter.on("TOGGLE_QUICK_ACTIONS", () => {
@@ -44,6 +44,8 @@ export class QuickActionsViewModel extends BaseViewModel {
         void this.loadMacros();
       }
     });
+
+    return Promise.resolve();
   }
 
   subscribe(listener: (state: QuickActionsState) => void): () => void {
@@ -99,7 +101,7 @@ export class QuickActionsViewModel extends BaseViewModel {
     const results = this.state.macros.filter(
       (macro) =>
         macro.name.toLowerCase().includes(lowerQuery) ||
-        macro.domain?.toLowerCase().includes(lowerQuery)
+        macro.domain?.toLowerCase().includes(lowerQuery),
     );
 
     return results;

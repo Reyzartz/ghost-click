@@ -1,6 +1,11 @@
 import { BaseService } from "@/utils/BaseService";
 import { Emitter } from "@/utils/Emitter";
-import { ClickStep, InputStep, KeyPressStep } from "@/models/MacroStep";
+import {
+  ClickStep,
+  InputStep,
+  KeyPressStep,
+  MacroStep,
+} from "@/models/MacroStep";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
 import { ElementSelector } from "@/utils/ElementSelector";
 
@@ -9,7 +14,7 @@ export class ActionExecutorService extends BaseService {
 
   constructor(
     protected readonly emitter: Emitter,
-    protected readonly playbackStateRepository: PlaybackStateRepository
+    protected readonly playbackStateRepository: PlaybackStateRepository,
   ) {
     super("ActionExecutorService", emitter);
   }
@@ -20,24 +25,24 @@ export class ActionExecutorService extends BaseService {
     this.emitter.on("EXECUTE_ACTION", (data) => {
       void this.handleExecuteAction(data.step);
     });
+
+    return Promise.resolve();
   }
 
-  private async handleExecuteAction(step: any): Promise<void> {
+  private async handleExecuteAction(step: MacroStep): Promise<void> {
     try {
       this.logger.info(`Executing action: ${step.type}`, { step });
 
       switch (step.type) {
         case "CLICK":
-          await this.executeClickStep(step as ClickStep);
+          await this.executeClickStep(step);
           break;
         case "INPUT":
-          await this.executeInputStep(step as InputStep);
+          await this.executeInputStep(step);
           break;
         case "KEYPRESS":
-          await this.executeKeyPressStep(step as KeyPressStep);
+          await this.executeKeyPressStep(step);
           break;
-        default:
-          this.logger.warn("Unknown action type", { type: step.type });
       }
     } catch (err) {
       const macroId = await this.playbackStateRepository.getMacroId();
@@ -46,7 +51,7 @@ export class ActionExecutorService extends BaseService {
 
       if (!macroId) {
         this.logger.error(
-          "No macroId found in playback state during error handling"
+          "No macroId found in playback state during error handling",
         );
         return;
       }
@@ -63,12 +68,12 @@ export class ActionExecutorService extends BaseService {
     const element = await this.findElementWithRetry(
       step.target,
       step.retryCount,
-      step.retryInterval
+      step.retryInterval,
     );
 
     if (!element) {
       throw new Error(
-        `Element not found for target: ${JSON.stringify(step.target)}`
+        `Element not found for target: ${JSON.stringify(step.target)}`,
       );
     }
 
@@ -85,7 +90,7 @@ export class ActionExecutorService extends BaseService {
       await this.sleep(300);
     }
 
-    await this.highlightElement(element);
+    this.highlightElement(element);
 
     element.click();
     element.focus();
@@ -100,7 +105,7 @@ export class ActionExecutorService extends BaseService {
         },
         {
           threshold: 0.8, // Element must be at least 80% visible
-        }
+        },
       );
 
       observer.observe(element);
@@ -110,7 +115,7 @@ export class ActionExecutorService extends BaseService {
   private async findElementWithRetry(
     target: ClickStep["target"],
     retryCount: number,
-    retryInterval: number
+    retryInterval: number,
   ): Promise<Element | null> {
     let attempts = 0;
     const maxAttempts = retryCount + 1; // Initial attempt + retries
@@ -166,12 +171,12 @@ export class ActionExecutorService extends BaseService {
     const element = await this.findElementWithRetry(
       step.target,
       step.retryCount,
-      step.retryInterval
+      step.retryInterval,
     );
 
     if (!element) {
       throw new Error(
-        `Element not found for target: ${JSON.stringify(step.target)}`
+        `Element not found for target: ${JSON.stringify(step.target)}`,
       );
     }
 
@@ -196,7 +201,7 @@ export class ActionExecutorService extends BaseService {
       await this.sleep(300);
     }
 
-    await this.highlightElement(element);
+    this.highlightElement(element);
 
     // Focus the element
     element.focus();
@@ -213,12 +218,12 @@ export class ActionExecutorService extends BaseService {
     const element = await this.findElementWithRetry(
       step.target,
       step.retryCount,
-      step.retryInterval
+      step.retryInterval,
     );
 
     if (!element) {
       throw new Error(
-        `Element not found for target: ${JSON.stringify(step.target)}`
+        `Element not found for target: ${JSON.stringify(step.target)}`,
       );
     }
 
@@ -235,7 +240,7 @@ export class ActionExecutorService extends BaseService {
       await this.sleep(300);
     }
 
-    await this.highlightElement(element);
+    this.highlightElement(element);
 
     // Focus the element
     element.focus();

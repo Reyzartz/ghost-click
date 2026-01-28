@@ -70,7 +70,9 @@ export class Emitter {
 
     const listeners = this.events[event] as EventDispatcher<T>[] | undefined;
     if (listeners) {
-      this.events[event] = listeners.filter((l) => l !== listener) as any;
+      this.events[event] = listeners.filter(
+        (l) => l !== listener,
+      ) as (typeof this.events)[T];
     }
   }
 
@@ -114,7 +116,7 @@ export class Emitter {
 
     if (this.appType === "content") {
       // Content script sends to background
-      chrome.runtime.sendMessage(message).catch((err) => {
+      chrome.runtime.sendMessage(message).catch((err: unknown) => {
         this.logger.info("Failed to send message to background", {
           error: err,
         });
@@ -127,7 +129,7 @@ export class Emitter {
       }
 
       // Also notify extension pages (popup/sidepanel/options)
-      chrome.runtime.sendMessage(message).catch((err) => {
+      chrome.runtime.sendMessage(message).catch((err: unknown) => {
         this.logger.info(`Failed to send message from ${this.appType}`, {
           error: err,
         });
@@ -147,7 +149,7 @@ export class Emitter {
         tabs.forEach((tab) => {
           if (tab.id === undefined) return;
 
-          chrome.tabs.sendMessage(tab.id, message).catch((err) => {
+          chrome.tabs.sendMessage(tab.id, message).catch((err: unknown) => {
             this.logger.info(
               `Failed to send message to content script in tab ${tab.id}`,
               { error: err },
@@ -165,7 +167,7 @@ export class Emitter {
       tabs.forEach((tab) => {
         if (tab.id === undefined) return;
 
-        chrome.tabs.sendMessage(tab.id, message).catch((err) => {
+        chrome.tabs.sendMessage(tab.id, message).catch((err: unknown) => {
           this.logger.info(
             `Failed to send message to content script in tab ${tab.id}`,
             { error: err },

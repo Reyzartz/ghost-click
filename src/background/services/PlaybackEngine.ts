@@ -85,13 +85,13 @@ export class PlaybackEngine {
         try {
           switch (step.type) {
             case "CLICK":
-              await this.executeClickStep(step as ClickStep);
+              await this.executeClickStep(step);
               break;
             case "INPUT":
-              await this.executeInputStep(step as InputStep);
+              await this.executeInputStep(step);
               break;
             case "KEYPRESS":
-              await this.executeKeyPressStep(step as KeyPressStep);
+              await this.executeKeyPressStep(step);
               break;
             default:
               this.logger.warn("Unknown step type");

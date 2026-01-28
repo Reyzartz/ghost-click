@@ -112,8 +112,9 @@ export class MacroShareService extends BaseService {
     super("MacroShareService", emitter);
   }
 
-  async init(): Promise<void> {
+  init(): Promise<void> {
     this.logger.info("MacroShareService initialized");
+    return Promise.resolve();
   }
 
   /**

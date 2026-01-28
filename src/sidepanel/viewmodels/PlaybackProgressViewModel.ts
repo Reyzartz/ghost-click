@@ -3,6 +3,7 @@ import { MacroRepository } from "@/repositories/MacroRepository";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
 import { BaseViewModel } from "@/utils/BaseViewModel";
 import { Emitter } from "@/utils/Emitter";
+import { PlaybackErrorEvent } from "@/utils/Event";
 
 export interface StepError {
   stepId: string;
@@ -158,14 +159,16 @@ export class PlaybackProgressViewModel extends BaseViewModel {
     }
   }
 
-  private async handlePlaybackError(data: any): Promise<void> {
+  private async handlePlaybackError(
+    data: PlaybackErrorEvent["data"],
+  ): Promise<void> {
     this.logger.error("Playback error event received", { error: data.error });
-    const erroredStepIds = data?.stepId
+    const erroredStepIds = data.stepId
       ? Array.from(new Set([...this.state.erroredStepIds, data.stepId]))
       : this.state.erroredStepIds;
 
     const errorDetails = [...this.state.errorDetails];
-    if (data?.stepId && this.state.macro) {
+    if (data.stepId && this.state.macro) {
       const step = this.state.macro.steps.find((s) => s.id === data.stepId);
       if (step) {
         errorDetails.push({
@@ -184,7 +187,7 @@ export class PlaybackProgressViewModel extends BaseViewModel {
           ? `${errorDetails.length} step${
               errorDetails.length === 1 ? "" : "s"
             } failed`
-          : data?.error || "Playback failed";
+          : data.error || "Playback failed";
       this.setState({
         isPlaying: Boolean(playbackState?.isPlaying),
         error: errorSummary,
@@ -197,7 +200,7 @@ export class PlaybackProgressViewModel extends BaseViewModel {
           ? `${errorDetails.length} step${
               errorDetails.length === 1 ? "" : "s"
             } failed`
-          : data?.error || "Playback failed";
+          : data.error || "Playback failed";
       this.setState({
         error: errorSummary,
         erroredStepIds,
@@ -206,7 +209,7 @@ export class PlaybackProgressViewModel extends BaseViewModel {
     }
   }
 
-  private async updateCurrentStep(currentStepId: string | null): Promise<void> {
+  private updateCurrentStep(currentStepId: string | null): void {
     try {
       if (currentStepId !== this.state.currentStepId && this.state.macro) {
         const currentStepIndex = this.findStepIndex(

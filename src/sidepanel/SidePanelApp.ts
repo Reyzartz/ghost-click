@@ -69,7 +69,7 @@ export class SidePanelApp extends BaseApp {
 
   async init(): Promise<void> {
     this.logger.info("SidePanelApp initialized");
-    await super.init(); 
+    await super.init();
     // Initialize all services including viewService
     await this.macroShareService.init();
     await this.macroListViewModel.init();

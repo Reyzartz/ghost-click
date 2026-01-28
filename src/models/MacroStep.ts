@@ -4,7 +4,7 @@ export interface BaseMacroStep {
   id: string;
   name: string;
   type: StepType;
-  timestamp: number;
+  timestamp: number | null;
   delay: number;
   retryCount: number;
   retryInterval: number;

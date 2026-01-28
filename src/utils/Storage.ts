@@ -15,7 +15,7 @@ export class Storage {
         const err = chrome.runtime.lastError;
         if (err) {
           this.logger.error("Failed to set item", { key, err });
-          reject(err);
+          reject(new Error(err.message || "Failed to set item"));
           return;
         }
 
@@ -30,7 +30,7 @@ export class Storage {
         const err = chrome.runtime.lastError;
         if (err) {
           this.logger.error("Failed to get item", { key, err });
-          reject(err);
+          reject(new Error(err.message || "Failed to get item"));
           return;
         }
 
@@ -46,7 +46,7 @@ export class Storage {
         const err = chrome.runtime.lastError;
         if (err) {
           this.logger.error("Failed to remove item", { key, err });
-          reject(err);
+          reject(new Error(err.message || "Failed to remove item"));
           return;
         }
 
@@ -61,7 +61,7 @@ export class Storage {
         const err = chrome.runtime.lastError;
         if (err) {
           this.logger.error("Failed to clear storage", { err });
-          reject(err);
+          reject(new Error(err.message || "Failed to clear storage"));
           return;
         }
 

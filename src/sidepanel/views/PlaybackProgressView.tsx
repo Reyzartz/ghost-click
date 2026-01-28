@@ -85,7 +85,7 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
   const handleEditMacro = (): void => {
     if (!state.macro) return;
     app.playbackProgressViewModel.clearErrors();
-    app.editMacroViewModel.loadMacro(state.macro.id);
+    void app.editMacroViewModel.loadMacro(state.macro.id);
     app.viewService.navigateToView("editMacro");
   };
 

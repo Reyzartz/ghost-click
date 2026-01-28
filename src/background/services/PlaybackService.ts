@@ -4,6 +4,7 @@ import { Storage } from "@/utils/Storage";
 import { MacroRepository } from "@/repositories/MacroRepository";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
 import { PlaybackEngine } from "./PlaybackEngine";
+import { Macro } from "@/models";
 
 export class PlaybackService extends BaseService {
   private readonly playbackEngine: PlaybackEngine;
@@ -21,15 +22,15 @@ export class PlaybackService extends BaseService {
     this.macroRepository = new MacroRepository(emitter, storage);
   }
 
-  async init(): Promise<void> {
+  init(): Promise<void> {
     this.logger.info("PlaybackService initialized");
 
-    this.emitter.on("PLAY_MACRO", async (data) => {
-      await this.handlePlayMacro(data.macroId);
+    this.emitter.on("PLAY_MACRO", (data) => {
+      void this.handlePlayMacro(data.macroId);
     });
 
-    this.emitter.on("PLAY_MACRO_PREVIEW", async (data) => {
-      await this.handlePlayMacroPreview(data.macro);
+    this.emitter.on("PLAY_MACRO_PREVIEW", (data) => {
+      void this.handlePlayMacroPreview(data.macro);
     });
 
     this.emitter.on("STOP_PLAYBACK", () => {
@@ -46,6 +47,8 @@ export class PlaybackService extends BaseService {
       this.logger.info("Resume playback event received");
       this.playbackEngine.resume();
     });
+
+    return Promise.resolve();
   }
 
   private async handlePlayMacro(macroId: string): Promise<void> {
@@ -63,7 +66,7 @@ export class PlaybackService extends BaseService {
     }
   }
 
-  private async handlePlayMacroPreview(macro: any): Promise<void> {
+  private async handlePlayMacroPreview(macro: Macro): Promise<void> {
     try {
       this.logger.info("Playing macro preview", {
         macroId: macro.id,

@@ -21,6 +21,8 @@ export class ElementInspectorService extends BaseService {
     this.emitter.on("STOP_ELEMENT_INSPECTION", () => {
       this.stopInspection();
     });
+
+    return Promise.resolve();
   }
 
   private startInspection(): void {

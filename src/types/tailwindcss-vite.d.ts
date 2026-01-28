@@ -1,4 +1,5 @@
 declare module "@tailwindcss/vite" {
-  const tailwindcss: () => any;
+  import type { Plugin } from "vite";
+  const tailwindcss: () => Plugin;
   export default tailwindcss;
 }

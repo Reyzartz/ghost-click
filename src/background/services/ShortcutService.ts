@@ -15,21 +15,23 @@ export class ShortcutService extends BaseService {
     super("ShortcutService", emitter);
   }
 
-  async init(): Promise<void> {
+  init(): Promise<void> {
     this.logger.info("ShortcutService initialized");
 
     chrome.commands.onCommand.addListener((command) => {
       this.onCommandListener(command);
     });
 
-    chrome.sidePanel.setPanelBehavior({
-      openPanelOnActionClick: true
+    void chrome.sidePanel.setPanelBehavior({
+      openPanelOnActionClick: true,
     });
 
     chrome.sidePanel.onOpened.addListener(() => {
       ShortcutService.isPanelOpen = true;
       this.logger.info("Side panel opened");
     });
+
+    return Promise.resolve();
   }
 
   onCommandListener(command: string): void {
@@ -74,7 +76,10 @@ export class ShortcutService extends BaseService {
     });
   }
 
-  private static async openSidePanel(tabId: number, windowId?: number): Promise<void> {
+  private static async openSidePanel(
+    tabId: number,
+    windowId?: number,
+  ): Promise<void> {
     await chrome.sidePanel.open({ tabId, windowId });
   }
 
@@ -85,7 +90,7 @@ export class ShortcutService extends BaseService {
   }
 
   static toggleSidePanel(): void {
-    chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+    void chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const tabId = tabs[0]?.id;
 
       if (!tabId) {
@@ -94,14 +99,14 @@ export class ShortcutService extends BaseService {
       }
 
       /*
-      * currently, chrome.sidePanel API does not provide a direct method to check if the side panel is open for a specific tab.
-      * As a workaround, we maintain the state within the ShortcutService class.
-      * https://github.com/w3c/webextensions/issues/521#issuecomment-2560936431
-      */ 
+       * currently, chrome.sidePanel API does not provide a direct method to check if the side panel is open for a specific tab.
+       * As a workaround, we maintain the state within the ShortcutService class.
+       * https://github.com/w3c/webextensions/issues/521#issuecomment-2560936431
+       */
       if (ShortcutService.isPanelOpen) {
-        await ShortcutService.closeSidePanel();
+        void ShortcutService.closeSidePanel();
       } else {
-        await ShortcutService.openSidePanel(tabId);
+        void ShortcutService.openSidePanel(tabId);
       }
     });
   }
