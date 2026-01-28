@@ -29,6 +29,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
     currentStepId: null,
     erroredStepIds: [],
     completedStepIds: [],
+    isCreating: false,
   });
 
   useEffect(() => {
@@ -122,7 +123,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
       <div className="flex justify-between gap-2 items-end overflow-hidden shrink-0">
         <div className="flex flex-col overflow-hidden">
           <Text variant="h2" className="mb-1">
-            Edit Macro
+            {state.isCreating ? "Create Macro" : "Edit Macro"}
           </Text>
 
           <div className="flex items-center gap-1 ">
@@ -189,17 +190,20 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                 >
                   Test Run
                 </Button>
-                <ConfirmActionButton
-                  variant="danger"
-                  size="sm"
-                  icon={Trash2}
-                  title="Delete Macro"
-                  message="Are you sure you want to delete this macro? This action cannot be undone."
-                  confirmText="Delete"
-                  onClick={handleDelete}
-                >
-                  Delete
-                </ConfirmActionButton>
+
+                {!state.isCreating && (
+                  <ConfirmActionButton
+                    variant="danger"
+                    size="sm"
+                    icon={Trash2}
+                    title="Delete Macro"
+                    message="Are you sure you want to delete this macro? This action cannot be undone."
+                    confirmText="Delete"
+                    onClick={() => void handleDelete()}
+                  >
+                    Delete
+                  </ConfirmActionButton>
+                )}
               </>
             )}
           </div>
@@ -276,19 +280,27 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
               variant="danger"
               fullWidth
               onClick={handleCancel}
-              title="Discard Changes"
-              message="Are you sure you want to discard your changes?"
+              title={state.isCreating ? "Discard Macro" : "Discard Changes"}
+              message={
+                state.isCreating
+                  ? "Are you sure you want to discard this macro?"
+                  : "Are you sure you want to discard your changes?"
+              }
               confirmText="Discard"
             >
-              Discard Changes
+              {state.isCreating ? "Discard Macro" : "Discard Changes"}
             </ConfirmActionButton>
 
             <Button
-              onClick={handleSave}
+              onClick={() => void handleSave()}
               disabled={state.loading || !state.macro?.name.trim()}
               fullWidth
             >
-              {state.loading ? "Saving..." : "Save Changes"}
+              {state.loading
+                ? "Saving..."
+                : state.isCreating
+                  ? "Create Macro"
+                  : "Save Changes"}
             </Button>
           </div>
         </div>

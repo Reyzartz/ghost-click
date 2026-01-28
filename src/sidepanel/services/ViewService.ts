@@ -44,6 +44,16 @@ export class ViewService extends BaseService {
     this.emitter.on("PLAYBACK_ERROR", () => {
       this.logger.info("Playback error - staying on playback progress view");
     });
+
+    this.emitter.on("EDIT_MACRO", () => {
+      this.logger.info("Edit macro event - switching to edit macro view");
+      this.navigateToView("editMacro");
+    });
+
+    this.emitter.on("CREATE_MACRO", () => {
+      this.logger.info("Create macro event - switching to edit macro view");
+      this.navigateToView("editMacro");
+    });
   }
 
   subscribe(listener: (state: ViewState) => void): () => void {

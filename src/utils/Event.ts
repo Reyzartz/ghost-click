@@ -20,11 +20,14 @@ export type EventType =
   | "SHOW_SAVE_RECORDING_MODAL"
   | "SAVE_RECORDING_CONFIRMED"
   | "SAVE_RECORDING_CANCELLED"
-  | "RE_RECORD_REQUESTED";
+  | "RE_RECORD_REQUESTED"
+  | "OPEN_IMPORT_MACRO_MODAL"
+  | "EDIT_MACRO"
+  | "CREATE_MACRO";
 
 export interface BaseEvent {
   name: EventType;
-  data?: {};
+  data?: object;
 }
 
 export interface StartRecordingEvent extends BaseEvent {
@@ -161,3 +164,68 @@ export interface ReRecordRequestedEvent extends BaseEvent {
     initialUrl: string;
   };
 }
+
+export interface OpenImportMacroModalEvent extends BaseEvent {
+  name: "OPEN_IMPORT_MACRO_MODAL";
+}
+
+export interface PlayMacroPreviewEvent extends BaseEvent {
+  name: "PLAY_MACRO_PREVIEW";
+  data: {
+    macro: Macro;
+  };
+}
+
+export interface CreateMacroEvent extends BaseEvent {
+  name: "CREATE_MACRO";
+  data: {
+    macro: Macro;
+  };
+}
+
+export interface EditMacroEvent extends BaseEvent {
+  name: "EDIT_MACRO";
+  data: {
+    macroId: string;
+  };
+}
+
+export interface StartElementInspectionEvent extends BaseEvent {
+  name: "START_ELEMENT_INSPECTION";
+}
+
+export interface StopElementInspectionEvent extends BaseEvent {
+  name: "STOP_ELEMENT_INSPECTION";
+}
+
+export interface ElementSelectedEvent extends BaseEvent {
+  name: "ELEMENT_SELECTED";
+  data: {
+    target: TargetElementSelector;
+  };
+}
+
+export type AppEvents =
+  | StartRecordingEvent
+  | StopRecordingEvent
+  | UserActionEvent
+  | SavedMacroEvent
+  | PlayMacroEvent
+  | StopPlaybackEvent
+  | PausePlaybackEvent
+  | ResumePlaybackEvent
+  | PlaybackCompletedEvent
+  | PlaybackErrorEvent
+  | ExecuteActionEvent
+  | ToggleQuickActionsEvent
+  | ShowSaveRecordingModalEvent
+  | SaveRecordingConfirmedEvent
+  | SaveRecordingCancelledEvent
+  | ReRecordRequestedEvent
+  | OpenImportMacroModalEvent
+  | PlayMacroPreviewEvent
+  | CreateMacroEvent
+  | EditMacroEvent
+  | StartElementInspectionEvent
+  | StopElementInspectionEvent
+  | ElementSelectedEvent;

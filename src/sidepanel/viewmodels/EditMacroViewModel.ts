@@ -3,6 +3,11 @@ import { MacroRepository } from "@/repositories/MacroRepository";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
 import { BaseViewModel } from "@/utils/BaseViewModel";
 import { Emitter } from "@/utils/Emitter";
+import {
+  CreateMacroEvent,
+  EditMacroEvent,
+  PlaybackErrorEvent,
+} from "@/utils/Event";
 
 export interface EditMacroState {
   loading: boolean;
@@ -16,6 +21,7 @@ export interface EditMacroState {
   currentStepId: string | null;
   erroredStepIds: string[];
   completedStepIds: string[];
+  isCreating: boolean;
 }
 
 export class EditMacroViewModel extends BaseViewModel {
@@ -31,6 +37,7 @@ export class EditMacroViewModel extends BaseViewModel {
     currentStepId: null,
     erroredStepIds: [],
     completedStepIds: [],
+    isCreating: false,
   };
   private listeners: Array<(state: EditMacroState) => void> = [];
 
@@ -63,7 +70,7 @@ export class EditMacroViewModel extends BaseViewModel {
       });
     });
 
-    this.emitter.on("PLAYBACK_ERROR", (data: { stepId?: string }) => {
+    this.emitter.on("PLAYBACK_ERROR", (data: PlaybackErrorEvent["data"]) => {
       this.logger.info("Detected PLAYBACK_ERROR event", {
         stepId: data.stepId,
       });
@@ -120,6 +127,18 @@ export class EditMacroViewModel extends BaseViewModel {
       this.logger.info("Detected RESUME_PLAYBACK event; updating state");
       this.setState({ isPaused: false });
     });
+
+    this.emitter.on("EDIT_MACRO", (data: EditMacroEvent["data"]) => {
+      this.logger.info("Detected EDIT_MACRO event", { macroId: data.macroId });
+      void this.loadMacro(data.macroId);
+    });
+
+    this.emitter.on("CREATE_MACRO", (data: CreateMacroEvent["data"]) => {
+      this.logger.info("Detected CREATE_MACRO event", {
+        macroId: data.macro.id,
+      });
+      this.loadMacroForCreation(data.macro);
+    });
   }
 
   subscribe(listener: (state: EditMacroState) => void): () => void {
@@ -137,7 +156,12 @@ export class EditMacroViewModel extends BaseViewModel {
 
   async loadMacro(macroId: string): Promise<void> {
     this.logger.info("Loading macro for edit", { macroId });
-    this.setState({ loading: true, error: null, success: false });
+    this.setState({
+      loading: true,
+      error: null,
+      success: false,
+      isCreating: false,
+    });
 
     try {
       const macro = await this.macroRepository.findById(macroId);
@@ -148,11 +172,12 @@ export class EditMacroViewModel extends BaseViewModel {
           loading: false,
           error: "Macro not found",
           macro: null,
+          isCreating: false,
         });
         return;
       }
 
-      this.setState({ loading: false, macro, error: null });
+      this.setState({ loading: false, macro, error: null, isCreating: false });
       this.logger.info("Loaded macro for edit", { macroId, name: macro.name });
     } catch (err) {
       this.logger.error("Failed to load macro", { macroId, err });
@@ -160,8 +185,25 @@ export class EditMacroViewModel extends BaseViewModel {
         loading: false,
         error: "Failed to load macro",
         macro: null,
+        isCreating: false,
       });
     }
+  }
+
+  loadMacroForCreation(macro: Macro): void {
+    this.logger.info("Loading macro for creation", {
+      macroId: macro.id,
+      name: macro.name,
+    });
+    this.setState({
+      loading: false,
+      macro,
+      error: null,
+      success: false,
+      isCreating: true,
+      deletedStepIds: new Set(),
+      newStepIds: new Set(),
+    });
   }
 
   updateMacroName(name: string): void {
@@ -258,7 +300,7 @@ export class EditMacroViewModel extends BaseViewModel {
     const updatedMacro = { ...this.state.macro, steps: updatedSteps };
     this.setState({ macro: updatedMacro, newStepIds });
   }
-  
+
   deleteStep(stepId: string): void {
     if (!this.state.macro) {
       this.logger.error("Cannot delete step: no macro loaded");
@@ -270,7 +312,7 @@ export class EditMacroViewModel extends BaseViewModel {
       stepId,
     });
 
-    if(this.isStepNew(stepId)) {
+    if (this.isStepNew(stepId)) {
       const updatedSteps = this.state.macro.steps.filter(
         (step) => step.id !== stepId,
       );
@@ -353,6 +395,9 @@ export class EditMacroViewModel extends BaseViewModel {
       macro: null,
       error: null,
       success: false,
+      isCreating: false,
+      deletedStepIds: new Set(),
+      newStepIds: new Set(),
     });
   }
 }
