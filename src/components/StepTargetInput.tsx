@@ -68,15 +68,33 @@ const StepTargetInput = memo<StepTargetInputProps>(({ target, onChange }) => {
           Target Selector:
         </Text>
 
-        <Button
-          onClick={isInspecting ? stopInspection : startInspection}
-          variant={isInspecting ? "danger" : "primary"}
-          size="sm"
-          icon={isInspecting ? Square : Search}
-          title={isInspecting ? "Stop inspection" : "Inspect element on page"}
-        >
-          {isInspecting ? "Stop" : "Inspect"}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={() => {
+              void startInspection();
+            }}
+            variant="primary"
+            size="sm"
+            icon={Search}
+            title="Inspect element on page"
+            disabled={isInspecting}
+          >
+            Inspect
+          </Button>
+
+          <Button
+            onClick={() => {
+              void stopInspection();
+            }}
+            variant="danger"
+            size="sm"
+            icon={Square}
+            title="Stop inspection"
+            disabled={!isInspecting}
+          >
+            Stop
+          </Button>
+        </div>
       </div>
 
       <div className="flex flex-col gap-2 border border-slate-200 rounded p-2 bg-slate-50">

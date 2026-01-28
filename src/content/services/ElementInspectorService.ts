@@ -84,7 +84,7 @@ export class ElementInspectorService extends BaseService {
 
     // Emit locally and broadcast to sidepanel
     this.emitter.emit("ELEMENT_SELECTED", {
-      selector,
+      target: selector,
     });
 
     this.stopInspection();
