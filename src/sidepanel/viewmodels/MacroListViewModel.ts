@@ -1,6 +1,7 @@
 import { Macro } from "@/models";
 import { MacroRepository } from "@/repositories/MacroRepository";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
+import { MacroShareService } from "@/services/MacroShareService";
 import { BaseViewModel } from "@/utils/BaseViewModel";
 import { Emitter } from "@/utils/Emitter";
 
@@ -36,6 +37,7 @@ export class MacroListViewModel extends BaseViewModel {
   constructor(
     private readonly macroRepository: MacroRepository,
     private readonly recordingStateRepository: RecordingStateRepository,
+    private readonly macroShareService: MacroShareService,
     protected readonly emitter: Emitter,
   ) {
     super("MacroListViewModel", emitter);
@@ -104,6 +106,21 @@ export class MacroListViewModel extends BaseViewModel {
     }
   }
 
+  async copyMacro(id: string): Promise<void> {
+    try {
+      this.logger.info("Copying macro to clipboard", { id });
+      const macro = this.state.allMacros.find((m) => m.id === id);
+      if (!macro) {
+        throw new Error("Macro not found");
+      }
+      await this.macroShareService.copyToClipboard(macro);
+      this.logger.info("Macro copied to clipboard", { id });
+    } catch (err) {
+      this.logger.error("Failed to copy macro", { id, err });
+      this.setState({ error: "Failed to copy macro" });
+    }
+  }
+
   setSearchQuery(query: string): void {
     this.logger.info("Setting search query", { query });
     const filteredMacros = this.filterMacros(query);
@@ -125,7 +142,7 @@ export class MacroListViewModel extends BaseViewModel {
     const results = this.state.allMacros.filter(
       (macro) =>
         macro.name.toLowerCase().includes(lowerQuery) ||
-        macro.domain?.toLowerCase().includes(lowerQuery)
+        macro.domain?.toLowerCase().includes(lowerQuery),
     );
 
     return results;
@@ -182,11 +199,11 @@ export class MacroListViewModel extends BaseViewModel {
         currentDomainCount: macros.length,
         allCount: allMacros.length,
       });
-      
+
       const filteredMacros = this.state.searchQuery
         ? this.filterMacros(this.state.searchQuery)
         : [];
-      
+
       this.setState({ macros, allMacros, loading: false, filteredMacros });
     } catch (err) {
       this.logger.error("Failed to load macros", { err });

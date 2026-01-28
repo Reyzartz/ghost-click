@@ -2,13 +2,14 @@ import { Macro } from "@/models";
 import { Dropdown, DropdownItem } from "../design-system/Dropdown";
 import { DisplayFavicon } from "./DisplayFavicon";
 import { Text, IconButton } from "@/design-system";
-import { MoreVertical, Play, Edit, Trash2 } from "lucide-react";
+import { MoreVertical, Play, Edit, Trash2, Copy } from "lucide-react";
 
 interface MacroCardProps {
   macro: Macro;
   onPlay: () => void;
-  onEdit?: () => void;
+  onEdit: () => void;
   onDelete: () => void;
+  onCopy: () => void;
   isSelected?: boolean;
 }
 
@@ -17,6 +18,7 @@ export const MacroCard = ({
   onPlay,
   onEdit,
   onDelete,
+  onCopy,
   isSelected = false,
 }: MacroCardProps) => {
   const dropdownItems: DropdownItem[] = [
@@ -25,22 +27,24 @@ export const MacroCard = ({
       onClick: onPlay,
       icon: Play,
     },
-  ];
-
-  if (onEdit) {
-    dropdownItems.push({
+    {
       label: "Edit",
       onClick: onEdit,
       icon: Edit,
-    });
-  }
-
-  dropdownItems.push({
+    },
+    {
+      label: "Copy",
+      onClick: onCopy,
+      icon: Copy,
+    },
+    {
     label: "Delete",
     onClick: onDelete,
     variant: "danger" as const,
     icon: Trash2,
-  });
+  }
+  ];
+
 
   return (
     <li

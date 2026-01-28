@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import { SidePanelApp } from "../SidePanelApp";
 import { Alert, Text, Button } from "@/design-system";
 import { MacroSection } from "@/components/MacroSection";
-import { Circle, Square, ArrowUp, ArrowDown } from "lucide-react";
+import { Circle, Square, ArrowUp, ArrowDown, Upload } from "lucide-react";
 import { MacroListState } from "../viewmodels/MacroListViewModel";
 import { SearchInput } from "@/components/SearchInput";
 
@@ -68,10 +68,28 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
     void app.macroListViewModel.deleteMacro(macroId);
   };
 
-  const handleStartRecording = (): void => {
+  const handleCopy = (macroId: string): void => {
+    void app.macroListViewModel.copyMacro(macroId);
+  };
+
+  const handleImport = (): void => {
+    app.emitter.emit("OPEN_IMPORT_MACRO_MODAL");
+  };
+
+  const handleStartRecording = async () => {
+    const activeTab = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    if (activeTab.length === 0 || !activeTab[0].id) {
+      app.logger.error("No active tab found for recording");
+      return;
+    }
+
     app.emitter.emit("START_RECORDING", {
       sessionId: crypto.randomUUID(),
       initialUrl: window.location.href,
+      tabId: activeTab[0].id,
     });
   };
 
@@ -81,10 +99,10 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
 
   // Determine which macros to show
   const showSearchResults = state.searchQuery.trim() !== "";
-  
+
   return (
     <div className="p-4 space-y-3 text-sm text-slate-900 bg-white">
-      <header className="flex items-center justify-between gap-4">
+      <header className="flex items-end justify-between gap-4">
         <div className="grow overflow-hidden">
           <Text variant="h2">Macros</Text>
 
@@ -96,6 +114,14 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
+          <Button
+            onClick={handleImport}
+            variant="secondary"
+            size="sm"
+            icon={Upload}
+          >
+            Import
+          </Button>
           {state.isRecording ? (
             <Button
               onClick={handleStopRecording}
@@ -107,7 +133,9 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
             </Button>
           ) : (
             <Button
-              onClick={handleStartRecording}
+              onClick={() => {
+                void handleStartRecording();
+              }}
               variant="primary"
               size="sm"
               icon={Circle}
@@ -135,8 +163,8 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
           className="flex items-center gap-0.5"
         >
           Use <ArrowUp size={12} className="inline" />
-          <ArrowDown size={12} className="inline" /> to navigate, Enter to
-          play, Esc to clear
+          <ArrowDown size={12} className="inline" /> to navigate, Enter to play,
+          Esc to clear
         </Text>
       )}
 
@@ -149,6 +177,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
           onPlay={handlePlay}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          onCopy={handleCopy}
           selectedIndex={state.selectedIndex}
         />
       ) : (
@@ -161,6 +190,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
             onPlay={handlePlay}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            onCopy={handleCopy}
           />
 
           {!state.loading && otherDomainMacros.length > 0 && (
@@ -172,6 +202,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
               onPlay={handlePlay}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              onCopy={handleCopy}
             />
           )}
         </>
