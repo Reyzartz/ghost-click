@@ -53,7 +53,7 @@ const ConfirmActionButton = memo<ConfirmActionModalProps>(
               {cancelText}
             </Button>
             <Button
-              onClick={onClickHandler}
+              onClick={onClick}
               variant={props.variant === "danger" ? "danger" : "primary"}
               fullWidth
             >
