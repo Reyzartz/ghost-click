@@ -14,7 +14,9 @@
     "noEmit": true,
     "isolatedModules": true,
     "skipLibCheck": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "types": ["@eslint/js"]
   },
-  "include": ["vite.config.ts"]
+  "include": ["vite.config.ts"],
+  "exclude": ["**/*.mjs", "eslint.config.mjs"]
 }
