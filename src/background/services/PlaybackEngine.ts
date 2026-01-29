@@ -3,6 +3,7 @@ import { ClickStep, InputStep, KeyPressStep } from "@/models/MacroStep";
 import { Emitter } from "@/utils/Emitter";
 import { Logger } from "@/utils/Logger";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
+import { TabsManager } from "@/utils/TabsManager";
 
 export class PlaybackEngine {
   private readonly logger: Logger;
@@ -134,7 +135,7 @@ export class PlaybackEngine {
       this.emitter.emit("PLAYBACK_ERROR", {
         macroId: macro.id,
         stepId: null,
-        error: err,
+        error: err instanceof Error ? err.message : "Unknown error",
       });
 
       this.emitter.emit("STOP_PLAYBACK", undefined, {
@@ -147,17 +148,19 @@ export class PlaybackEngine {
   }
 
   private async navigateToUrl(url: string): Promise<void> {
+    const tab = await TabsManager.getActiveTab();
+
+    if (tab === null) {
+      this.logger.error("Cannot navigate to URL: no active tab");
+      return;
+    }
+
     return new Promise((resolve) => {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs[0]?.id) {
-          chrome.tabs.update(tabs[0].id, { url }, () => {
-            this.logger.info("Navigated to initial URL", { url });
-            // Wait for page to load
-            setTimeout(() => resolve(), 2000);
-          });
-        } else {
-          resolve();
-        }
+      chrome.tabs.update(tab.id, { url }, () => {
+        this.logger.info("Navigated to initial URL", { url });
+        // Wait for page to load
+        // TODO: Improve this by listening to tab update events
+        setTimeout(() => resolve(), 2000);
       });
     });
   }

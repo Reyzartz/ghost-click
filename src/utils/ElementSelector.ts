@@ -1,4 +1,5 @@
 import { TargetElementSelector } from "@/models";
+import { MacroUtils } from "./MacroUtils";
 
 export class ElementSelector {
   static readonly findElementFromXPath = (xpath: string): Element | null => {
@@ -149,7 +150,7 @@ export class ElementSelector {
       id,
       className,
       xpath,
-      defaultSelector: "xpath",
+      defaultSelector: MacroUtils.DEFAULT_SELECTOR_TYPE,
     };
   }
 }

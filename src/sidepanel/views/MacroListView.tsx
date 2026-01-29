@@ -6,6 +6,7 @@ import { Circle, Square, ArrowUp, ArrowDown, Upload } from "lucide-react";
 import { MacroListState } from "../viewmodels/MacroListViewModel";
 import { SearchInput } from "@/components/SearchInput";
 import { MacroUtils } from "@/utils/MacroUtils";
+import { TabsManager } from "@/utils/TabsManager";
 
 export const MacroListView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<MacroListState>({
@@ -78,11 +79,8 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
   };
 
   const handleStartRecording = async () => {
-    const activeTab = await chrome.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
-    if (activeTab.length === 0 || !activeTab[0].id) {
+    const activeTab = await TabsManager.getActiveTab();
+    if (!activeTab || !activeTab.id) {
       app.logger.error("No active tab found for recording");
       return;
     }
@@ -90,7 +88,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
     app.emitter.emit("START_RECORDING", {
       sessionId: MacroUtils.generateSessionId(),
       initialUrl: window.location.href,
-      tabId: activeTab[0].id,
+      tabId: activeTab.id,
     });
   };
 

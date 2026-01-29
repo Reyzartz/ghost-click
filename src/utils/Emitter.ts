@@ -1,5 +1,6 @@
 import { AppEvents, EventType } from "./Event";
 import { Logger } from "./Logger";
+import { TabsManager } from "./TabsManager";
 
 type EventOf<T extends EventType> = Extract<AppEvents, { name: T }>;
 
@@ -123,7 +124,7 @@ export class Emitter {
       });
     } else {
       if (currentTab) {
-        this.sendMessageToCurrentTab(message);
+        void this.sendMessageToCurrentTab(message);
       } else {
         this.sendMessageToAllTabs(message);
       }
@@ -137,27 +138,22 @@ export class Emitter {
     }
   }
 
-  private sendMessageToCurrentTab<T extends EventType>(
+  private async sendMessageToCurrentTab<T extends EventType>(
     message: ChromeMessage<T>
-  ): void {
-    chrome.tabs.query(
-      {
-        active: true,
-        currentWindow: true,
-      },
-      (tabs) => {
-        tabs.forEach((tab) => {
-          if (tab.id === undefined) return;
+  ): Promise<void> {
+    const activeTab = await TabsManager.getActiveTab();
 
-          chrome.tabs.sendMessage(tab.id, message).catch((err: unknown) => {
-            this.logger.info(
-              `Failed to send message to content script in tab ${tab.id}`,
-              { error: err }
-            );
-          });
-        });
-      }
-    );
+    if (activeTab === null || activeTab.id === undefined) {
+      this.logger.info("No active tab to send message to");
+      return;
+    }
+
+    chrome.tabs.sendMessage(activeTab.id, message).catch((err: unknown) => {
+      this.logger.info(
+        `Failed to send message to content script in tab ${activeTab.id}`,
+        { error: err }
+      );
+    });
   }
 
   private sendMessageToAllTabs<T extends EventType>(

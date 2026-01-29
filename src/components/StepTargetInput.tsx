@@ -2,6 +2,7 @@ import { TargetElementSelector } from "@/models";
 import { memo, useEffect, useState } from "react";
 import { Square, Search } from "lucide-react";
 import { Text, Button, Input, Select } from "@/design-system";
+import { TabsManager } from "@/utils/TabsManager";
 
 interface StepTargetInputProps {
   target: TargetElementSelector;
@@ -37,13 +38,11 @@ const StepTargetInput = memo<StepTargetInputProps>(({ target, onChange }) => {
   const startInspection = async (): Promise<void> => {
     setIsInspecting(true);
 
-    const [tab] = await chrome.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
-    if (!tab.id) return;
+    const activeTab = await TabsManager.getActiveTab();
 
-    await chrome.tabs.sendMessage(tab.id, {
+    if (activeTab === null || !activeTab.id) return;
+
+    await chrome.tabs.sendMessage(activeTab.id, {
       type: "EMIT_EVENT",
       event: "START_ELEMENT_INSPECTION",
       source: "sidepanel",
@@ -53,13 +52,11 @@ const StepTargetInput = memo<StepTargetInputProps>(({ target, onChange }) => {
   const stopInspection = async (): Promise<void> => {
     setIsInspecting(false);
 
-    const [tab] = await chrome.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
-    if (!tab.id) return;
+    const activeTab = await TabsManager.getActiveTab();
 
-    await chrome.tabs.sendMessage(tab.id, {
+    if (activeTab === null || !activeTab.id) return;
+
+    await chrome.tabs.sendMessage(activeTab.id, {
       type: "EMIT_EVENT",
       event: "STOP_ELEMENT_INSPECTION",
       source: "sidepanel",

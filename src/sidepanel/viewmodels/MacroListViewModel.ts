@@ -4,6 +4,8 @@ import { RecordingStateRepository } from "@/repositories/RecordingStateRepositor
 import { MacroShareService } from "@/services/MacroShareService";
 import { BaseViewModel } from "@/utils/BaseViewModel";
 import { Emitter } from "@/utils/Emitter";
+import { MacroUtils } from "@/utils/MacroUtils";
+import { TabsManager } from "@/utils/TabsManager";
 
 export interface MacroListState {
   loading: boolean;
@@ -45,7 +47,7 @@ export class MacroListViewModel extends BaseViewModel {
 
   async init(): Promise<void> {
     this.logger.info("Initializing macro list view model");
-    this.loadCurrentDomain();
+    await this.loadCurrentDomain();
 
     this.setState({
       isRecording: await this.recordingStateRepository.isRecording(),
@@ -59,14 +61,14 @@ export class MacroListViewModel extends BaseViewModel {
     // Listen for tab changes
     chrome.tabs.onActivated.addListener(() => {
       this.logger.info("Tab activated, checking domain");
-      this.loadCurrentDomain();
+      void this.loadCurrentDomain();
     });
 
     // Listen for tab updates (navigation)
     chrome.tabs.onUpdated.addListener((_tabId, changeInfo, tab) => {
       if (changeInfo.status === "complete" && tab.active) {
         this.logger.info("Tab updated and complete, checking domain");
-        this.loadCurrentDomain();
+        void this.loadCurrentDomain();
       }
     });
 
@@ -211,23 +213,19 @@ export class MacroListViewModel extends BaseViewModel {
     }
   }
 
-  private loadCurrentDomain(): void {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const url = tabs[0]?.url || "";
-      const domain = this.extractDomain(url);
-      this.logger.info("Current domain detected", { domain });
-      this.setState({ currentDomain: domain });
+  private async loadCurrentDomain(): Promise<void> {
+    const activeTab = await TabsManager.getActiveTab();
+    if (!activeTab || !activeTab.url) {
+      this.logger.info("No active tab found; cannot determine domain");
+      this.setState({ currentDomain: "" });
       void this.loadMacros();
-    });
-  }
-
-  private extractDomain(url: string): string {
-    try {
-      const urlObj = new URL(url);
-      return urlObj.hostname;
-    } catch {
-      return "";
+      return;
     }
+
+    const domain = MacroUtils.extractDomainFromURL(activeTab.url);
+    this.logger.info("Current domain detected", { domain });
+    this.setState({ currentDomain: domain });
+    void this.loadMacros();
   }
 
   private static sortMacros(
