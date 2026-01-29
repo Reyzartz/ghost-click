@@ -1,6 +1,7 @@
 import { BaseViewModel } from "@/utils/BaseViewModel";
 import { Emitter } from "@/utils/Emitter";
 import { MacroStep } from "@/models";
+import { MacroUtils } from "@/utils/MacroUtils";
 
 export type SaveRecordingState = {
   isOpen: boolean;
@@ -62,10 +63,10 @@ export class SaveRecordingViewModel extends BaseViewModel {
     this.steps = data.steps;
 
     // Extract domain from URL
-    const domain = this.extractDomain(data.initialUrl);
+    const domain = MacroUtils.extractDomainFromURL(data.initialUrl);
 
     // Get favicon from current page
-    const faviconUrl = this.getFaviconUrl();
+    const faviconUrl = MacroUtils.getFaviconFromURL(domain);
 
     // Calculate duration (difference between first and last step)
     const startTimestamp = this.steps.length > 0 ? this.steps[0].timestamp : 0;
@@ -75,7 +76,7 @@ export class SaveRecordingViewModel extends BaseViewModel {
       startTimestamp && endTimestamp ? endTimestamp - startTimestamp : 0;
 
     // Generate default name
-    const defaultName = `Untitled Macro ${new Date().toLocaleString()}`;
+    const defaultName = MacroUtils.getDefaultMacroName();
 
     this.setState({
       isOpen: true,
@@ -158,34 +159,5 @@ export class SaveRecordingViewModel extends BaseViewModel {
       duration: 0,
     });
     this.steps = [];
-  }
-
-  private extractDomain(url: string): string {
-    try {
-      const urlObj = new URL(url);
-      return urlObj.hostname;
-    } catch {
-      return "unknown";
-    }
-  }
-
-  private getFaviconUrl(): string {
-    // Try to get favicon from link tags
-    const linkElements =
-      document.querySelectorAll<HTMLLinkElement>('link[rel*="icon"]');
-
-    for (const link of linkElements) {
-      if (link.href) {
-        return link.href;
-      }
-    }
-
-    // Fallback to default favicon.ico
-    try {
-      const url = new URL(window.location.href);
-      return `${url.protocol}//${url.hostname}/favicon.ico`;
-    } catch {
-      return "";
-    }
   }
 }

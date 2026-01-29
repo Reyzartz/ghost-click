@@ -7,6 +7,7 @@ import {
 } from "@/utils/Event";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
 import { ElementSelector } from "@/utils/ElementSelector";
+import { MacroUtils } from "@/utils/MacroUtils";
 
 export class UserInputService extends BaseService {
   private isRecording = false;
@@ -111,10 +112,6 @@ export class UserInputService extends BaseService {
     this.currentSessionId = null;
   }
 
-  private generateStepId(): string {
-    return crypto.randomUUID();
-  }
-
   private getElementName(element: HTMLElement): string {
     const text = element.textContent;
     if (text) {
@@ -134,7 +131,7 @@ export class UserInputService extends BaseService {
     console.log("Captured click on element:", target);
 
     const clickData: UserClickEventData = {
-      id: this.generateStepId(),
+      id: MacroUtils.generateStepId(),
       name: this.getElementName(target),
       sessionId: this.currentSessionId,
       timestamp: Date.now(),
@@ -164,7 +161,7 @@ export class UserInputService extends BaseService {
     }
 
     const inputData: UserInputEventData = {
-      id: this.generateStepId(),
+      id: MacroUtils.generateStepId(),
       name: target.value,
       sessionId: this.currentSessionId,
       timestamp: Date.now(),
@@ -204,7 +201,7 @@ export class UserInputService extends BaseService {
     const target = event.target as HTMLElement;
 
     const keyPressData: UserKeyPressEventData = {
-      id: this.generateStepId(),
+      id: MacroUtils.generateStepId(),
       name: event.key,
       sessionId: this.currentSessionId,
       timestamp: Date.now(),

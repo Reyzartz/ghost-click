@@ -1,5 +1,6 @@
 import { BaseService } from "../../utils/BaseService";
 import { Emitter } from "@/utils/Emitter";
+import { MacroUtils } from "@/utils/MacroUtils";
 
 export class ShortcutService extends BaseService {
   private static commands = {
@@ -55,7 +56,7 @@ export class ShortcutService extends BaseService {
   }
 
   private startRecording(): void {
-    const sessionId = crypto.randomUUID();
+    const sessionId = MacroUtils.generateSessionId();
 
     // Get the active tab URL and tabId
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {

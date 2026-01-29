@@ -10,6 +10,7 @@ import {
   PlusIcon,
   TextCursorInputIcon,
 } from "lucide-react";
+import { MacroUtils } from "@/utils/MacroUtils";
 
 interface AddStepButtonProps {
   onAddStep: (step: ClickStep | InputStep | KeyPressStep) => void;
@@ -34,17 +35,17 @@ const AddStepButton = memo<AddStepButtonProps>(
       type: StepType
     ): ClickStep | InputStep | KeyPressStep => {
       const baseStep = {
-        id: crypto.randomUUID(),
+        id: MacroUtils.generateStepId(),
         name: `New ${type} step`,
         timestamp: null,
         delay: 1000,
-        retryCount: 0,
-        retryInterval: 1000,
+        retryCount: MacroUtils.DEFAULT_RETRY_COUNT,
+        retryInterval: MacroUtils.DEFAULT_RETRY_INTERVAL_MS,
         target: {
           id: "",
           className: "",
           xpath: "",
-          defaultSelector: "xpath" as const,
+          defaultSelector: MacroUtils.DEFAULT_SELECTOR_TYPE,
         },
       };
 

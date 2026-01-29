@@ -5,6 +5,7 @@ import { MacroSection } from "@/components/MacroSection";
 import { Circle, Square, ArrowUp, ArrowDown, Upload } from "lucide-react";
 import { MacroListState } from "../viewmodels/MacroListViewModel";
 import { SearchInput } from "@/components/SearchInput";
+import { MacroUtils } from "@/utils/MacroUtils";
 
 export const MacroListView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<MacroListState>({
@@ -87,7 +88,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
     }
 
     app.emitter.emit("START_RECORDING", {
-      sessionId: crypto.randomUUID(),
+      sessionId: MacroUtils.generateSessionId(),
       initialUrl: window.location.href,
       tabId: activeTab[0].id,
     });

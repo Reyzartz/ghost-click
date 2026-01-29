@@ -8,6 +8,7 @@ import {
   SaveRecordingConfirmedEvent,
   UserActionEvent,
 } from "@/utils/Event";
+import { MacroUtils } from "@/utils/MacroUtils";
 
 export class RecorderService extends BaseService {
   private isRecording = false;
@@ -228,17 +229,14 @@ export class RecorderService extends BaseService {
     const existing = await this.macroRepository.findById(sessionId);
 
     // Extract domain from URL
-    const domain = this.extractDomain(initialUrl);
+    const domain = MacroUtils.extractDomainFromURL(initialUrl);
 
     const macro: Macro = {
       id: sessionId,
-      name:
-        name ??
-        existing?.name ??
-        `Untitled Macro ${new Date().toLocaleString()}`,
+      name: name ?? existing?.name ?? MacroUtils.getDefaultMacroName(),
       initialUrl,
       domain,
-      faviconUrl: this.getDefaultFavicon(initialUrl),
+      faviconUrl: MacroUtils.getFaviconFromURL(domain),
       steps: [...steps],
       createdAt: existing?.createdAt ?? now,
       updatedAt: now,
@@ -250,24 +248,6 @@ export class RecorderService extends BaseService {
       domain: macro.domain,
       steps: macro.steps.length,
     });
-  }
-
-  private extractDomain(url: string): string {
-    try {
-      const urlObj = new URL(url);
-      return urlObj.hostname;
-    } catch {
-      return "unknown";
-    }
-  }
-
-  private getDefaultFavicon(url: string): string {
-    try {
-      const urlObj = new URL(url);
-      return `${urlObj.protocol}//${urlObj.hostname}/favicon.ico`;
-    } catch {
-      return "";
-    }
   }
 
   private recordUserAction(data: UserActionEvent["data"]): void {
@@ -303,8 +283,8 @@ export class RecorderService extends BaseService {
       target: data.target,
       timestamp: data.timestamp,
       delay: 0, // Will be calculated in post-processing
-      retryCount: 1,
-      retryInterval: 200,
+      retryCount: MacroUtils.DEFAULT_RETRY_COUNT,
+      retryInterval: MacroUtils.DEFAULT_RETRY_INTERVAL_MS,
     };
 
     this.macroSteps.push(step);
@@ -325,8 +305,8 @@ export class RecorderService extends BaseService {
       value: data.value,
       delay: 0, // Will be calculated in post-processing
       timestamp: data.timestamp,
-      retryCount: 1,
-      retryInterval: 200,
+      retryCount: MacroUtils.DEFAULT_RETRY_COUNT,
+      retryInterval: MacroUtils.DEFAULT_RETRY_INTERVAL_MS,
     };
 
     this.macroSteps.push(step);
@@ -352,8 +332,8 @@ export class RecorderService extends BaseService {
       metaKey: data.metaKey,
       delay: 0, // Will be calculated in post-processing
       timestamp: data.timestamp,
-      retryCount: 1,
-      retryInterval: 200,
+      retryCount: MacroUtils.DEFAULT_RETRY_COUNT,
+      retryInterval: MacroUtils.DEFAULT_RETRY_INTERVAL_MS,
     };
 
     this.macroSteps.push(step);

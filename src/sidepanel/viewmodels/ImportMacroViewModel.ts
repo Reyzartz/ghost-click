@@ -1,13 +1,17 @@
 import { Macro } from "@/models";
 import { MacroRepository } from "@/repositories/MacroRepository";
-import { MacroShareService } from "@/services/MacroShareService";
+import {
+  MacroShareService,
+  ShareableMacro,
+} from "@/services/MacroShareService";
 import { BaseViewModel } from "@/utils/BaseViewModel";
 import { Emitter } from "@/utils/Emitter";
+import { MacroUtils } from "@/utils/MacroUtils";
 
 export interface ImportMacroState {
   isOpen: boolean;
   pastedText: string;
-  parsedMacro: Omit<Macro, "id" | "createdAt" | "updatedAt"> | null;
+  parsedMacro: ShareableMacro | null;
   macroName: string;
   error: string | null;
 }
@@ -106,16 +110,15 @@ export class ImportMacroViewModel extends BaseViewModel {
     }
 
     try {
-      const now = Date.now();
       const macro: Macro = {
-        id: crypto.randomUUID(),
+        id: MacroUtils.generateMacroId(),
         name: this.state.macroName.trim(),
         initialUrl: this.state.parsedMacro.initialUrl,
         domain: this.state.parsedMacro.domain,
-        faviconUrl: this.state.parsedMacro.faviconUrl,
+        faviconUrl: MacroUtils.getFaviconFromURL(this.state.parsedMacro.domain),
         steps: this.state.parsedMacro.steps,
-        createdAt: now,
-        updatedAt: now,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
       };
 
       this.logger.info("Saving imported macro", { name: macro.name });
@@ -141,11 +144,11 @@ export class ImportMacroViewModel extends BaseViewModel {
 
     const now = Date.now();
     const macro: Macro = {
-      id: crypto.randomUUID(),
+      id: MacroUtils.generateMacroId(),
       name: this.state.macroName.trim(),
       initialUrl: this.state.parsedMacro.initialUrl,
       domain: this.state.parsedMacro.domain,
-      faviconUrl: this.state.parsedMacro.faviconUrl,
+      faviconUrl: MacroUtils.getFaviconFromURL(this.state.parsedMacro.domain),
       steps: this.state.parsedMacro.steps,
       createdAt: now,
       updatedAt: now,
