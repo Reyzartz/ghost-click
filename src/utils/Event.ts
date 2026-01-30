@@ -23,7 +23,8 @@ export type EventType =
   | "RE_RECORD_REQUESTED"
   | "OPEN_IMPORT_MACRO_MODAL"
   | "EDIT_MACRO"
-  | "CREATE_MACRO";
+  | "CREATE_MACRO"
+  | "OPEN_SIDE_PANEL";
 
 export interface BaseEvent {
   name: EventType;
@@ -206,6 +207,10 @@ export interface ElementSelectedEvent extends BaseEvent {
   };
 }
 
+export interface OpenSidePanel extends BaseEvent {
+  name: "OPEN_SIDE_PANEL";
+}
+
 export type AppEvents =
   | StartRecordingEvent
   | StopRecordingEvent
@@ -229,4 +234,5 @@ export type AppEvents =
   | EditMacroEvent
   | StartElementInspectionEvent
   | StopElementInspectionEvent
-  | ElementSelectedEvent;
+  | ElementSelectedEvent
+  | OpenSidePanel;

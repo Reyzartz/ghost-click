@@ -16,6 +16,10 @@ export class SidepanelStateService extends BaseService {
   async init(): Promise<void> {
     this.logger.info("SidepanelStateService initialized");
 
+    this.emitter.on("OPEN_SIDE_PANEL", () => {
+      this.openSidePanel();
+    });
+
     await chrome.sidePanel.setPanelBehavior({
       openPanelOnActionClick: true,
     });
