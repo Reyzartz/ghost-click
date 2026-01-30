@@ -8,6 +8,7 @@ import { BaseApp } from "@/utils/BaseApp";
 import { MacroRepository } from "@/repositories/MacroRepository";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
 import { Storage } from "@/utils/Storage";
+import { SidepanelStateService } from "@/utils/SidepanelStateService";
 
 export class BackgroundApp extends BaseApp {
   constructor() {
@@ -17,9 +18,11 @@ export class BackgroundApp extends BaseApp {
 
     const macroRepository = new MacroRepository(emitter, storage);
     const recordingStateRepository = new RecordingStateRepository(storage);
+    const sidepanelStateService = new SidepanelStateService(emitter);
 
     const services: Array<BaseService> = [
-      new ShortcutService(emitter),
+      sidepanelStateService,
+      new ShortcutService(emitter, sidepanelStateService),
       new RecorderService(emitter, macroRepository, recordingStateRepository),
       new PlaybackService(emitter),
     ];
