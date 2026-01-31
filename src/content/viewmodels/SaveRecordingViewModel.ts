@@ -1,6 +1,6 @@
 import { BaseViewModel } from "@/utils/BaseViewModel";
 import { Emitter } from "@/utils/Emitter";
-import { MacroStep } from "@/models";
+import { Macro, MacroStep } from "@/models";
 import { MacroUtils } from "@/utils/MacroUtils";
 
 export type SaveRecordingState = {
@@ -119,6 +119,38 @@ export class SaveRecordingViewModel extends BaseViewModel {
       faviconUrl: this.state.faviconUrl,
     });
 
+    this.closeModal();
+  }
+
+  async openSidePanel(): Promise<void> {
+    return new Promise((resolve) => {
+      this.emitter.emit("OPEN_SIDE_PANEL");
+
+      // Wait a bit to ensure the side panel has time to open
+      setTimeout(() => {
+        resolve();
+      }, 300);
+    });
+  }
+
+  async saveAndEdit(name: string): Promise<void> {
+    await this.openSidePanel();
+
+    const now = Date.now();
+    const macro: Macro = {
+      id: MacroUtils.generateMacroId(),
+      name: name.trim(),
+      initialUrl: this.state.initialUrl,
+      domain: this.state.domain,
+      faviconUrl: this.state.faviconUrl,
+      steps: this.steps,
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    this.logger.info("Creating macro for editing", { name: macro.name });
+
+    this.emitter.emit("CREATE_MACRO", { macro });
     this.closeModal();
   }
 

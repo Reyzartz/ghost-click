@@ -8,18 +8,10 @@ import {
   Button,
   Input,
   Text,
+  ModalFooter,
 } from "@/design-system";
-
-type SaveRecordingState = {
-  isOpen: boolean;
-  macroName: string;
-  sessionId: string;
-  initialUrl: string;
-  domain: string;
-  faviconUrl: string;
-  stepCount: number;
-  duration: number;
-};
+import { SaveRecordingState } from "../viewmodels/SaveRecordingViewModel";
+import { EditIcon, RotateCwIcon, SaveIcon } from "lucide-react";
 
 export const SaveRecordingModal = ({ app }: { app: ContentApp }) => {
   const [state, setState] = useState<SaveRecordingState>({
@@ -47,8 +39,16 @@ export const SaveRecordingModal = ({ app }: { app: ContentApp }) => {
     app.saveRecordingViewModel.saveRecording(state.macroName);
   };
 
+  const handleSaveAndEdit = (): void => {
+    void app.saveRecordingViewModel.saveAndEdit(state.macroName);
+  };
+
   const handleCancel = (): void => {
     app.saveRecordingViewModel.cancelRecording();
+  };
+
+  const handleReRecord = (): void => {
+    app.saveRecordingViewModel.reRecord();
   };
 
   const formatDuration = (ms: number): string => {
@@ -65,7 +65,6 @@ export const SaveRecordingModal = ({ app }: { app: ContentApp }) => {
       onClose={handleCancel}
       maxWidth="md"
       zIndex={2147483646}
-      className="bg-slate-100!"
     >
       <ModalHeader>
         <div className="flex gap-2">
@@ -73,7 +72,6 @@ export const SaveRecordingModal = ({ app }: { app: ContentApp }) => {
             faviconUrl={state.faviconUrl}
             name={state.domain}
             size="large"
-            className="bg-white"
           />
 
           <div className="space-y-0.5">
@@ -87,7 +85,7 @@ export const SaveRecordingModal = ({ app }: { app: ContentApp }) => {
         </div>
       </ModalHeader>
 
-      <ModalBody className="mx-4 mb-4 space-y-4 rounded-lg border border-solid border-slate-200 bg-white px-3 py-3">
+      <ModalBody className="mx-4 mb-4 space-y-4 rounded-lg border border-solid border-slate-200 bg-slate-50 px-3 py-3">
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <Text variant="small" color="muted">
@@ -118,21 +116,38 @@ export const SaveRecordingModal = ({ app }: { app: ContentApp }) => {
             }
           }}
         />
-
-        <div className="flex gap-2">
-          <Button
-            onClick={handleSave}
-            disabled={!state.macroName.trim()}
-            variant="primary"
-            fullWidth
-          >
-            Save
-          </Button>
-          <Button onClick={handleCancel} variant="danger" fullWidth>
-            Discard
-          </Button>
-        </div>
       </ModalBody>
+
+      <ModalFooter>
+        <Button
+          onClick={handleSave}
+          variant="primary"
+          fullWidth
+          disabled={!state.macroName.trim()}
+          icon={SaveIcon}
+        >
+          Save
+        </Button>
+
+        <Button
+          onClick={handleSaveAndEdit}
+          variant="secondary"
+          fullWidth
+          disabled={!state.macroName.trim()}
+          icon={EditIcon}
+        >
+          Edit
+        </Button>
+
+        <Button
+          onClick={handleReRecord}
+          variant="secondary"
+          fullWidth
+          icon={RotateCwIcon}
+        >
+          Re-record
+        </Button>
+      </ModalFooter>
     </Modal>
   );
 };

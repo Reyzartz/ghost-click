@@ -61,17 +61,12 @@ export const ImportMacroModal = ({ app }: { app: SidePanelApp }) => {
   };
 
   return (
-    <Modal
-      isOpen={state.isOpen}
-      onClose={handleDiscard}
-      maxWidth="md"
-      className="bg-slate-100!"
-    >
+    <Modal isOpen={state.isOpen} onClose={handleDiscard} maxWidth="md">
       <ModalHeader>
         <Text variant="h2">Import Macro</Text>
       </ModalHeader>
 
-      <ModalBody className="flex flex-col gap-2">
+      <ModalBody className="mx-4 mb-4 rounded-lg border border-solid border-slate-200 bg-slate-50 py-3 pr-3 pl-3">
         <Input
           label="Macro Name"
           type="text"
@@ -80,6 +75,7 @@ export const ImportMacroModal = ({ app }: { app: SidePanelApp }) => {
             app.importMacroViewModel.updateMacroName(e.target.value)
           }
           placeholder="Enter macro name"
+          className="mb-3"
           onKeyDown={(e) => {
             if (e.key === "Enter" && state.macroName.trim()) {
               void handleSave();
@@ -95,16 +91,16 @@ export const ImportMacroModal = ({ app }: { app: SidePanelApp }) => {
           }
           placeholder="Paste macro JSON here..."
           className="grow font-mono text-xs"
-          containerClassName={`flex flex-col transition-all duration-200 ${state.parsedMacro ? "h-34" : "h-60"}`}
+          containerClassName={`flex flex-col transition-all duration-200 ${state.parsedMacro ? "h-34" : "h-62"}`}
           autoFocus
           error={state.error}
         />
 
         <div
-          className={`overflow-hidden transition-[opacity,height] duration-200 ${state.parsedMacro ? "h-26 opacity-100" : "h-0 opacity-0"}`}
+          className={`overflow-hidden transition-[opacity,height] duration-200 ${state.parsedMacro ? "h-28 opacity-100" : "h-0 opacity-0"}`}
         >
           {state.parsedMacro && (
-            <div className="divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white px-3 py-2">
+            <div className="mt-2 divide-slate-200 rounded border border-slate-300 bg-white px-3 py-2">
               <MacroMetadataRow
                 label="Steps"
                 value={state.parsedMacro.steps.length}
