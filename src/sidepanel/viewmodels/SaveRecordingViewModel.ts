@@ -36,7 +36,7 @@ export class SaveRecordingViewModel extends BaseViewModel {
     this.logger.info("SaveRecordingViewModel initialized");
 
     this.emitter.on("SHOW_SAVE_RECORDING_MODAL", (data) => {
-      this.showModal(data);
+      void this.showModal(data);
     });
 
     return Promise.resolve();
@@ -122,20 +122,7 @@ export class SaveRecordingViewModel extends BaseViewModel {
     this.closeModal();
   }
 
-  async openSidePanel(): Promise<void> {
-    return new Promise((resolve) => {
-      this.emitter.emit("OPEN_SIDE_PANEL");
-
-      // Wait a bit to ensure the side panel has time to open
-      setTimeout(() => {
-        resolve();
-      }, 300);
-    });
-  }
-
-  async saveAndEdit(name: string): Promise<void> {
-    await this.openSidePanel();
-
+  saveAndEdit(name: string): void {
     const now = Date.now();
     const macro: Macro = {
       id: MacroUtils.generateMacroId(),

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ContentApp } from "../ContentApp";
+import { SidePanelApp } from "../SidePanelApp";
 import { DisplayFavicon } from "@/components/DisplayFavicon";
 import {
   Modal,
@@ -13,7 +13,7 @@ import {
 import { SaveRecordingState } from "../viewmodels/SaveRecordingViewModel";
 import { EditIcon, RotateCwIcon, SaveIcon } from "lucide-react";
 
-export const SaveRecordingModal = ({ app }: { app: ContentApp }) => {
+export const SaveRecordingModal = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<SaveRecordingState>({
     isOpen: false,
     macroName: "",

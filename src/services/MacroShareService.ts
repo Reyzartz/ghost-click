@@ -136,9 +136,7 @@ export class MacroShareService extends BaseService {
   /**
    * Create a new macro from a shareable JSON string
    */
-  fromShareableString(
-    shareableString: string
-  ): Omit<Macro, "id" | "createdAt" | "updatedAt"> {
+  fromShareableString(shareableString: string): ShareableMacro {
     let shareable: ShareableMacro;
 
     // Parse JSON
@@ -172,6 +170,7 @@ export class MacroShareService extends BaseService {
 
     return {
       name: shareable.name,
+      version: shareable.version,
       initialUrl: shareable.initialUrl,
       domain: shareable.domain,
       faviconUrl: shareable.faviconUrl,

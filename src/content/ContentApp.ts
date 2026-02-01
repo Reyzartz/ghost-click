@@ -8,7 +8,6 @@ import { ElementInspectorService } from "./services/ElementInspectorService";
 import { StatusIndicatorViewModel } from "./viewmodels/StatusIndicatorViewModel";
 import { NotificationViewModel } from "./viewmodels/NotificationViewModel";
 import { QuickActionsViewModel } from "./viewmodels/QuickActionsViewModel";
-import { SaveRecordingViewModel } from "./viewmodels/SaveRecordingViewModel";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
 import { MacroRepository } from "@/repositories/MacroRepository";
@@ -18,7 +17,6 @@ export class ContentApp extends BaseApp {
   readonly statusIndicatorViewModel: StatusIndicatorViewModel;
   readonly notificationViewModel: NotificationViewModel;
   readonly quickActionsViewModel: QuickActionsViewModel;
-  readonly saveRecordingViewModel: SaveRecordingViewModel;
 
   constructor() {
     const emitter = new Emitter("content");
@@ -39,12 +37,10 @@ export class ContentApp extends BaseApp {
       macroRepository,
       emitter
     );
-    const saveRecordingViewModel = new SaveRecordingViewModel(emitter);
     const viewModels = [
       statusIndicatorViewModel,
       notificationViewModel,
       quickActionsViewModel,
-      saveRecordingViewModel,
     ];
 
     const services: Array<BaseService> = [
@@ -58,7 +54,6 @@ export class ContentApp extends BaseApp {
     this.statusIndicatorViewModel = statusIndicatorViewModel;
     this.notificationViewModel = notificationViewModel;
     this.quickActionsViewModel = quickActionsViewModel;
-    this.saveRecordingViewModel = saveRecordingViewModel;
   }
 
   async init(): Promise<void> {
