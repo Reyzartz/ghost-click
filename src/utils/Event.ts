@@ -22,6 +22,7 @@ export type EventType =
   | "SAVE_RECORDING_CANCELLED"
   | "RE_RECORD_REQUESTED"
   | "OPEN_IMPORT_MACRO_MODAL"
+  | "OPEN_DUPLICATE_MACRO_MODAL"
   | "EDIT_MACRO"
   | "CREATE_MACRO"
   | "OPEN_SIDE_PANEL";
@@ -171,6 +172,13 @@ export interface OpenImportMacroModalEvent extends BaseEvent {
   name: "OPEN_IMPORT_MACRO_MODAL";
 }
 
+export interface OpenDuplicateMacroModalEvent extends BaseEvent {
+  name: "OPEN_DUPLICATE_MACRO_MODAL";
+  data: {
+    macro: Macro;
+  };
+}
+
 export interface PlayMacroPreviewEvent extends BaseEvent {
   name: "PLAY_MACRO_PREVIEW";
   data: {
@@ -229,6 +237,7 @@ export type AppEvents =
   | SaveRecordingCancelledEvent
   | ReRecordRequestedEvent
   | OpenImportMacroModalEvent
+  | OpenDuplicateMacroModalEvent
   | PlayMacroPreviewEvent
   | CreateMacroEvent
   | EditMacroEvent

@@ -5,6 +5,7 @@ import { MacroListView } from "./views/MacroListView";
 import { PlaybackProgressView } from "./views/PlaybackProgressView";
 import { EditMacroView } from "./views/EditMacroView";
 import { ImportMacroModal } from "./views/ImportMacroModal";
+import { DuplicateMacroModal } from "./views/DuplicateMacroModal";
 
 // Main App component that controls view switching
 export default function App({ app }: { app: SidePanelApp }) {
@@ -25,6 +26,7 @@ export default function App({ app }: { app: SidePanelApp }) {
       )}
       {viewState.currentView === "editMacro" && <EditMacroView app={app} />}
       <ImportMacroModal app={app} />
+      <DuplicateMacroModal app={app} />
     </div>
   );
 }

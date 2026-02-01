@@ -74,6 +74,10 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
     void app.macroListViewModel.copyMacro(macroId);
   };
 
+  const handleDuplicate = (macroId: string): void => {
+    app.macroListViewModel.duplicateMacro(macroId);
+  };
+
   const handleImport = (): void => {
     app.emitter.emit("OPEN_IMPORT_MACRO_MODAL");
   };
@@ -177,6 +181,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
           onEdit={handleEdit}
           onDelete={handleDelete}
           onCopy={handleCopy}
+          onDuplicate={handleDuplicate}
           selectedIndex={state.selectedIndex}
         />
       ) : (
@@ -190,6 +195,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
             onEdit={handleEdit}
             onDelete={handleDelete}
             onCopy={handleCopy}
+            onDuplicate={handleDuplicate}
           />
 
           {!state.loading && otherDomainMacros.length > 0 && (
@@ -202,6 +208,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
               onEdit={handleEdit}
               onDelete={handleDelete}
               onCopy={handleCopy}
+              onDuplicate={handleDuplicate}
             />
           )}
         </>

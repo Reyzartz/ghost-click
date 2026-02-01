@@ -11,6 +11,7 @@ import {
   ModalFooter,
 } from "@/design-system";
 import { ImportMacroState } from "../viewmodels/ImportMacroViewModel";
+import { EditIcon, SaveIcon } from "lucide-react";
 
 const MacroMetadataRow = ({
   label,
@@ -126,6 +127,7 @@ export const ImportMacroModal = ({ app }: { app: SidePanelApp }) => {
               disabled={!state.macroName.trim()}
               variant="primary"
               fullWidth
+              icon={SaveIcon}
             >
               Save
             </Button>
@@ -134,6 +136,7 @@ export const ImportMacroModal = ({ app }: { app: SidePanelApp }) => {
               disabled={!state.macroName.trim()}
               variant="secondary"
               fullWidth
+              icon={EditIcon}
             >
               Edit
             </Button>

@@ -8,6 +8,7 @@ import { MacroListViewModel } from "./viewmodels/MacroListViewModel";
 import { PlaybackProgressViewModel } from "./viewmodels/PlaybackProgressViewModel";
 import { EditMacroViewModel } from "./viewmodels/EditMacroViewModel";
 import { ImportMacroViewModel } from "./viewmodels/ImportMacroViewModel";
+import { DuplicateMacroViewModel } from "./viewmodels/DuplicateMacroViewModel";
 import { ViewService } from "./services/ViewService";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
 import { MacroShareService } from "@/services/MacroShareService";
@@ -21,6 +22,7 @@ export class SidePanelApp extends BaseApp {
   readonly playbackProgressViewModel: PlaybackProgressViewModel;
   readonly editMacroViewModel: EditMacroViewModel;
   readonly importMacroViewModel: ImportMacroViewModel;
+  readonly duplicateMacroViewModel: DuplicateMacroViewModel;
   readonly viewService: ViewService;
 
   constructor() {
@@ -53,6 +55,10 @@ export class SidePanelApp extends BaseApp {
       macroShareService,
       emitter
     );
+    const duplicateMacroViewModel = new DuplicateMacroViewModel(
+      macroRepository,
+      emitter
+    );
 
     super(emitter, logger, [viewService]);
 
@@ -65,6 +71,7 @@ export class SidePanelApp extends BaseApp {
     this.playbackProgressViewModel = playbackProgressViewModel;
     this.editMacroViewModel = editMacroViewModel;
     this.importMacroViewModel = importMacroViewModel;
+    this.duplicateMacroViewModel = duplicateMacroViewModel;
   }
 
   async init(): Promise<void> {
@@ -76,5 +83,6 @@ export class SidePanelApp extends BaseApp {
     await this.playbackProgressViewModel.init();
     await this.editMacroViewModel.init();
     await this.importMacroViewModel.init();
+    await this.duplicateMacroViewModel.init();
   }
 }

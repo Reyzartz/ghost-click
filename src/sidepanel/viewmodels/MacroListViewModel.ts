@@ -123,6 +123,17 @@ export class MacroListViewModel extends BaseViewModel {
     }
   }
 
+  duplicateMacro(id: string): void {
+    this.logger.info("Opening duplicate macro modal", { id });
+    const macro = this.state.allMacros.find((m) => m.id === id);
+    if (!macro) {
+      this.logger.error("Macro not found for duplicate", { id });
+      this.setState({ error: "Macro not found" });
+      return;
+    }
+    this.emitter.emit("OPEN_DUPLICATE_MACRO_MODAL", { macro });
+  }
+
   setSearchQuery(query: string): void {
     this.logger.info("Setting search query", { query });
     const filteredMacros = this.filterMacros(query);

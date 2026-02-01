@@ -11,6 +11,7 @@ interface MacroSectionProps {
   onEdit: (macroId: string) => void;
   onDelete: (macroId: string) => void;
   onCopy: (macroId: string) => void;
+  onDuplicate: (macroId: string) => void;
   selectedIndex?: number;
 }
 
@@ -23,6 +24,7 @@ export const MacroSection = ({
   onEdit,
   onDelete,
   onCopy,
+  onDuplicate,
   selectedIndex,
 }: MacroSectionProps) => {
   return (
@@ -48,6 +50,7 @@ export const MacroSection = ({
             onPlay={() => onPlay(macro.id)}
             onDelete={() => onDelete(macro.id)}
             onCopy={() => onCopy(macro.id)}
+            onDuplicate={() => onDuplicate(macro.id)}
             isSelected={selectedIndex !== undefined && index === selectedIndex}
           />
         ))}
