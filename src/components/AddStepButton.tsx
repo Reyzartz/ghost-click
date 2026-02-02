@@ -13,6 +13,7 @@ import { Button, Text } from "@/design-system";
 import {
   KeyboardIcon,
   MousePointerClickIcon,
+  Navigation,
   PlusIcon,
   TextCursorInputIcon,
 } from "lucide-react";
@@ -45,7 +46,7 @@ const AddStepButton = memo<AddStepButtonProps>(
     ): ClickStep | InputStep | KeyPressStep | NavigateStep => {
       const baseStep = {
         id: MacroUtils.generateStepId(),
-        name: `New ${type} step`,
+        name: `New ${type.toLowerCase()} step`,
         timestamp: null,
         delay: 1000,
         retryCount: MacroUtils.DEFAULT_RETRY_COUNT,
@@ -113,7 +114,7 @@ const AddStepButton = memo<AddStepButtonProps>(
               ? "h-0 w-0 cursor-not-allowed overflow-hidden px-0 py-0"
               : !isAdding
                 ? "h-6 w-6 cursor-pointer items-center justify-center rounded-2xl hover:border-slate-400"
-                : "h-28 w-74 rounded"
+                : "h-37 w-74 rounded"
           }`}
         >
           {!selectedType && isAdding && (
@@ -122,7 +123,7 @@ const AddStepButton = memo<AddStepButtonProps>(
                 Select Step Type:
               </Text>
 
-              <div className="flex gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 <Button
                   onClick={() => handleSelectType("CLICK")}
                   variant="secondary"
@@ -146,6 +147,14 @@ const AddStepButton = memo<AddStepButtonProps>(
                   icon={KeyboardIcon}
                 >
                   Key Press
+                </Button>
+                <Button
+                  onClick={() => handleSelectType("NAVIGATE")}
+                  variant="secondary"
+                  size="sm"
+                  icon={Navigation}
+                >
+                  Navigate
                 </Button>
               </div>
               <Button variant="danger" size="sm" onClick={handleClose}>

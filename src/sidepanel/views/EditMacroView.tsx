@@ -11,7 +11,13 @@ import {
 } from "lucide-react";
 import { EditStepItem } from "@/components/EditStepItem";
 import { AddStepButton } from "@/components/AddStepButton";
-import { ClickStep, InputStep, KeyPressStep, MacroStep } from "@/models";
+import {
+  ClickStep,
+  InputStep,
+  KeyPressStep,
+  NavigateStep,
+  MacroStep,
+} from "@/models";
 import { DisplayFavicon } from "@/components/DisplayFavicon";
 import { ConfirmActionButton } from "@/components/ConfirmActionModal";
 import { EditMacroState } from "../viewmodels/EditMacroViewModel";
@@ -76,7 +82,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
   };
 
   const handleAddStep = (
-    newStep: ClickStep | InputStep | KeyPressStep,
+    newStep: ClickStep | InputStep | KeyPressStep | NavigateStep,
     position: number
   ): void => {
     app.editMacroViewModel.addStep(newStep, position);
