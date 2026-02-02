@@ -1,5 +1,10 @@
 import { Macro } from "@/models";
-import { ClickStep, InputStep, KeyPressStep } from "@/models/MacroStep";
+import {
+  ClickStep,
+  InputStep,
+  KeyPressStep,
+  NavigateStep,
+} from "@/models/MacroStep";
 import { Emitter } from "@/utils/Emitter";
 import { Logger } from "@/utils/Logger";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
@@ -93,6 +98,9 @@ export class PlaybackEngine {
               break;
             case "KEYPRESS":
               await this.executeKeyPressStep(step);
+              break;
+            case "NAVIGATE":
+              await this.executeNavigateStep(step);
               break;
             default:
               this.logger.warn("Unknown step type");
@@ -201,6 +209,19 @@ export class PlaybackEngine {
     this.emitter.emit("EXECUTE_ACTION", { step });
 
     // Wait a bit for the action to complete
+    await PlaybackEngine.sleep(100);
+  }
+
+  private async executeNavigateStep(step: NavigateStep): Promise<void> {
+    this.logger.info("Navigating to URL", { step });
+
+    // Update current step id
+    await this.playbackStateRepository.update({ currentStepId: step.id });
+
+    // Navigate to the specified URL
+    await this.navigateToUrl(step.url);
+
+    // Wait a bit for the navigation to complete
     await PlaybackEngine.sleep(100);
   }
 

@@ -5,7 +5,6 @@ import {
   InputStep,
   KeyPressStep,
   MacroStep,
-  NavigateStep,
 } from "@/models/MacroStep";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
 import { ElementSelector } from "@/utils/ElementSelector";
@@ -45,7 +44,9 @@ export class ActionExecutorService extends BaseService {
           await this.executeKeyPressStep(step);
           break;
         case "NAVIGATE":
-          this.executeNavigateStep(step);
+          /**
+           * Navigate is handled through the background script since it causes a page load.
+           */
           break;
       }
     } catch (err) {
@@ -308,24 +309,6 @@ export class ActionExecutorService extends BaseService {
     if (this.overlay) {
       this.overlay.style.display = "none";
     }
-  }
-
-  private executeNavigateStep(step: NavigateStep): void {
-    this.logger.info("Navigating to URL", { url: step.url });
-
-    if (!step.url || !step.url.trim()) {
-      throw new Error("URL is required for navigate step");
-    }
-
-    // Validate URL format
-    try {
-      new URL(step.url);
-    } catch {
-      throw new Error(`Invalid URL format: ${step.url}`);
-    }
-
-    // Navigate to the URL
-    window.location.href = step.url;
   }
 
   private sleep(ms: number): Promise<void> {
