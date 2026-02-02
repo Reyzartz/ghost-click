@@ -3,12 +3,14 @@ import { useCallback, useState, useRef, useEffect } from "react";
 import { EditClickStep } from "./EditClickStep";
 import { EditInputStep } from "./EditInputStep";
 import { EditKeyPressStep } from "./EditKeyPressStep";
+import { EditNavigateStep } from "./EditNavigateStep";
 import {
   Undo2,
   Trash2,
   MousePointerClickIcon,
   TextCursorInputIcon,
   KeyboardIcon,
+  Navigation,
   Play,
   Check,
   AlertCircle,
@@ -37,6 +39,7 @@ const StepTypeToIcon: Record<
   CLICK: MousePointerClickIcon,
   INPUT: TextCursorInputIcon,
   KEYPRESS: KeyboardIcon,
+  NAVIGATE: Navigation,
 };
 
 export const EditStepItem = ({
@@ -124,6 +127,14 @@ export const EditStepItem = ({
           )}
           {step.type === "KEYPRESS" && (
             <EditKeyPressStep
+              step={step}
+              isOpen={isEditing}
+              onUpdateStep={handleUpdateStep}
+              onClose={onClose}
+            />
+          )}
+          {step.type === "NAVIGATE" && (
+            <EditNavigateStep
               step={step}
               isOpen={isEditing}
               onUpdateStep={handleUpdateStep}

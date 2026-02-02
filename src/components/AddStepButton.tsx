@@ -1,4 +1,10 @@
-import { ClickStep, InputStep, KeyPressStep, StepType } from "@/models";
+import {
+  ClickStep,
+  InputStep,
+  KeyPressStep,
+  NavigateStep,
+  StepType,
+} from "@/models";
 import { memo, useState } from "react";
 import { EditClickStep } from "./EditClickStep";
 import { EditInputStep } from "./EditInputStep";
@@ -11,9 +17,12 @@ import {
   TextCursorInputIcon,
 } from "lucide-react";
 import { MacroUtils } from "@/utils/MacroUtils";
+import { EditNavigateStep } from "./EditNavigateStep";
 
 interface AddStepButtonProps {
-  onAddStep: (step: ClickStep | InputStep | KeyPressStep) => void;
+  onAddStep: (
+    step: ClickStep | InputStep | KeyPressStep | NavigateStep
+  ) => void;
   disabled?: boolean;
 }
 
@@ -33,7 +42,7 @@ const AddStepButton = memo<AddStepButtonProps>(
 
     const createEmptyStep = (
       type: StepType
-    ): ClickStep | InputStep | KeyPressStep => {
+    ): ClickStep | InputStep | KeyPressStep | NavigateStep => {
       const baseStep = {
         id: MacroUtils.generateStepId(),
         name: `New ${type} step`,
@@ -72,19 +81,25 @@ const AddStepButton = memo<AddStepButtonProps>(
             altKey: false,
             metaKey: false,
           } as KeyPressStep;
+        case "NAVIGATE":
+          return {
+            ...baseStep,
+            type: "NAVIGATE",
+            url: "",
+          } as NavigateStep;
       }
     };
 
     const handleAddStep = (
       _stepId: string,
-      updates: Partial<ClickStep | InputStep | KeyPressStep>
+      updates: Partial<ClickStep | InputStep | KeyPressStep | NavigateStep>
     ): void => {
       if (!selectedType) return;
 
       const newStep = {
         ...createEmptyStep(selectedType),
         ...updates,
-      } as ClickStep | InputStep | KeyPressStep;
+      } as ClickStep | InputStep | KeyPressStep | NavigateStep;
 
       onAddStep(newStep);
       handleClose();
@@ -176,6 +191,14 @@ const AddStepButton = memo<AddStepButtonProps>(
         {selectedType === "KEYPRESS" && (
           <EditKeyPressStep
             step={emptyStep as KeyPressStep}
+            isOpen={true}
+            onUpdateStep={handleAddStep}
+            onClose={handleClose}
+          />
+        )}
+        {selectedType === "NAVIGATE" && (
+          <EditNavigateStep
+            step={emptyStep as NavigateStep}
             isOpen={true}
             onUpdateStep={handleAddStep}
             onClose={handleClose}
