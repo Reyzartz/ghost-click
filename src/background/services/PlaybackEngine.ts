@@ -66,7 +66,6 @@ export class PlaybackEngine {
 
     try {
       // Navigate to initial URL before playback
-      await this.navigateToUrl(macro.initialUrl);
 
       for (const step of macro.steps) {
         // Check if stop was requested
@@ -220,6 +219,9 @@ export class PlaybackEngine {
 
     // Navigate to the specified URL
     await this.navigateToUrl(step.url);
+
+    // Send action to content script to execute (for consistency)
+    this.emitter.emit("EXECUTE_ACTION", { step });
 
     // Wait a bit for the navigation to complete
     await PlaybackEngine.sleep(100);
