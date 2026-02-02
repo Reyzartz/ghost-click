@@ -166,13 +166,18 @@ export class RecorderService extends BaseService {
         let j = i + 1;
 
         // Find all adjacent INPUT steps with the same xpath
-        while (
-          j < steps.length &&
-          steps[j].type === "INPUT" &&
-          steps[j].target.xpath === currentStep.target.xpath
-        ) {
-          lastInputStep = steps[j] as typeof currentStep;
-          j++;
+        while (j < steps.length && steps[j].type === "INPUT") {
+          const nextStep = steps[j];
+          if (
+            "target" in nextStep &&
+            "target" in currentStep &&
+            nextStep.target.xpath === currentStep.target.xpath
+          ) {
+            lastInputStep = nextStep as typeof currentStep;
+            j++;
+          } else {
+            break;
+          }
         }
 
         // Add only the last input step (which has the final value)
