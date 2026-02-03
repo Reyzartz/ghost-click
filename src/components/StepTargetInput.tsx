@@ -3,6 +3,7 @@ import { memo, useEffect, useState } from "react";
 import { Square, Search } from "lucide-react";
 import { Text, Button, Input, Select } from "@/design-system";
 import { TabsManager } from "@/utils/TabsManager";
+import { ElementSelectedEvent } from "@/utils/Event";
 
 interface StepTargetInputProps {
   target: TargetElementSelector;
@@ -16,14 +17,14 @@ const StepTargetInput = memo<StepTargetInputProps>(({ target, onChange }) => {
     const handleMessage = (message: {
       type: string;
       event?: string;
-      data?: { selector: TargetElementSelector };
+      data?: ElementSelectedEvent["data"];
     }): void => {
       if (
         message.type === "EMIT_EVENT" &&
         message.event === "ELEMENT_SELECTED" &&
-        message.data?.selector
+        message.data?.target
       ) {
-        onChange(message.data.selector);
+        onChange(message.data.target);
         setIsInspecting(false);
       }
     };

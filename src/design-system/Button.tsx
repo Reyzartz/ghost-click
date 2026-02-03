@@ -18,14 +18,13 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
-  primary: "bg-slate-900 text-white hover:bg-slate-800 disabled:bg-slate-300",
-  secondary:
-    "bg-white border border-solid border-slate-300 text-slate-700 hover:bg-slate-50",
+  primary:
+    "bg-slate-900 text-white hover:bg-slate-800 disabled:bg-slate-300 border-slate-900",
+  secondary: "bg-white border-slate-300 text-slate-700 hover:bg-slate-50",
   danger:
-    "bg-red-50 text-red-700 hover:bg-red-100 disabled:bg-red-200 border border-solid border-red-300",
-  ghost: "bg-transparent text-slate-700 hover:bg-slate-100",
-  success:
-    "bg-green-50 text-green-700 hover:bg-green-100 border border-solid border-green-200",
+    "bg-red-50 text-red-700 hover:bg-red-100 disabled:bg-red-200 border-red-300",
+  ghost: "bg-transparent text-slate-700 hover:bg-slate-100 border-transparent",
+  success: "bg-green-50 text-green-700 hover:bg-green-100 border-green-200",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -56,7 +55,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const classes = [
-      "cursor-pointer rounded font-medium transition-colors inline-flex items-center justify-center gap-2 whitespace-nowrap",
+      "cursor-pointer rounded font-medium transition-colors inline-flex items-center justify-center gap-2 whitespace-nowrap border border-solid",
       "disabled:cursor-not-allowed",
       variantStyles[variant],
       sizeStyles[size],
