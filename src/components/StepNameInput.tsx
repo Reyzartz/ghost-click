@@ -11,7 +11,7 @@ const StepNameInput = memo<StepNameInputProps>(({ name, onChange }) => {
     <Input
       type="text"
       value={name}
-      onChange={(e) => onChange(e.target.value.trim())}
+      onChange={(e) => onChange(e.target.value)}
       autoFocus
       label="Step Name"
       required

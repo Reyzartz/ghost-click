@@ -218,6 +218,15 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
 
       {state.error && <Alert variant="error">{state.error}</Alert>}
 
+      {state.macro &&
+        state.macro.steps.length > 0 &&
+        state.macro.steps[0].type !== "NAVIGATE" && (
+          <Alert variant="warning">
+            First step should be a Navigate step to ensure the macro starts on
+            the correct page.
+          </Alert>
+        )}
+
       {state.success && (
         <Alert variant="success">Macro updated successfully!</Alert>
       )}
@@ -248,34 +257,53 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                 </div>
               ) : (
                 <div className="p-4">
-                  {state.macro.steps.map((step, index) => (
+                  <div className="flex w-full flex-col items-center">
+                    <AddStepButton
+                      onAddStep={(step) => handleAddStep(step, 0)}
+                      disabled={state.isPlaying}
+                    />
                     <div
-                      key={step.id}
-                      className="group flex w-full flex-col items-center"
+                      className={`text-slate-300 transition-[height] duration-200 ${state.isPlaying ? "h-0 overflow-hidden" : "h-4"}`}
                     >
-                      <EditStepItem
-                        step={step}
-                        index={index}
-                        handleUpdateStep={handleUpdateStep}
-                        handleDeleteStep={handleDeleteStep}
-                        isDeleted={state.deletedStepIds.has(step.id)}
-                        isNew={state.newStepIds.has(step.id)}
-                        isEditDisabled={state.isPlaying}
-                        handleUndoDelete={handleUndoDelete}
-                        isCurrent={state.currentStepId === step.id}
-                        isCompleted={state.completedStepIds.includes(step.id)}
-                        isErrored={state.erroredStepIds.includes(step.id)}
-                      />
-                      <div className="text-xs text-slate-300">|</div>
-                      <AddStepButton
-                        onAddStep={(step) => handleAddStep(step, index + 1)}
-                        disabled={state.isPlaying}
-                      />
-                      <div className="text-slate-300 group-last:hidden">
-                        <ArrowDown size={16} />
-                      </div>
+                      <ArrowDown size={16} />
                     </div>
-                  ))}
+                  </div>
+
+                  {state.macro.steps.map((step, index) => {
+                    const isFirstStep = index === 0;
+                    const isDeletable =
+                      !isFirstStep || step.type !== "NAVIGATE";
+
+                    return (
+                      <div
+                        key={step.id}
+                        className="group flex w-full flex-col items-center"
+                      >
+                        <EditStepItem
+                          step={step}
+                          index={index}
+                          handleUpdateStep={handleUpdateStep}
+                          handleDeleteStep={handleDeleteStep}
+                          isDeleted={state.deletedStepIds.has(step.id)}
+                          isNew={state.newStepIds.has(step.id)}
+                          isEditDisabled={state.isPlaying}
+                          handleUndoDelete={handleUndoDelete}
+                          isCurrent={state.currentStepId === step.id}
+                          isCompleted={state.completedStepIds.includes(step.id)}
+                          isErrored={state.erroredStepIds.includes(step.id)}
+                          isDeletable={isDeletable}
+                        />
+                        <div className="text-xs text-slate-300">|</div>
+                        <AddStepButton
+                          onAddStep={(step) => handleAddStep(step, index + 1)}
+                          disabled={state.isPlaying}
+                        />
+                        <div className="text-slate-300 group-last:hidden">
+                          <ArrowDown size={16} />
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>

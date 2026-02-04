@@ -30,6 +30,7 @@ interface EditStepItemProps {
   isCurrent?: boolean;
   isCompleted?: boolean;
   isErrored?: boolean;
+  isDeletable?: boolean;
 }
 
 const StepTypeToIcon: Record<
@@ -53,6 +54,7 @@ export const EditStepItem = ({
   isCurrent = false,
   isCompleted = false,
   isErrored = false,
+  isDeletable = true,
 }: EditStepItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const stepRef = useRef<HTMLLIElement>(null);
@@ -201,22 +203,24 @@ export const EditStepItem = ({
             Undo
           </Button>
         ) : (
-          <div
-            className={`absolute top-1 right-0.5 z-50 w-0 items-center overflow-hidden transition-all duration-200 ${
-              isEditDisabled ? "hidden" : "group-hover/step:w-6"
-            }`}
-          >
-            <IconButton
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDeleteStep(step.id);
-              }}
-              icon={Trash2}
-              size="sm"
-              variant="danger"
-              title="Delete step"
-            />
-          </div>
+          isDeletable && (
+            <div
+              className={`absolute top-1 right-0.5 z-50 w-0 items-center overflow-hidden transition-all duration-200 ${
+                isEditDisabled ? "hidden" : "group-hover/step:w-6"
+              }`}
+            >
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteStep(step.id);
+                }}
+                icon={Trash2}
+                size="sm"
+                variant="danger"
+                title="Delete step"
+              />
+            </div>
+          )
         )}
       </li>
     </>
