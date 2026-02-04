@@ -1,4 +1,5 @@
 import { HTMLAttributes, ReactNode } from "react";
+import { clsx } from "clsx";
 import { IconButton } from "./IconButton";
 import { X } from "lucide-react";
 
@@ -23,7 +24,7 @@ export const Modal = ({
   children,
   maxWidth = "md",
   zIndex = 99999,
-  className = "",
+  className,
   ...props
 }: ModalProps) => {
   if (!isOpen) return null;
@@ -36,13 +37,11 @@ export const Modal = ({
       {...props}
     >
       <div
-        className={[
+        className={clsx(
           "relative mx-4 w-full overflow-hidden rounded-lg bg-white shadow-xl",
           maxWidthStyles[maxWidth],
-          className,
-        ]
-          .filter(Boolean)
-          .join(" ")}
+          className
+        )}
         onClick={(e) => e.stopPropagation()}
       >
         {onClose && (
@@ -66,14 +65,11 @@ interface ModalHeaderProps extends HTMLAttributes<HTMLDivElement> {
 
 export const ModalHeader = ({
   children,
-  className = "",
+  className,
   ...props
 }: ModalHeaderProps) => {
   return (
-    <div
-      className={["p-4 pb-0", className].filter(Boolean).join(" ")}
-      {...props}
-    >
+    <div className={clsx("p-4 pb-0", className)} {...props}>
       {children}
     </div>
   );
@@ -85,14 +81,15 @@ interface ModalBodyProps extends HTMLAttributes<HTMLDivElement> {
 
 export const ModalBody = ({
   children,
-  className = "",
+  className,
   ...props
 }: ModalBodyProps) => {
   return (
     <div
-      className={["scrollbar my-4 max-h-120 overflow-scroll px-4", className]
-        .filter(Boolean)
-        .join(" ")}
+      className={clsx(
+        "scrollbar my-4 max-h-120 overflow-scroll px-4",
+        className
+      )}
       {...props}
     >
       {children}
@@ -106,14 +103,11 @@ interface ModalFooterProps extends HTMLAttributes<HTMLDivElement> {
 
 export const ModalFooter = ({
   children,
-  className = "",
+  className,
   ...props
 }: ModalFooterProps) => {
   return (
-    <div
-      className={["flex gap-2 p-4 pt-0", className].filter(Boolean).join(" ")}
-      {...props}
-    >
+    <div className={clsx("flex gap-2 p-4 pt-0", className)} {...props}>
       {children}
     </div>
   );

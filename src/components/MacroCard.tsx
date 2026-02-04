@@ -1,4 +1,5 @@
 import { Macro } from "@/models";
+import { clsx } from "clsx";
 import { Dropdown, DropdownItem } from "../design-system/Dropdown";
 import { DisplayFavicon } from "./DisplayFavicon";
 import { Text, IconButton } from "@/design-system";
@@ -54,11 +55,12 @@ export const MacroCard = ({
 
   return (
     <li
-      className={`group cursor-pointer rounded border p-2 transition-colors ${
+      className={clsx(
+        "group cursor-pointer rounded border p-2 transition-colors",
         isSelected
           ? "border-slate-300 bg-slate-100"
           : "border-slate-200 hover:bg-slate-100"
-      }`}
+      )}
       onClick={onPlay}
       ref={(el) => {
         if (isSelected && el) {
@@ -74,9 +76,10 @@ export const MacroCard = ({
           <DisplayFavicon
             name={macro.name}
             faviconUrl={macro.faviconUrl}
-            className={`mt-0.5 transition-colors ${
+            className={clsx(
+              "mt-0.5 transition-colors",
               isSelected ? "bg-white" : "group-hover:bg-white"
-            }`}
+            )}
           />
 
           <div className="grow overflow-hidden">

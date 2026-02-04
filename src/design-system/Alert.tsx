@@ -1,4 +1,5 @@
 import { HTMLAttributes, ReactNode } from "react";
+import { clsx } from "clsx";
 import {
   CheckCircle,
   XCircle,
@@ -46,7 +47,7 @@ export const Alert = ({
   variant = "info",
   children,
   showIcon = true,
-  className = "",
+  className,
   ...props
 }: AlertProps) => {
   const styles = variantStyles[variant];
@@ -54,13 +55,11 @@ export const Alert = ({
 
   return (
     <div
-      className={[
+      className={clsx(
         "rounded border px-3 py-2 text-sm",
         styles.container,
-        className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
+        className
+      )}
       {...props}
     >
       {showIcon ? (

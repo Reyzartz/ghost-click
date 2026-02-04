@@ -1,4 +1,5 @@
 import { MacroStep } from "@/models";
+import { clsx } from "clsx";
 import { useCallback, useState, useRef, useEffect } from "react";
 import { EditClickStep } from "./EditClickStep";
 import { EditInputStep } from "./EditInputStep";
@@ -148,22 +149,28 @@ export const EditStepItem = ({
 
       <li
         ref={stepRef}
-        className={`group/step relative max-w-full list-none rounded border ${getStatusStyles()} ${
+        className={clsx(
+          "group/step relative max-w-full list-none rounded border",
+          getStatusStyles(),
           isEditDisabled ? "cursor-not-allowed" : "cursor-pointer"
-        }`}
+        )}
         onClick={onEditHandler}
       >
         <div
-          className={`mx-auto flex w-full max-w-max items-start gap-2 p-3 py-1.5 transition-all duration-200 ${isDeleted ? "pr-20 opacity-50" : "opacity-100"} ${!isEditDisabled && !isDeleted ? "group-hover/step:pr-8" : ""}`}
+          className={clsx(
+            "mx-auto flex w-full max-w-max items-start gap-2 p-3 py-1.5 transition-all duration-200",
+            isDeleted ? "pr-20 opacity-50" : "opacity-100",
+            !isEditDisabled && !isDeleted && "group-hover/step:pr-8"
+          )}
         >
           <div className="flex min-w-0 grow flex-col">
             <div className="flex items-center gap-1.5">
               <Text
                 variant="small"
-                className={
-                  "mb-0.5 flex grow truncate " +
-                  (isDeleted ? "line-through" : "")
-                }
+                className={clsx(
+                  "mb-0.5 flex grow truncate",
+                  isDeleted && "line-through"
+                )}
                 color={getTextColor()}
               >
                 <IconComponent size={16} className="mt-0.5 mr-1.5 shrink-0" />
@@ -205,9 +212,10 @@ export const EditStepItem = ({
         ) : (
           isDeletable && (
             <div
-              className={`absolute top-1 right-0.5 z-50 w-0 items-center overflow-hidden transition-all duration-200 ${
+              className={clsx(
+                "absolute top-1 right-0.5 z-50 w-0 items-center overflow-hidden transition-all duration-200",
                 isEditDisabled ? "hidden" : "group-hover/step:w-6"
-              }`}
+              )}
             >
               <IconButton
                 onClick={(e) => {

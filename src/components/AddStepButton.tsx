@@ -5,6 +5,7 @@ import {
   NavigateStep,
   StepType,
 } from "@/models";
+import { clsx } from "clsx";
 import { memo, useState } from "react";
 import { EditClickStep } from "./EditClickStep";
 import { EditInputStep } from "./EditInputStep";
@@ -47,7 +48,9 @@ const AddStepButton = memo<AddStepButtonProps>(
       const baseStep = {
         id: MacroUtils.generateStepId(),
         name: `New ${type.toLowerCase()} step`,
-        timestamp: null,
+        // TODO: this filed will remove in the future, need to update all related code
+        // eslint-disable-next-line react-hooks/purity
+        timestamp: Date.now(),
         delay: 1000,
         retryCount: MacroUtils.DEFAULT_RETRY_COUNT,
         retryInterval: MacroUtils.DEFAULT_RETRY_INTERVAL_MS,
@@ -109,13 +112,14 @@ const AddStepButton = memo<AddStepButtonProps>(
     if (!selectedType || !isAdding) {
       return (
         <div
-          className={`group/add flex flex-col gap-2 overflow-hidden border-[1.5px] border-dashed border-slate-300 bg-slate-50 p-2 transition-all duration-300 ease-in-out ${
+          className={clsx(
+            "group/add flex flex-col gap-2 overflow-hidden border-[1.5px] border-dashed border-slate-300 bg-slate-50 p-2 transition-all duration-300 ease-in-out",
             disabled
               ? "h-0 w-0 cursor-not-allowed overflow-hidden px-0 py-0"
               : !isAdding
                 ? "h-6 w-6 cursor-pointer items-center justify-center rounded-2xl hover:border-slate-400"
                 : "h-37 w-74 rounded"
-          }`}
+          )}
         >
           {!selectedType && isAdding && (
             <>
@@ -167,7 +171,10 @@ const AddStepButton = memo<AddStepButtonProps>(
             <button
               onClick={() => setIsAdding(true)}
               title="Add new step"
-              className={`flex items-center justify-center text-slate-300 duration-300 group-hover/add:text-slate-400 ${disabled ? "cursor-not-allowed" : "cursor-pointer"}`}
+              className={clsx(
+                "flex items-center justify-center text-slate-300 duration-300 group-hover/add:text-slate-400",
+                disabled ? "cursor-not-allowed" : "cursor-pointer"
+              )}
               disabled={disabled}
             >
               <PlusIcon size={14} />

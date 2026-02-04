@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { clsx } from "clsx";
 import { AlertTriangle, ChevronDown, ChevronRight } from "lucide-react";
 import { StepError } from "@/sidepanel/viewmodels/PlaybackProgressViewModel";
 import { Text } from "@/design-system";
@@ -35,9 +36,10 @@ export const ErrorDetailsPanel = ({
       </div>
 
       <div
-        className={`overflow-auto border-red-200 bg-red-50 transition-[max-height] duration-300 ${
+        className={clsx(
+          "overflow-auto border-red-200 bg-red-50 transition-[max-height] duration-300",
           showDetails ? "max-h-48 border-t" : "max-h-0"
-        }`}
+        )}
       >
         <ul className="divide-y divide-red-200">
           {errorDetails.map((err, idx) => (

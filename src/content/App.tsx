@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { clsx } from "clsx";
 import { ContentApp } from "./ContentApp";
 import {
   AppStatus,
@@ -47,9 +48,10 @@ function App({ app }: { app: ContentApp }) {
         style={{
           zIndex: 9999,
         }}
-        className={`pointer-events-none fixed inset-0 box-border h-screen w-screen ${
+        className={clsx(
+          "pointer-events-none fixed inset-0 box-border h-screen w-screen",
           statusStyles[statusState.status]
-        }`}
+        )}
       />
 
       <div
@@ -62,9 +64,10 @@ function App({ app }: { app: ContentApp }) {
             style={{
               animation: "slideDown 0.3s ease-out",
             }}
-            className={`pointer-events-auto flex w-60 justify-center rounded px-4 py-2 text-sm font-medium shadow-lg ${
+            className={clsx(
+              "pointer-events-auto flex w-60 justify-center rounded px-4 py-2 text-sm font-medium shadow-lg",
               notificationTypeStyles[notification.type]
-            }`}
+            )}
           >
             {notification.message}
           </div>

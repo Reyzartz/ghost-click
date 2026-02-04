@@ -1,4 +1,5 @@
 import { HTMLAttributes, ReactNode } from "react";
+import { clsx } from "clsx";
 import { Card } from "./Card";
 import { Text } from "./Text";
 
@@ -9,15 +10,11 @@ interface InfoPanelProps extends HTMLAttributes<HTMLDivElement> {
   }>;
 }
 
-export const InfoPanel = ({
-  items,
-  className = "",
-  ...props
-}: InfoPanelProps) => {
+export const InfoPanel = ({ items, className, ...props }: InfoPanelProps) => {
   return (
     <Card
       padding="md"
-      className={["space-y-2 bg-slate-50", className].filter(Boolean).join(" ")}
+      className={clsx("space-y-2 bg-slate-50", className)}
       {...props}
     >
       {items.map((item, index) => (

@@ -1,4 +1,33 @@
 import { HTMLAttributes, ReactNode, ElementType } from "react";
+import { cva } from "class-variance-authority";
+import { clsx } from "clsx";
+
+const textVariants = cva("", {
+  variants: {
+    variant: {
+      h1: "text-2xl font-bold",
+      h2: "text-lg font-semibold",
+      h3: "text-base font-semibold",
+      h4: "text-sm font-medium",
+      h5: "text-xs font-medium",
+      body: "text-sm",
+      small: "text-xs",
+      xs: "text-[10px]",
+      caption: "text-xs uppercase tracking-wide",
+    },
+    color: {
+      default: "text-slate-900",
+      muted: "text-slate-500",
+      success: "text-green-700",
+      error: "text-red-700",
+      warning: "text-amber-700",
+    },
+  },
+  defaultVariants: {
+    variant: "body",
+    color: "default",
+  },
+});
 
 type TextVariant =
   | "h1"
@@ -19,41 +48,19 @@ interface TextProps extends HTMLAttributes<HTMLElement> {
   as?: ElementType;
 }
 
-const variantStyles: Record<TextVariant, string> = {
-  h1: "text-2xl font-bold",
-  h2: "text-lg font-semibold",
-  h3: "text-base font-semibold",
-  h4: "text-sm font-medium",
-  h5: "text-xs font-medium",
-  body: "text-sm",
-  small: "text-xs",
-  xs: "text-[10px]",
-  caption: "text-xs uppercase tracking-wide",
-};
-
-const colorStyles: Record<TextColor, string> = {
-  default: "text-slate-900",
-  muted: "text-slate-500",
-  success: "text-green-700",
-  error: "text-red-700",
-  warning: "text-amber-700",
-};
-
 export const Text = ({
   variant = "body",
   color = "default",
   children,
   as,
-  className = "",
+  className,
   ...props
 }: TextProps) => {
   const Component: ElementType =
     as ||
     (variant === "h1" || variant === "h2" || variant === "h3" ? variant : "p");
 
-  const classes = [variantStyles[variant], colorStyles[color], className]
-    .filter(Boolean)
-    .join(" ");
+  const classes = clsx(textVariants({ variant, color }), className);
 
   return (
     <Component className={classes} {...props}>

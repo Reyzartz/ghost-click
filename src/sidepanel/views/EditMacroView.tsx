@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { clsx } from "clsx";
 import { SidePanelApp } from "../SidePanelApp";
 import { Alert, Button, Input, Text } from "@/design-system";
 import {
@@ -263,7 +264,10 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                       disabled={state.isPlaying}
                     />
                     <div
-                      className={`text-slate-300 transition-[height] duration-200 ${state.isPlaying ? "h-0 overflow-hidden" : "h-4"}`}
+                      className={clsx(
+                        "text-slate-300 transition-[height] duration-200",
+                        state.isPlaying ? "h-0 overflow-hidden" : "h-4"
+                      )}
                     >
                       <ArrowDown size={16} />
                     </div>

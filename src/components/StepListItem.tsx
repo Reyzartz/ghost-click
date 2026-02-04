@@ -1,4 +1,5 @@
 import { MacroStep } from "@/models";
+import { clsx } from "clsx";
 import {
   Play,
   Check,
@@ -32,13 +33,15 @@ export const StepListItem = ({
   const IconComponent = StepTypeToIcon[step.type];
   return (
     <li
-      className={`rounded px-3 py-2 ${
+      className={clsx(
+        "rounded px-3 py-2",
         isCurrent
           ? "border border-green-300 bg-green-100 font-medium"
           : isCompleted
             ? "border border-slate-200 bg-slate-100 text-slate-500"
-            : "border border-slate-200 bg-white"
-      } ${isErrored ? "border-red-300 bg-red-50 text-red-700" : ""}`}
+            : "border border-slate-200 bg-white",
+        isErrored && "border-red-300 bg-red-50 text-red-700"
+      )}
       autoFocus={isCurrent}
       ref={(el) => {
         if (isCurrent && el) {
@@ -47,9 +50,11 @@ export const StepListItem = ({
       }}
     >
       <div
-        className={`flex items-center gap-2 ${
-          isCompleted && isErrored ? "text-red-600" : ""
-        } ${isCompleted && !isErrored ? "text-green-600" : ""}`}
+        className={clsx(
+          "flex items-center gap-2",
+          isCompleted && isErrored && "text-red-600",
+          isCompleted && !isErrored && "text-green-600"
+        )}
       >
         <IconComponent size={16} />
         <Text variant="small">{step.name}</Text>

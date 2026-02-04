@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { clsx } from "clsx";
 import { SidePanelApp } from "../SidePanelApp";
 import {
   Modal,
@@ -92,13 +93,19 @@ export const ImportMacroModal = ({ app }: { app: SidePanelApp }) => {
           }
           placeholder="Paste macro JSON here..."
           className="grow font-mono text-xs"
-          containerClassName={`flex flex-col transition-all duration-200 ${state.parsedMacro ? "h-34" : "h-62"}`}
+          containerClassName={clsx(
+            "flex flex-col transition-all duration-200",
+            state.parsedMacro ? "h-34" : "h-62"
+          )}
           autoFocus
           error={state.error}
         />
 
         <div
-          className={`overflow-hidden transition-[opacity,height] duration-200 ${state.parsedMacro ? "h-28 opacity-100" : "h-0 opacity-0"}`}
+          className={clsx(
+            "overflow-hidden transition-[opacity,height] duration-200",
+            state.parsedMacro ? "h-28 opacity-100" : "h-0 opacity-0"
+          )}
         >
           {state.parsedMacro && (
             <div className="mt-2 divide-slate-200 rounded border border-slate-300 bg-white px-3 py-2">

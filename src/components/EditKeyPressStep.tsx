@@ -1,4 +1,5 @@
 import { KeyPressStep } from "@/models";
+import { clsx } from "clsx";
 import { memo, useRef, useState } from "react";
 import { StepDelayInput } from "./StepDelayInput";
 import { StepNameInput } from "./StepNameInput";
@@ -112,9 +113,10 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
             onFocus={onStartRecording}
             onBlur={onStopRecording}
             readOnly
-            className={`cursor-pointer ${
+            className={clsx(
+              "cursor-pointer",
               isRecording ? "border-blue-400 bg-blue-50" : "bg-slate-50"
-            }`}
+            )}
             placeholder="Click to record"
           />
 

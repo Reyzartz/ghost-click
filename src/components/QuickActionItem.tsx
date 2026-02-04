@@ -1,4 +1,5 @@
 import { Macro } from "@/models";
+import { clsx } from "clsx";
 import { Play } from "lucide-react";
 import { Text } from "@/design-system";
 import { DisplayFavicon } from "./DisplayFavicon";
@@ -16,11 +17,12 @@ const QuickActionItem = ({
 }: QuickActionItemProps) => {
   return (
     <li
-      className={`group cursor-pointer rounded-lg border border-solid px-3 py-2 transition-colors ${
+      className={clsx(
+        "group cursor-pointer rounded-lg border border-solid px-3 py-2 transition-colors",
         isSelected
           ? "border-slate-200 bg-slate-100"
           : "border-transparent hover:bg-slate-50"
-      }`}
+      )}
       onClick={onSelect}
       ref={(el) => {
         if (isSelected && el) {
@@ -36,7 +38,7 @@ const QuickActionItem = ({
           <DisplayFavicon
             name={macro.name}
             faviconUrl={macro.faviconUrl}
-            className={isSelected ? "bg-white" : ""}
+            className={clsx(isSelected && "bg-white")}
           />
 
           <div className="grow overflow-hidden">

@@ -1,5 +1,6 @@
 import { Macro } from "@/models";
 import { memo } from "react";
+import { clsx } from "clsx";
 import { Text } from "@/design-system";
 
 type DisplayFaviconSize = "small" | "medium" | "large";
@@ -21,11 +22,11 @@ const DisplayFavicon = memo(
   ({ faviconUrl, name, size = "medium", className }: DisplayFaviconProps) => {
     return (
       <div
-        className={
-          sizeMap[size] +
-          " flex shrink-0 items-center justify-center rounded bg-slate-100 " +
+        className={clsx(
+          sizeMap[size],
+          "flex shrink-0 items-center justify-center rounded bg-slate-100",
           className
-        }
+        )}
       >
         {faviconUrl ? (
           <img
