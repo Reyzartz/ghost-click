@@ -2,7 +2,7 @@ import { NavigateStep } from "@/models";
 import { memo, useState } from "react";
 import { StepDelayInput } from "./StepDelayInput";
 import { StepNameInput } from "./StepNameInput";
-import { Navigation } from "lucide-react";
+import { GlobeIcon } from "lucide-react";
 import {
   Text,
   Button,
@@ -37,7 +37,7 @@ export const EditNavigateStep = memo<EditNavigateStepProps>(
     return (
       <Modal isOpen={isOpen} onClose={handleCancel} maxWidth="md">
         <ModalHeader className="flex items-center gap-2">
-          <Navigation size={20} className="text-slate-600" />
+          <GlobeIcon size={20} className="text-slate-600" />
           <Text variant="h2">Edit Navigate Step</Text>
         </ModalHeader>
 
