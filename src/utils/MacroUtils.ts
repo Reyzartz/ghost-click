@@ -18,7 +18,7 @@ class MacroUtils {
 
   static getFaviconFromURL(url: string): string {
     try {
-      const urlObj = new URL(url);
+      const urlObj = new URL(`${url.includes("://") ? "" : "https://"}${url}`);
       return `${urlObj.protocol}//${urlObj.hostname}/favicon.ico`;
     } catch {
       return "";
@@ -54,11 +54,11 @@ class MacroUtils {
         displayName = `Pressed "${name}"`;
         break;
       case "NAVIGATE":
-        displayName = `Navigated to "${name}"`;
+        displayName = `Go to "${name}"`;
         break;
     }
     return displayName.length > 30
-      ? `${displayName.substring(0, 27)}..."`
+      ? `${displayName.substring(0, 47)}..."`
       : displayName;
   }
 
