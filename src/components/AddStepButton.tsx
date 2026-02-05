@@ -12,9 +12,9 @@ import { EditInputStep } from "./EditInputStep";
 import { EditKeyPressStep } from "./EditKeyPressStep";
 import { Button, Text } from "@/design-system";
 import {
+  GlobeIcon,
   KeyboardIcon,
   MousePointerClickIcon,
-  Navigation,
   PlusIcon,
   TextCursorInputIcon,
 } from "lucide-react";
@@ -47,7 +47,7 @@ const AddStepButton = memo<AddStepButtonProps>(
     ): ClickStep | InputStep | KeyPressStep | NavigateStep => {
       const baseStep = {
         id: MacroUtils.generateStepId(),
-        name: `New ${type.toLowerCase()} step`,
+        name: MacroUtils.getStepName("<unknown>", type),
         // TODO: this filed will remove in the future, need to update all related code
         // eslint-disable-next-line react-hooks/purity
         timestamp: Date.now(),
@@ -113,12 +113,12 @@ const AddStepButton = memo<AddStepButtonProps>(
       return (
         <div
           className={clsx(
-            "group/add flex flex-col gap-2 overflow-hidden border-[1.5px] border-dashed border-slate-300 bg-slate-50 p-2 transition-all duration-300 ease-in-out",
+            "group/add flex flex-col gap-2 overflow-hidden border-[1.5px] border-dashed border-slate-300 bg-slate-50 transition-all duration-300 ease-in-out",
             disabled
               ? "h-0 w-0 cursor-not-allowed overflow-hidden px-0 py-0"
               : !isAdding
-                ? "h-6 w-6 cursor-pointer items-center justify-center rounded-2xl hover:border-slate-400"
-                : "h-37 w-74 rounded"
+                ? "h-6 w-6 cursor-pointer rounded-2xl hover:border-slate-400"
+                : "h-37 w-74 rounded p-2"
           )}
         >
           {!selectedType && isAdding && (
@@ -156,7 +156,7 @@ const AddStepButton = memo<AddStepButtonProps>(
                   onClick={() => handleSelectType("NAVIGATE")}
                   variant="secondary"
                   size="sm"
-                  icon={Navigation}
+                  icon={GlobeIcon}
                 >
                   Navigate
                 </Button>
@@ -172,7 +172,7 @@ const AddStepButton = memo<AddStepButtonProps>(
               onClick={() => setIsAdding(true)}
               title="Add new step"
               className={clsx(
-                "flex items-center justify-center text-slate-300 duration-300 group-hover/add:text-slate-400",
+                "flex h-full w-full items-center justify-center text-slate-300 duration-300 group-hover/add:text-slate-400",
                 disabled ? "cursor-not-allowed" : "cursor-pointer"
               )}
               disabled={disabled}
