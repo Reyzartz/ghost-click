@@ -7,6 +7,7 @@ import {
   MousePointerClickIcon,
   TextCursorInputIcon,
   KeyboardIcon,
+  GlobeIcon,
 } from "lucide-react";
 import { Text } from "@/design-system";
 
@@ -18,10 +19,14 @@ interface StepListItemProps {
   isErrored: boolean;
 }
 
-const StepTypeToIcon: Record<string, React.ComponentType<{ size?: number }>> = {
+const StepTypeToIcon: Record<
+  MacroStep["type"],
+  React.ComponentType<{ size?: number }>
+> = {
   CLICK: MousePointerClickIcon,
   INPUT: TextCursorInputIcon,
   KEYPRESS: KeyboardIcon,
+  NAVIGATE: GlobeIcon,
 };
 
 export const StepListItem = ({
