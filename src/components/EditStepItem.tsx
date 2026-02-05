@@ -1,6 +1,6 @@
 import { MacroStep } from "@/models";
 import { clsx } from "clsx";
-import { useCallback, useState, useRef, useEffect } from "react";
+import { useCallback, useState, useRef, useEffect, useMemo } from "react";
 import { EditClickStep } from "./EditClickStep";
 import { EditInputStep } from "./EditInputStep";
 import { EditKeyPressStep } from "./EditKeyPressStep";
@@ -11,13 +11,61 @@ import {
   MousePointerClickIcon,
   TextCursorInputIcon,
   KeyboardIcon,
-  Navigation,
   Play,
   Check,
   AlertCircle,
+  GlobeIcon,
 } from "lucide-react";
 import { IconButton, Text, Button, Badge } from "@/design-system";
-import { TextColor } from "@/design-system/Text";
+import { cva } from "class-variance-authority";
+
+const stepItemVariants = cva(
+  "group/step relative max-w-full list-none rounded border",
+  {
+    variants: {
+      status: {
+        deleted: "border-red-300 bg-red-50",
+        errored: "border-red-300 bg-red-50 text-red-700",
+        current: "border-green-300 bg-green-100",
+        completed: "border-slate-200 bg-slate-100",
+        default: "border-slate-200 bg-white",
+      },
+      isEditDisabled: {
+        true: "cursor-not-allowed",
+        false: "cursor-pointer",
+      },
+    },
+    defaultVariants: {
+      status: "default",
+      isEditDisabled: false,
+    },
+  }
+);
+
+const stepContentVariants = cva(
+  "mx-auto flex w-full max-w-max items-start gap-2 p-3 py-1.5 transition-all duration-200",
+  {
+    variants: {
+      isDeleted: {
+        true: "pr-20 opacity-50",
+        false: "opacity-100",
+      },
+      isHoverable: {
+        true: "group-hover/step:pr-8",
+        false: "",
+      },
+      isDeletable: {
+        true: "",
+        false: "!pr-3",
+      },
+    },
+    defaultVariants: {
+      isDeleted: false,
+      isHoverable: false,
+      isDeletable: true,
+    },
+  }
+);
 
 interface EditStepItemProps {
   step: MacroStep;
@@ -41,7 +89,7 @@ const StepTypeToIcon: Record<
   CLICK: MousePointerClickIcon,
   INPUT: TextCursorInputIcon,
   KEYPRESS: KeyboardIcon,
-  NAVIGATE: Navigation,
+  NAVIGATE: GlobeIcon,
 };
 
 export const EditStepItem = ({
@@ -80,33 +128,14 @@ export const EditStepItem = ({
 
   const IconComponent = StepTypeToIcon[step.type];
 
-  // Determine border and background colors based on status
-  const getStatusStyles = () => {
-    if (isDeleted) return "border-red-300 bg-red-50";
-    if (isErrored) return "border-red-300 bg-red-50 text-red-700";
-    if (isCurrent) return "border-green-300 bg-green-100";
-    if (isCompleted) return "border-slate-200 bg-slate-100";
-    return "border-slate-200 bg-white";
-  };
+  const stepStatus = useMemo(() => {
+    if (isDeleted) return "deleted";
+    if (isErrored) return "errored";
+    if (isCurrent) return "current";
+    if (isCompleted) return "completed";
 
-  // Determine text color based on status
-  const getTextColor = (): TextColor => {
-    if (isDeleted) return "muted";
-    if (isErrored) return "error";
-    if (isCompleted) return "default";
     return "default";
-  };
-
-  // Get status icon
-  const getStatusIcon = () => {
-    if (isErrored)
-      return <AlertCircle size={16} className="shrink-0 text-red-600" />;
-    if (isCurrent)
-      return <Play size={16} className="shrink-0 text-green-600" />;
-    if (isCompleted)
-      return <Check size={16} className="shrink-0 text-green-600" />;
-    return null;
-  };
+  }, [isDeleted, isErrored, isCurrent, isCompleted]);
 
   return (
     <>
@@ -149,19 +178,18 @@ export const EditStepItem = ({
 
       <li
         ref={stepRef}
-        className={clsx(
-          "group/step relative max-w-full list-none rounded border",
-          getStatusStyles(),
-          isEditDisabled ? "cursor-not-allowed" : "cursor-pointer"
-        )}
+        className={stepItemVariants({
+          status: stepStatus,
+          isEditDisabled,
+        })}
         onClick={onEditHandler}
       >
         <div
-          className={clsx(
-            "mx-auto flex w-full max-w-max items-start gap-2 p-3 py-1.5 transition-all duration-200",
-            isDeleted ? "pr-20 opacity-50" : "opacity-100",
-            !isEditDisabled && !isDeleted && "group-hover/step:pr-8"
-          )}
+          className={stepContentVariants({
+            isDeletable,
+            isDeleted,
+            isHoverable: !isEditDisabled && !isDeleted,
+          })}
         >
           <div className="flex min-w-0 grow flex-col">
             <div className="flex items-center gap-1.5">
@@ -171,7 +199,7 @@ export const EditStepItem = ({
                   "mb-0.5 flex grow truncate",
                   isDeleted && "line-through"
                 )}
-                color={getTextColor()}
+                color={isDeleted ? "muted" : isErrored ? "error" : "default"}
               >
                 <IconComponent size={16} className="mt-0.5 mr-1.5 shrink-0" />
                 {step.name}
@@ -193,7 +221,13 @@ export const EditStepItem = ({
             </Text>
           </div>
 
-          {getStatusIcon()}
+          {isErrored && (
+            <AlertCircle size={16} className="shrink-0 text-red-600" />
+          )}
+          {isCurrent && <Play size={16} className="shrink-0 text-green-600" />}
+          {isCompleted && (
+            <Check size={16} className="shrink-0 text-green-600" />
+          )}
         </div>
 
         {isDeleted ? (
