@@ -1,7 +1,7 @@
 import { HTMLAttributes, ReactNode } from "react";
 import { clsx } from "clsx";
-import { IconButton } from "./IconButton";
 import { X } from "lucide-react";
+import { Button } from "./Button";
 
 interface ModalProps extends HTMLAttributes<HTMLDivElement> {
   isOpen: boolean;
@@ -45,7 +45,7 @@ export const Modal = ({
         onClick={(e) => e.stopPropagation()}
       >
         {onClose && (
-          <IconButton
+          <Button
             icon={X}
             onClick={onClose}
             className="absolute top-3 right-3"

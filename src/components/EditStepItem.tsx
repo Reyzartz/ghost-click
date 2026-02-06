@@ -16,7 +16,7 @@ import {
   AlertCircle,
   GlobeIcon,
 } from "lucide-react";
-import { IconButton, Text, Button, Badge } from "@/design-system";
+import { Text, Button, Badge } from "@/design-system";
 import { cva } from "class-variance-authority";
 
 const stepItemVariants = cva(
@@ -251,7 +251,7 @@ export const EditStepItem = ({
                 isEditDisabled ? "hidden" : "group-hover/step:w-6"
               )}
             >
-              <IconButton
+              <Button
                 onClick={(e) => {
                   e.stopPropagation();
                   handleDeleteStep(step.id);
@@ -260,6 +260,7 @@ export const EditStepItem = ({
                 size="sm"
                 variant="danger"
                 title="Delete step"
+                className="p-0.75!"
               />
             </div>
           )

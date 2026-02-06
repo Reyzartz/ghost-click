@@ -19,9 +19,6 @@ export { Modal, ModalHeader, ModalBody, ModalFooter } from "./Modal";
 
 export { Text } from "./Text";
 
-export { IconButton } from "./IconButton";
-export type { IconButtonVariant, IconButtonSize } from "./IconButton";
-
 export { Divider } from "./Divider";
 
 export { InfoPanel } from "./InfoPanel";

@@ -35,19 +35,57 @@ const buttonVariants = cva(
           "bg-green-50 text-green-700 hover:bg-green-100 border-green-200",
       },
       size: {
-        sm: "px-3 py-1.5 text-xs",
-        md: "px-4 py-2 text-sm",
-        lg: "px-6 py-3 text-base",
+        sm: "text-xs leading-3.5",
+        md: "text-sm leading-4",
+        lg: "text-base leading-4.5",
       },
+
       fullWidth: {
         true: "w-full",
         false: "",
       },
+      iconOnly: {
+        true: "aspect-square",
+        false: "",
+      },
     },
+    compoundVariants: [
+      {
+        size: "sm",
+        iconOnly: true,
+        className: "p-1.5",
+      },
+      {
+        size: "md",
+        iconOnly: true,
+        className: "p-2",
+      },
+      {
+        size: "lg",
+        iconOnly: true,
+        className: "p-3",
+      },
+      {
+        size: "sm",
+        iconOnly: false,
+        className: "px-3 py-1.5",
+      },
+      {
+        size: "md",
+        iconOnly: false,
+        className: "px-4 py-2",
+      },
+      {
+        size: "lg",
+        iconOnly: false,
+        className: "px-6 py-3",
+      },
+    ],
     defaultVariants: {
       variant: "primary",
       size: "md",
       fullWidth: false,
+      iconOnly: false,
     },
   }
 );
@@ -74,7 +112,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const classes = clsx(
-      buttonVariants({ variant, size, fullWidth }),
+      buttonVariants({
+        variant,
+        size,
+        fullWidth,
+        iconOnly: IconComponent && !children,
+      }),
       className
     );
 

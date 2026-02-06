@@ -2,7 +2,7 @@ import { Macro } from "@/models";
 import { clsx } from "clsx";
 import { Dropdown, DropdownItem } from "../design-system/Dropdown";
 import { DisplayFavicon } from "./DisplayFavicon";
-import { Text, IconButton } from "@/design-system";
+import { Text, Button } from "@/design-system";
 import { MoreVertical, Play, Edit, Trash2, Copy, CopyPlus } from "lucide-react";
 
 interface MacroCardProps {
@@ -102,7 +102,7 @@ export const MacroCard = ({
         <Dropdown
           items={dropdownItems}
           trigger={
-            <IconButton
+            <Button
               icon={MoreVertical}
               variant="ghost"
               size="sm"
