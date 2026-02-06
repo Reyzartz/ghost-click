@@ -38,7 +38,7 @@ export const Header = ({
   return (
     <div
       className={clsx(
-        "flex items-center gap-1 px-4 py-2",
+        "flex items-center gap-1.5 px-2 py-1.5",
         showBorder && "border-b border-slate-200",
         className
       )}
@@ -49,7 +49,9 @@ export const Header = ({
 
       <Text variant="h3">{title}</Text>
 
-      <div className="flex flex-1 justify-end gap-2">{children}</div>
+      <div className="flex flex-1 justify-end gap-2 overflow-hidden">
+        {children}
+      </div>
     </div>
   );
 };

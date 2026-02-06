@@ -289,7 +289,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
             </div>
           </div>
 
-          <div className="flex shrink-0 gap-2 pt-2">
+          <div className="flex shrink-0 gap-2">
             <ConfirmActionButton
               variant="danger"
               fullWidth

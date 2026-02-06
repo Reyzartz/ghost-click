@@ -2,7 +2,14 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import { SidePanelApp } from "../SidePanelApp";
 import { Alert, Text, Button } from "@/design-system";
 import { MacroSection } from "@/components/MacroSection";
-import { Circle, Square, ArrowUp, ArrowDown, Upload } from "lucide-react";
+import {
+  Circle,
+  Square,
+  ArrowUp,
+  ArrowDown,
+  Upload,
+  Settings,
+} from "lucide-react";
 import { MacroListState } from "../viewmodels/MacroListViewModel";
 import { SearchInput } from "@/components/SearchInput";
 import { MacroUtils } from "@/utils/MacroUtils";
@@ -83,6 +90,10 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
     app.emitter.emit("OPEN_IMPORT_MACRO_MODAL");
   };
 
+  const handleOpenSettings = (): void => {
+    app.viewService.navigateToView("settings");
+  };
+
   const handleStartRecording = async () => {
     const activeTab = await TabsManager.getActiveTab();
     if (!activeTab || !activeTab.id) {
@@ -101,55 +112,67 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
     app.emitter.emit("STOP_RECORDING", {}, { currentTab: false });
   };
 
-  // Determine which macros to show
-  const showSearchResults = state.searchQuery.trim() !== "";
-
   return (
-    <Layout>
-      <header className="flex items-end justify-between gap-4">
-        <div className="grow overflow-hidden">
-          <Text variant="h2">Macros</Text>
+    <Layout
+      header={
+        <header className="flex items-start justify-between gap-4 px-4 pt-2.5">
+          <div className="grow overflow-hidden">
+            <Text variant="h2">Macros</Text>
 
-          {state.currentDomain && !showSearchResults && (
-            <Text variant="small" color="muted" className="truncate">
-              Domain: {state.currentDomain}
-            </Text>
-          )}
-        </div>
+            {state.currentDomain &&
+              !app.macroListViewModel.showSearchResults() && (
+                <Text variant="small" color="muted" className="truncate">
+                  Domain: {state.currentDomain}
+                </Text>
+              )}
+            {app.macroListViewModel.showSearchResults() && (
+              <Text variant="small" color="muted" className="truncate">
+                {state.filteredMacros.length} results for &quot;
+                {state.searchQuery}&quot;
+              </Text>
+            )}
+          </div>
 
-        <div className="flex shrink-0 items-center gap-2">
-          <Button
-            onClick={handleImport}
-            variant="secondary"
-            size="sm"
-            icon={Upload}
-          >
-            Import
-          </Button>
-          {state.isRecording ? (
+          <div className="flex shrink-0 items-center gap-1.5">
+            {state.isRecording ? (
+              <Button
+                onClick={handleStopRecording}
+                variant="danger"
+                size="sm"
+                icon={Square}
+                title="Stop recording"
+              />
+            ) : (
+              <Button
+                onClick={() => {
+                  void handleStartRecording();
+                }}
+                variant="primary"
+                size="sm"
+                icon={Circle}
+                title="Start recording"
+              />
+            )}
+
             <Button
-              onClick={handleStopRecording}
-              variant="danger"
+              onClick={handleImport}
+              variant="secondary"
               size="sm"
-              icon={Square}
-            >
-              Stop
-            </Button>
-          ) : (
-            <Button
-              onClick={() => {
-                void handleStartRecording();
-              }}
-              variant="primary"
-              size="sm"
-              icon={Circle}
-            >
-              Record
-            </Button>
-          )}
-        </div>
-      </header>
+              icon={Upload}
+              title="Import macro"
+            />
 
+            <Button
+              onClick={handleOpenSettings}
+              variant="ghost"
+              size="sm"
+              icon={Settings}
+              title="Settings"
+            />
+          </div>
+        </header>
+      }
+    >
       {state.error && <Alert variant="error">{state.error}</Alert>}
 
       <SearchInput
@@ -160,7 +183,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
         ref={searchInputRef}
       />
 
-      {showSearchResults && (
+      {app.macroListViewModel.showSearchResults() && (
         <Text
           variant="small"
           color="muted"
@@ -172,48 +195,50 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
         </Text>
       )}
 
-      {showSearchResults ? (
-        <MacroSection
-          title="Search Results"
-          macros={state.filteredMacros}
-          loading={state.loading}
-          emptyMessage={`No macros found for "${state.searchQuery}"`}
-          onPlay={handlePlay}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          onCopy={handleCopy}
-          onDuplicate={handleDuplicate}
-          selectedIndex={state.selectedIndex}
-        />
-      ) : (
-        <>
+      <div className="flex-1 overflow-scroll">
+        {app.macroListViewModel.showSearchResults() ? (
           <MacroSection
-            title="Current Domain"
-            macros={state.macros}
+            title="Search Results"
+            macros={state.filteredMacros}
             loading={state.loading}
-            emptyMessage="No macros saved for this domain."
+            emptyMessage={`No macros found for "${state.searchQuery}"`}
             onPlay={handlePlay}
             onEdit={handleEdit}
             onDelete={handleDelete}
             onCopy={handleCopy}
             onDuplicate={handleDuplicate}
+            selectedIndex={state.selectedIndex}
           />
-
-          {!state.loading && otherDomainMacros.length > 0 && (
+        ) : (
+          <>
             <MacroSection
-              title="All Domains"
-              macros={otherDomainMacros}
+              title="Current Domain"
+              macros={state.macros}
               loading={state.loading}
-              emptyMessage="No macros from other domains."
+              emptyMessage="No macros saved for this domain."
               onPlay={handlePlay}
               onEdit={handleEdit}
               onDelete={handleDelete}
               onCopy={handleCopy}
               onDuplicate={handleDuplicate}
             />
-          )}
-        </>
-      )}
+
+            {!state.loading && otherDomainMacros.length > 0 && (
+              <MacroSection
+                title="All Domains"
+                macros={otherDomainMacros}
+                loading={state.loading}
+                emptyMessage="No macros from other domains."
+                onPlay={handlePlay}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onCopy={handleCopy}
+                onDuplicate={handleDuplicate}
+              />
+            )}
+          </>
+        )}
+      </div>
     </Layout>
   );
 };

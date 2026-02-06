@@ -258,4 +258,8 @@ export class MacroListViewModel extends BaseViewModel {
 
     return res;
   }
+
+  showSearchResults(): boolean {
+    return this.state.searchQuery.trim() !== "";
+  }
 }

@@ -43,7 +43,7 @@ const stepItemVariants = cva(
 );
 
 const stepContentVariants = cva(
-  "mx-auto flex w-full max-w-max items-start gap-2 p-3 py-1.5 transition-all duration-200",
+  "mx-auto flex w-full max-w-max items-start gap-2 p-3 py-1.5 transition-all duration-200 delay-200",
   {
     variants: {
       isDeleted: {
@@ -208,7 +208,7 @@ export const EditStepItem = ({
               {isNew && !isDeleted && (
                 <Badge
                   variant="success"
-                  className="-mr-1.5 w-8 shrink-0 overflow-hidden transition-all duration-200 group-hover/step:w-0 group-hover/step:border-0 group-hover/step:px-0"
+                  className="-mr-1.5 w-8 shrink-0 overflow-hidden transition-all delay-200 duration-200 group-hover/step:w-0 group-hover/step:border-0 group-hover/step:px-0"
                 >
                   New
                 </Badge>
@@ -247,7 +247,7 @@ export const EditStepItem = ({
           isDeletable && (
             <div
               className={clsx(
-                "absolute top-1 right-0.5 z-50 w-0 items-center overflow-hidden transition-all duration-200",
+                "absolute top-1 right-0.5 z-50 w-0 items-center overflow-hidden transition-all delay-200 duration-200",
                 isEditDisabled ? "hidden" : "group-hover/step:w-6"
               )}
             >
