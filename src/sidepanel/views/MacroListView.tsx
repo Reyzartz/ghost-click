@@ -7,6 +7,7 @@ import { MacroListState } from "../viewmodels/MacroListViewModel";
 import { SearchInput } from "@/components/SearchInput";
 import { MacroUtils } from "@/utils/MacroUtils";
 import { TabsManager } from "@/utils/TabsManager";
+import { Layout } from "@/components/Layout";
 
 export const MacroListView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<MacroListState>({
@@ -104,7 +105,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
   const showSearchResults = state.searchQuery.trim() !== "";
 
   return (
-    <div className="space-y-3 bg-white p-4 text-sm text-slate-900">
+    <Layout>
       <header className="flex items-end justify-between gap-4">
         <div className="grow overflow-hidden">
           <Text variant="h2">Macros</Text>
@@ -213,6 +214,6 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
           )}
         </>
       )}
-    </div>
+    </Layout>
   );
 };

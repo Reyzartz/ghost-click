@@ -3,10 +3,11 @@ import { SidePanelApp } from "../SidePanelApp";
 import { PlaybackProgressState } from "../viewmodels/PlaybackProgressViewModel";
 import { ErrorDetailsPanel } from "@/components/ErrorDetailsPanel";
 import { Alert, Button, Text } from "@/design-system";
-import { ArrowLeft, Play, Pause, Square, Edit, RotateCcw } from "lucide-react";
+import { Play, Pause, Square, Edit, RotateCcw } from "lucide-react";
 import { ProgressBar } from "@/components/ProgressBar";
 import { StepListItem } from "@/components/StepListItem";
 import { DisplayFavicon } from "@/components/DisplayFavicon";
+import { Layout } from "@/components/Layout";
 
 export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<PlaybackProgressState>({
@@ -45,7 +46,6 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
     ? Math.min(state.currentStepIndex + 1, state.totalSteps)
     : 0;
   const isComplete = Boolean(state.macro && !state.isPlaying && !state.error);
-  const hasError = Boolean(state.error);
   const erroredStepIds = state.erroredStepIds ?? [];
 
   const handleReplay = (): void => {
@@ -90,87 +90,72 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
   };
 
   return (
-    <div className="flex h-screen flex-col gap-4 overflow-hidden p-4 text-sm text-slate-900">
-      <Button
-        onClick={handleGoBack}
-        variant="ghost"
-        size="sm"
-        icon={ArrowLeft}
-        className="self-start"
-      >
-        Back
-      </Button>
-
-      <header className="flex items-start gap-2">
+    <Layout
+      header={<Layout.Header title="Playback Progress" onBack={handleGoBack} />}
+    >
+      <div className="flex justify-between gap-2">
         <div className="flex items-center gap-2">
           <DisplayFavicon
             faviconUrl={state.macro.faviconUrl}
             name={state.macro.name}
-            size="large"
           />
-          <div>
-            <Text variant="caption" color="muted">
-              {hasError && state.isPlaying
-                ? "Playback In Progress (Errors)"
-                : hasError
-                  ? "Playback Error"
-                  : isComplete
-                    ? "Playback Completed"
-                    : state.isPaused
-                      ? "Playback Paused"
-                      : "Playback In Progress"}
-            </Text>
-            <Text variant="h2">{state.macro?.name}</Text>
-          </div>
+          <Text variant="h3">{state.macro?.name}</Text>
         </div>
-      </header>
 
-      {state.isPlaying ? (
-        <div className="flex gap-2">
-          {state.isPaused ? (
-            <Button
-              variant="success"
-              size="sm"
-              onClick={handleResume}
-              icon={Play}
-            >
-              Resume
-            </Button>
+        <div className="flex shrink-0 items-center gap-2">
+          {state.isPlaying ? (
+            <>
+              {state.isPaused ? (
+                <Button
+                  variant="success"
+                  size="sm"
+                  onClick={handleResume}
+                  icon={Play}
+                >
+                  Resume
+                </Button>
+              ) : (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={handlePause}
+                  icon={Pause}
+                >
+                  Pause
+                </Button>
+              )}
+
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={handleStop}
+                icon={Square}
+              >
+                Stop
+              </Button>
+            </>
           ) : (
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={handlePause}
-              icon={Pause}
-            >
-              Pause
-            </Button>
+            <>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={handleReplay}
+                icon={RotateCcw}
+              >
+                Replay
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleEditMacro}
+                icon={Edit}
+              >
+                Edit Macro
+              </Button>
+            </>
           )}
-
-          <Button variant="danger" size="sm" onClick={handleStop} icon={Square}>
-            Stop
-          </Button>
         </div>
-      ) : (
-        <div className="flex gap-2">
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={handleReplay}
-            icon={RotateCcw}
-          >
-            Replay
-          </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={handleEditMacro}
-            icon={Edit}
-          >
-            Edit Macro
-          </Button>
-        </div>
-      )}
+      </div>
 
       <ProgressBar
         current={displayStepNumber}
@@ -212,6 +197,6 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
           ))}
         </ul>
       </div>
-    </div>
+    </Layout>
   );
 };

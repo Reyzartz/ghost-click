@@ -2,14 +2,7 @@ import { useEffect, useState } from "react";
 import { clsx } from "clsx";
 import { SidePanelApp } from "../SidePanelApp";
 import { Alert, Button, Input, Text } from "@/design-system";
-import {
-  ArrowDown,
-  ArrowLeft,
-  Trash2,
-  Play,
-  Pause,
-  Square,
-} from "lucide-react";
+import { ArrowDown, Trash2, Play, Pause, Square } from "lucide-react";
 import { EditStepItem } from "@/components/EditStepItem";
 import { AddStepButton } from "@/components/AddStepButton";
 import {
@@ -22,6 +15,7 @@ import {
 import { DisplayFavicon } from "@/components/DisplayFavicon";
 import { ConfirmActionButton } from "@/components/ConfirmActionModal";
 import { EditMacroState } from "../viewmodels/EditMacroViewModel";
+import { Layout } from "@/components/Layout";
 
 export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<EditMacroState>({
@@ -116,43 +110,25 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
   };
 
   return (
-    <div className="flex h-full flex-col gap-3 overflow-hidden p-4 text-sm text-slate-900">
-      <Button
-        onClick={handleBack}
-        variant="ghost"
-        size="sm"
-        icon={ArrowLeft}
-        className="self-start"
-      >
-        Back
-      </Button>
-
-      <div className="flex shrink-0 items-end justify-between gap-2 overflow-hidden">
-        <div className="flex flex-col overflow-hidden">
-          <Text variant="h2" className="mb-1">
-            {state.isCreating ? "Create Macro" : "Edit Macro"}
-          </Text>
-
-          <div className="flex items-center gap-1">
+    <Layout
+      header={
+        <Layout.Header
+          title={state.isCreating ? "Create Macro" : "Edit Macro"}
+          onBack={handleBack}
+        />
+      }
+    >
+      {state.macro && (
+        <div className="flex justify-between gap-2">
+          <div className="flex items-center gap-2">
             <DisplayFavicon
-              faviconUrl={state.macro?.faviconUrl || null}
-              name={state.macro?.domain || ""}
-              size="small"
+              faviconUrl={state.macro.faviconUrl}
+              name={state.macro.name}
             />
 
-            {state.macro?.domain && (
-              <Text
-                variant="small"
-                color="muted"
-                className="truncate whitespace-nowrap"
-              >
-                {` • ${state.macro.domain}`}
-              </Text>
-            )}
+            <Text variant="h3">{state.macro?.name}</Text>
           </div>
-        </div>
 
-        {state.macro && (
           <div className="flex shrink-0 items-center gap-2">
             {state.isPlaying ? (
               <>
@@ -214,8 +190,8 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
               </>
             )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {state.error && <Alert variant="error">{state.error}</Alert>}
 
@@ -345,6 +321,6 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
       ) : (
         <div className="py-8 text-center text-slate-500">No macro selected</div>
       )}
-    </div>
+    </Layout>
   );
 };
