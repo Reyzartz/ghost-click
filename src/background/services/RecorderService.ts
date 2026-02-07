@@ -1,6 +1,7 @@
 import { Macro, MacroStep } from "@/models";
 import { MacroRepository } from "@/repositories/MacroRepository";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
+import { SettingsRepository } from "@/repositories/SettingsRepository";
 import { BaseService } from "../../utils/BaseService";
 import { Emitter } from "@/utils/Emitter";
 import {
@@ -20,7 +21,8 @@ export class RecorderService extends BaseService {
   constructor(
     protected readonly emitter: Emitter,
     private readonly macroRepository: MacroRepository,
-    private readonly recordingStateRepository: RecordingStateRepository
+    private readonly recordingStateRepository: RecordingStateRepository,
+    private readonly settingsRepository: SettingsRepository
   ) {
     super("RecorderService", emitter);
   }
@@ -39,7 +41,7 @@ export class RecorderService extends BaseService {
     });
 
     this.emitter.on("USER_ACTION", (data) => {
-      this.recordUserAction(data);
+      void this.recordUserAction(data);
     });
 
     this.emitter.on("SAVE_RECORDING_CONFIRMED", (data) => {
@@ -130,7 +132,7 @@ export class RecorderService extends BaseService {
 
     this.logger.info("Recording stopped", { sessionId: this.currentSessionId });
 
-    const processedSteps = this.postProcessSteps(this.macroSteps);
+    const processedSteps = await this.postProcessSteps(this.macroSteps);
 
     this.isRecording = false;
     const sessionId = this.currentSessionId;
@@ -153,16 +155,21 @@ export class RecorderService extends BaseService {
     });
   }
 
-  private postProcessSteps(steps: MacroStep[]): MacroStep[] {
+  private async postProcessSteps(steps: MacroStep[]): Promise<MacroStep[]> {
     if (steps.length === 0) return steps;
 
+    const settings = await this.settingsRepository.get();
     let processedSteps = steps;
 
-    processedSteps = MacroUtils.addFirstStep(processedSteps, this.initialUrl);
+    processedSteps = MacroUtils.addFirstStep(
+      processedSteps,
+      this.initialUrl,
+      settings
+    );
     // Merge adjacent INPUT steps targeting the same element
     processedSteps = MacroUtils.mergeInputSteps(processedSteps);
     // Calculate delays between steps
-    processedSteps = MacroUtils.calculateDelays(processedSteps);
+    processedSteps = MacroUtils.calculateDelays(processedSteps, settings);
 
     this.logger.info("Post-processed steps", {
       original: steps.length,
@@ -203,7 +210,7 @@ export class RecorderService extends BaseService {
     });
   }
 
-  private recordUserAction(data: UserActionEvent["data"]): void {
+  private async recordUserAction(data: UserActionEvent["data"]): Promise<void> {
     if (!this.isRecording) {
       this.logger.warn("No recording in progress. Ignoring user action.");
       return;
@@ -213,21 +220,25 @@ export class RecorderService extends BaseService {
 
     switch (data.type) {
       case "CLICK":
-        this.recordClickAction(data);
+        await this.recordClickAction(data);
         break;
       case "INPUT":
-        this.recordInputAction(data);
+        await this.recordInputAction(data);
         break;
       case "KEYPRESS":
-        this.recordKeyPressAction(data);
+        await this.recordKeyPressAction(data);
         break;
       default:
         this.logger.warn("Unknown user action type");
     }
   }
 
-  private recordClickAction(data: UserActionEvent["data"]): void {
+  private async recordClickAction(
+    data: UserActionEvent["data"]
+  ): Promise<void> {
     if (data.type !== "CLICK") return;
+
+    const settings = await this.settingsRepository.get();
 
     const step: MacroStep = {
       id: data.id,
@@ -236,8 +247,8 @@ export class RecorderService extends BaseService {
       target: data.target,
       timestamp: data.timestamp,
       delay: 0, // Will be calculated in post-processing
-      retryCount: MacroUtils.DEFAULT_RETRY_COUNT,
-      retryInterval: MacroUtils.DEFAULT_RETRY_INTERVAL_MS,
+      retryCount: settings.defaultRetryCount,
+      retryInterval: settings.defaultRetryIntervalMs,
     };
 
     this.macroSteps.push(step);
@@ -247,8 +258,12 @@ export class RecorderService extends BaseService {
     void this.recordingStateRepository.addStep(step);
   }
 
-  private recordInputAction(data: UserActionEvent["data"]): void {
+  private async recordInputAction(
+    data: UserActionEvent["data"]
+  ): Promise<void> {
     if (data.type !== "INPUT") return;
+
+    const settings = await this.settingsRepository.get();
 
     const step: MacroStep = {
       id: data.id,
@@ -258,8 +273,8 @@ export class RecorderService extends BaseService {
       value: data.value,
       delay: 0, // Will be calculated in post-processing
       timestamp: data.timestamp,
-      retryCount: MacroUtils.DEFAULT_RETRY_COUNT,
-      retryInterval: MacroUtils.DEFAULT_RETRY_INTERVAL_MS,
+      retryCount: settings.defaultRetryCount,
+      retryInterval: settings.defaultRetryIntervalMs,
     };
 
     this.macroSteps.push(step);
@@ -269,8 +284,12 @@ export class RecorderService extends BaseService {
     void this.recordingStateRepository.addStep(step);
   }
 
-  private recordKeyPressAction(data: UserActionEvent["data"]): void {
+  private async recordKeyPressAction(
+    data: UserActionEvent["data"]
+  ): Promise<void> {
     if (data.type !== "KEYPRESS") return;
+
+    const settings = await this.settingsRepository.get();
 
     const step: MacroStep = {
       id: data.id,
@@ -285,8 +304,8 @@ export class RecorderService extends BaseService {
       metaKey: data.metaKey,
       delay: 0, // Will be calculated in post-processing
       timestamp: data.timestamp,
-      retryCount: MacroUtils.DEFAULT_RETRY_COUNT,
-      retryInterval: MacroUtils.DEFAULT_RETRY_INTERVAL_MS,
+      retryCount: settings.defaultRetryCount,
+      retryInterval: settings.defaultRetryIntervalMs,
     };
 
     this.macroSteps.push(step);

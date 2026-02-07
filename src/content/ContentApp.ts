@@ -11,6 +11,7 @@ import { QuickActionsViewModel } from "./viewmodels/QuickActionsViewModel";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
 import { MacroRepository } from "@/repositories/MacroRepository";
+import { SettingsRepository } from "@/repositories/SettingsRepository";
 import { Storage } from "@/utils/Storage";
 
 export class ContentApp extends BaseApp {
@@ -26,6 +27,7 @@ export class ContentApp extends BaseApp {
     const recordingStateRepository = new RecordingStateRepository(storage);
     const playbackStateRepository = new PlaybackStateRepository(storage);
     const macroRepository = new MacroRepository(emitter, storage);
+    const settingsRepository = new SettingsRepository(storage);
 
     const statusIndicatorViewModel = new StatusIndicatorViewModel(
       emitter,
@@ -44,9 +46,13 @@ export class ContentApp extends BaseApp {
     ];
 
     const services: Array<BaseService> = [
-      new UserInputService(emitter, recordingStateRepository),
+      new UserInputService(
+        emitter,
+        recordingStateRepository,
+        settingsRepository
+      ),
       new ActionExecutorService(emitter, playbackStateRepository),
-      new ElementInspectorService(emitter),
+      new ElementInspectorService(emitter, settingsRepository),
     ];
 
     super(emitter, logger, services, viewModels);

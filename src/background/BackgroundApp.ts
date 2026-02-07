@@ -7,6 +7,7 @@ import { PlaybackService } from "./services/PlaybackService";
 import { BaseApp } from "@/utils/BaseApp";
 import { MacroRepository } from "@/repositories/MacroRepository";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
+import { SettingsRepository } from "@/repositories/SettingsRepository";
 import { Storage } from "@/utils/Storage";
 import { SidepanelStateService } from "@/utils/SidepanelStateService";
 
@@ -18,12 +19,18 @@ export class BackgroundApp extends BaseApp {
 
     const macroRepository = new MacroRepository(emitter, storage);
     const recordingStateRepository = new RecordingStateRepository(storage);
+    const settingsRepository = new SettingsRepository(storage);
     const sidepanelStateService = new SidepanelStateService(emitter);
 
     const services: Array<BaseService> = [
       sidepanelStateService,
       new ShortcutService(emitter, sidepanelStateService),
-      new RecorderService(emitter, macroRepository, recordingStateRepository),
+      new RecorderService(
+        emitter,
+        macroRepository,
+        recordingStateRepository,
+        settingsRepository
+      ),
       new PlaybackService(emitter),
     ];
 

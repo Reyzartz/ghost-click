@@ -6,6 +6,7 @@ import {
   UserKeyPressEventData,
 } from "@/utils/Event";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
+import { SettingsRepository } from "@/repositories/SettingsRepository";
 import { ElementSelector } from "@/utils/ElementSelector";
 import { MacroUtils } from "@/utils/MacroUtils";
 
@@ -18,7 +19,8 @@ export class UserInputService extends BaseService {
 
   constructor(
     protected readonly emitter: Emitter,
-    private readonly recordingStateRepository: RecordingStateRepository
+    private readonly recordingStateRepository: RecordingStateRepository,
+    private readonly settingsRepository: SettingsRepository
   ) {
     super("UserInputService", emitter);
   }
@@ -65,15 +67,15 @@ export class UserInputService extends BaseService {
 
   private readonly addClickHandlers = (): void => {
     this.clickHandler = (event: MouseEvent) => {
-      this.captureClick(event);
+      void this.captureClick(event);
     };
 
     this.inputHandler = (event: Event) => {
-      this.captureInput(event);
+      void this.captureInput(event);
     };
 
     this.keydownHandler = (event: KeyboardEvent) => {
-      this.captureKeyPress(event);
+      void this.captureKeyPress(event);
     };
 
     document.addEventListener("click", this.clickHandler, true);
@@ -121,7 +123,7 @@ export class UserInputService extends BaseService {
     return element.tagName.toLowerCase();
   }
 
-  private captureClick(event: MouseEvent): void {
+  private async captureClick(event: MouseEvent): Promise<void> {
     if (!this.isRecording || !this.currentSessionId) {
       return;
     }
@@ -130,13 +132,18 @@ export class UserInputService extends BaseService {
     const target = event.target as HTMLElement;
     console.log("Captured click on element:", target);
 
+    const settings = await this.settingsRepository.get();
+
     const clickData: UserClickEventData = {
       id: MacroUtils.generateStepId(),
       name: this.getElementName(target),
       sessionId: this.currentSessionId,
       timestamp: Date.now(),
       type: "CLICK",
-      target: ElementSelector.getElementSelector(target),
+      target: ElementSelector.getElementSelector(
+        target,
+        settings.defaultSelectorType
+      ),
     };
 
     this.logger.info("Click captured", clickData);
@@ -145,7 +152,7 @@ export class UserInputService extends BaseService {
     this.emitter.emit("USER_ACTION", clickData);
   }
 
-  private captureInput(event: Event): void {
+  private async captureInput(event: Event): Promise<void> {
     if (!this.isRecording || !this.currentSessionId) {
       return;
     }
@@ -160,13 +167,18 @@ export class UserInputService extends BaseService {
       return;
     }
 
+    const settings = await this.settingsRepository.get();
+
     const inputData: UserInputEventData = {
       id: MacroUtils.generateStepId(),
       name: target.value,
       sessionId: this.currentSessionId,
       timestamp: Date.now(),
       type: "INPUT" as const,
-      target: ElementSelector.getElementSelector(target),
+      target: ElementSelector.getElementSelector(
+        target,
+        settings.defaultSelectorType
+      ),
       value: target.value,
     };
 
@@ -176,7 +188,7 @@ export class UserInputService extends BaseService {
     this.emitter.emit("USER_ACTION", inputData);
   }
 
-  private captureKeyPress(event: KeyboardEvent): void {
+  private async captureKeyPress(event: KeyboardEvent): Promise<void> {
     if (!this.isRecording || !this.currentSessionId) {
       return;
     }
@@ -200,13 +212,18 @@ export class UserInputService extends BaseService {
 
     const target = event.target as HTMLElement;
 
+    const settings = await this.settingsRepository.get();
+
     const keyPressData: UserKeyPressEventData = {
       id: MacroUtils.generateStepId(),
       name: event.key,
       sessionId: this.currentSessionId,
       timestamp: Date.now(),
       type: "KEYPRESS" as const,
-      target: ElementSelector.getElementSelector(target),
+      target: ElementSelector.getElementSelector(
+        target,
+        settings.defaultSelectorType
+      ),
       key: event.key,
       code: event.code,
       ctrlKey: event.ctrlKey,
