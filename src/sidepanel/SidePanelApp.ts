@@ -4,6 +4,7 @@ import { Logger } from "@/utils/Logger";
 import { Storage } from "@/utils/Storage";
 import { MacroRepository } from "@/repositories/MacroRepository";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
+import { SettingsRepository } from "@/repositories/SettingsRepository";
 import { MacroListViewModel } from "./viewmodels/MacroListViewModel";
 import { PlaybackProgressViewModel } from "./viewmodels/PlaybackProgressViewModel";
 import { EditMacroViewModel } from "./viewmodels/EditMacroViewModel";
@@ -19,6 +20,7 @@ export class SidePanelApp extends BaseApp {
   readonly macroRepository: MacroRepository;
   readonly playbackStateRepository: PlaybackStateRepository;
   readonly recordingStateRepository: RecordingStateRepository;
+  readonly settingsRepository: SettingsRepository;
   readonly macroShareService: MacroShareService;
   readonly macroListViewModel: MacroListViewModel;
   readonly playbackProgressViewModel: PlaybackProgressViewModel;
@@ -36,6 +38,7 @@ export class SidePanelApp extends BaseApp {
     const macroRepository = new MacroRepository(emitter, storage);
     const playbackStateRepository = new PlaybackStateRepository(storage);
     const recordingStateRepository = new RecordingStateRepository(storage);
+    const settingsRepository = new SettingsRepository(storage);
     const macroShareService = new MacroShareService(emitter);
     const viewService = new ViewService(emitter, playbackStateRepository);
     const macroListViewModel = new MacroListViewModel(
@@ -64,13 +67,17 @@ export class SidePanelApp extends BaseApp {
       emitter
     );
     const saveRecordingViewModel = new SaveRecordingViewModel(emitter);
-    const settingsViewModel = new SettingsViewModel(emitter);
+    const settingsViewModel = new SettingsViewModel(
+      settingsRepository,
+      emitter
+    );
 
     super(emitter, logger, [viewService]);
 
     this.macroRepository = macroRepository;
     this.playbackStateRepository = playbackStateRepository;
     this.recordingStateRepository = recordingStateRepository;
+    this.settingsRepository = settingsRepository;
     this.macroShareService = macroShareService;
     this.viewService = viewService;
     this.macroListViewModel = macroListViewModel;
