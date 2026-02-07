@@ -1,4 +1,4 @@
-import { Macro, MacroStep, TargetElementSelector } from "@/models";
+import { Macro, MacroStep, TargetElementSelector, Settings } from "@/models";
 
 export type EventType =
   | "START_RECORDING"
@@ -25,7 +25,8 @@ export type EventType =
   | "OPEN_DUPLICATE_MACRO_MODAL"
   | "EDIT_MACRO"
   | "CREATE_MACRO"
-  | "OPEN_SIDE_PANEL";
+  | "OPEN_SIDE_PANEL"
+  | "SETTINGS_UPDATED";
 
 export interface BaseEvent {
   name: EventType;
@@ -228,6 +229,11 @@ export interface OpenSidePanel extends BaseEvent {
   name: "OPEN_SIDE_PANEL";
 }
 
+export interface SettingsUpdatedEvent extends BaseEvent {
+  name: "SETTINGS_UPDATED";
+  data: Settings;
+}
+
 export type AppEvents =
   | StartRecordingEvent
   | StopRecordingEvent
@@ -253,4 +259,5 @@ export type AppEvents =
   | StartElementInspectionEvent
   | StopElementInspectionEvent
   | ElementSelectedEvent
-  | OpenSidePanel;
+  | OpenSidePanel
+  | SettingsUpdatedEvent;

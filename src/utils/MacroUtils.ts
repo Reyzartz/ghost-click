@@ -1,11 +1,8 @@
 import { MacroStep, NavigateStep, StepType } from "@/models/MacroStep";
+import { Settings, DEFAULT_SETTINGS } from "@/models/Settings";
 
 class MacroUtils {
   static DEFAULT_MACRO_NAME_PREFIX = "Untitled Macro ";
-  static DEFAULT_RETRY_COUNT = 3;
-  static DEFAULT_RETRY_INTERVAL_MS = 1000;
-  static DEFAULT_SELECTOR_TYPE = "xpath" as const;
-  static MINIMUM_DELAY_MS = 200;
 
   static extractDomainFromURL(url: string): string {
     try {
@@ -102,7 +99,11 @@ class MacroUtils {
     return processed;
   }
 
-  static addFirstStep(steps: MacroStep[], initialUrl: string): MacroStep[] {
+  static addFirstStep(
+    steps: MacroStep[],
+    initialUrl: string,
+    settings: Settings = DEFAULT_SETTINGS
+  ): MacroStep[] {
     if (steps.length === 0) return steps;
 
     const initalStep: NavigateStep = {
@@ -110,16 +111,19 @@ class MacroUtils {
       name: MacroUtils.getStepName(initialUrl, "NAVIGATE"),
       type: "NAVIGATE",
       url: initialUrl,
-      timestamp: steps[0].timestamp - MacroUtils.MINIMUM_DELAY_MS,
+      timestamp: steps[0].timestamp - settings.minimumDelayMs,
       delay: 0, // Will be calculated in post-processing
-      retryCount: MacroUtils.DEFAULT_RETRY_COUNT,
-      retryInterval: MacroUtils.DEFAULT_RETRY_INTERVAL_MS,
+      retryCount: settings.defaultRetryCount,
+      retryInterval: settings.defaultRetryIntervalMs,
     };
 
     return [initalStep, ...steps];
   }
 
-  static calculateDelays(steps: MacroStep[]): MacroStep[] {
+  static calculateDelays(
+    steps: MacroStep[],
+    settings: Settings = DEFAULT_SETTINGS
+  ): MacroStep[] {
     if (steps.length === 0) return steps;
 
     return steps.map((step, index) => {
@@ -133,7 +137,7 @@ class MacroUtils {
       const delay =
         nextTimestamp !== null && currentTimestamp !== null
           ? nextTimestamp - currentTimestamp
-          : MacroUtils.MINIMUM_DELAY_MS;
+          : settings.minimumDelayMs;
 
       return {
         ...step,

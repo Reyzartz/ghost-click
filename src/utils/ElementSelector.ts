@@ -1,5 +1,5 @@
-import { TargetElementSelector } from "@/models";
-import { MacroUtils } from "./MacroUtils";
+import { ElementSelectorType, TargetElementSelector } from "@/models";
+import { DEFAULT_SETTINGS } from "@/models/Settings";
 
 export class ElementSelector {
   static readonly findElementFromXPath = (xpath: string): Element | null => {
@@ -141,16 +141,51 @@ export class ElementSelector {
     return `.//${result.replace(/^\//, "")}`;
   }
 
-  static getElementSelector(element: HTMLElement): TargetElementSelector {
+  static getDefaultSelector(
+    selectors: Omit<TargetElementSelector, "defaultSelector">,
+    defaultSelector: ElementSelectorType
+  ): ElementSelectorType {
+    if (defaultSelector === "id" && selectors.id) {
+      return "id";
+    } else if (defaultSelector === "className" && selectors.className) {
+      return "className";
+    } else if (defaultSelector === "xpath" && selectors.xpath) {
+      return "xpath";
+    }
+
+    if (selectors.id) {
+      return "id";
+    } else if (selectors.className) {
+      return "className";
+    } else if (selectors.xpath) {
+      return "xpath";
+    } else {
+      return defaultSelector;
+    }
+  }
+
+  static getElementSelector(
+    element: HTMLElement,
+    defaultSelector: ElementSelectorType = DEFAULT_SETTINGS.defaultSelectorType
+  ): TargetElementSelector {
     const id = ElementSelector.getId(element);
     const className = ElementSelector.getClassName(element);
     const xpath = ElementSelector.getXPath(element);
+
+    const selectorWithFallback = ElementSelector.getDefaultSelector(
+      {
+        id,
+        className,
+        xpath,
+      },
+      defaultSelector
+    );
 
     return {
       id,
       className,
       xpath,
-      defaultSelector: MacroUtils.DEFAULT_SELECTOR_TYPE,
+      defaultSelector: selectorWithFallback,
     };
   }
 }

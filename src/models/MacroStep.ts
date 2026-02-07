@@ -10,11 +10,13 @@ export interface BaseMacroStep {
   retryInterval: number;
 }
 
+export type ElementSelectorType = "id" | "className" | "xpath";
+
 export interface TargetElementSelector {
   id: string;
   className: string;
   xpath: string;
-  defaultSelector: "id" | "className" | "xpath";
+  defaultSelector: ElementSelectorType;
 }
 
 export interface ClickStep extends BaseMacroStep {
