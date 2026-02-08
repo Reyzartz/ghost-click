@@ -157,19 +157,16 @@ export class PlaybackEngine {
   private async navigateToUrl(url: string): Promise<void> {
     const tab = await TabsManager.getActiveTab();
 
-    if (tab === null) {
+    if (!tab?.id) {
       this.logger.error("Cannot navigate to URL: no active tab");
       return;
     }
 
-    return new Promise((resolve) => {
-      chrome.tabs.update(tab.id, { url }, () => {
-        this.logger.info("Navigated to initial URL", { url });
-        // Wait for page to load
-        // TODO: Improve this by listening to tab update events
-        setTimeout(() => resolve(), 2000);
-      });
-    });
+    await TabsManager.navigate(tab.id, url);
+
+    await TabsManager.waitForTabLoad(tab.id);
+
+    return;
   }
 
   private async executeClickStep(step: ClickStep): Promise<void> {
