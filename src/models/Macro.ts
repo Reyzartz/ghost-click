@@ -10,4 +10,5 @@ export interface Macro {
   createdAt: number;
   updatedAt: number;
   lastPlayedAt: number | null;
+  pinned: boolean;
 }

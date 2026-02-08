@@ -7,7 +7,8 @@ import { Emitter } from "@/utils/Emitter";
 
 export interface MacroListState {
   loading: boolean;
-  macros: Macro[];
+  pinnedMacros: Macro[];
+  unpinnedMacros: Macro[];
   allMacros: Macro[];
   isRecording: boolean;
   error?: string | null;
@@ -22,7 +23,8 @@ export type MacroSortOrder = "asc" | "desc";
 export class MacroListViewModel extends BaseViewModel {
   private state: MacroListState = {
     loading: true,
-    macros: [],
+    pinnedMacros: [],
+    unpinnedMacros: [],
     allMacros: [],
     isRecording: false,
     error: null,
@@ -166,6 +168,18 @@ export class MacroListViewModel extends BaseViewModel {
     this.setState({ selectedIndex: newIndex });
   }
 
+  pinMacro(macroId: string): void {
+    this.logger.info("Pinning macro", { macroId });
+
+    void this.macroRepository.updateMacroPin(macroId, true);
+  }
+
+  unpinMacro(macroId: string): void {
+    this.logger.info("Unpinning macro", { macroId });
+
+    void this.macroRepository.updateMacroPin(macroId, false);
+  }
+
   selectCurrentMacro(): void {
     const macro = this.state.filteredMacros[this.state.selectedIndex];
     if (macro) {
@@ -198,7 +212,8 @@ export class MacroListViewModel extends BaseViewModel {
         : [];
 
       this.setState({
-        macros: allMacros,
+        pinnedMacros: allMacros.filter((m) => m.pinned),
+        unpinnedMacros: allMacros.filter((m) => !m.pinned),
         allMacros,
         loading: false,
         filteredMacros,

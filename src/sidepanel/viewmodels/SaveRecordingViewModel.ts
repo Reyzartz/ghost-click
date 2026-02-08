@@ -134,6 +134,7 @@ export class SaveRecordingViewModel extends BaseViewModel {
       createdAt: now,
       updatedAt: now,
       lastPlayedAt: null,
+      pinned: false,
     };
 
     this.logger.info("Creating macro for editing", { name: macro.name });

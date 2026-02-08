@@ -201,6 +201,7 @@ export class RecorderService extends BaseService {
       createdAt: existing?.createdAt ?? now,
       updatedAt: now,
       lastPlayedAt: existing?.lastPlayedAt ?? null,
+      pinned: existing?.pinned ?? false,
     };
 
     await this.macroRepository.save(macro);

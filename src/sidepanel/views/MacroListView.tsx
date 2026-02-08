@@ -20,7 +20,8 @@ import clsx from "clsx";
 export const MacroListView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<MacroListState>({
     loading: true,
-    macros: [],
+    pinnedMacros: [],
+    unpinnedMacros: [],
     allMacros: [],
     isRecording: false,
     error: null,
@@ -87,6 +88,14 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
 
   const handleOpenSettings = (): void => {
     app.viewService.navigateToView("settings");
+  };
+
+  const handlePin = (macroId: string, value: boolean): void => {
+    if (value) {
+      app.macroListViewModel.pinMacro(macroId);
+    } else {
+      app.macroListViewModel.unpinMacro(macroId);
+    }
   };
 
   const handleStartRecording = async () => {
@@ -169,7 +178,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
     >
       {state.error && <Alert variant="error">{state.error}</Alert>}
 
-      <div className="flex flex-col gap-0.5">
+      <div className="flex flex-col gap-1">
         <SearchInput
           value={state.searchQuery}
           onChange={(value) => app.macroListViewModel.setSearchQuery(value)}
@@ -204,13 +213,29 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
             onDelete={handleDelete}
             onCopy={handleCopy}
             onDuplicate={handleDuplicate}
+            onPin={handlePin}
             selectedIndex={state.selectedIndex}
           />
         ) : (
           <>
+            {state.pinnedMacros.length > 0 && (
+              <MacroSection
+                title="Pinned Macros"
+                macros={state.pinnedMacros}
+                loading={state.loading}
+                emptyMessage="No macros saved yet."
+                onPlay={handlePlay}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onCopy={handleCopy}
+                onDuplicate={handleDuplicate}
+                onPin={handlePin}
+              />
+            )}
+
             <MacroSection
               title="All Macros"
-              macros={state.macros}
+              macros={state.unpinnedMacros}
               loading={state.loading}
               emptyMessage="No macros saved yet."
               onPlay={handlePlay}
@@ -218,6 +243,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
               onDelete={handleDelete}
               onCopy={handleCopy}
               onDuplicate={handleDuplicate}
+              onPin={handlePin}
             />
           </>
         )}

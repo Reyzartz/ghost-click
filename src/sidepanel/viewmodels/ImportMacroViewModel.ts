@@ -120,6 +120,7 @@ export class ImportMacroViewModel extends BaseViewModel {
         createdAt: Date.now(),
         updatedAt: Date.now(),
         lastPlayedAt: Date.now(),
+        pinned: false,
       };
 
       this.logger.info("Saving imported macro", { name: macro.name });
@@ -154,6 +155,7 @@ export class ImportMacroViewModel extends BaseViewModel {
       createdAt: now,
       updatedAt: now,
       lastPlayedAt: null,
+      pinned: false,
     };
 
     this.logger.info("Creating macro for editing", { name: macro.name });

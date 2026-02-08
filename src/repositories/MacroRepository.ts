@@ -80,4 +80,15 @@ export class MacroRepository {
     await this.storage.set(MACROS_STORAGE_KEY, []);
     this.logger.info("Cleared all macros");
   }
+
+  async updateMacroPin(id: string, pinned: boolean): Promise<void> {
+    const macro = await this.findById(id);
+    if (!macro) {
+      this.logger.error("Macro not found for pinning/unpinning", { id });
+      return;
+    }
+
+    const updatedMacro = { ...macro, pinned };
+    await this.save(updatedMacro);
+  }
 }

@@ -3,7 +3,16 @@ import { clsx } from "clsx";
 import { Dropdown, DropdownItem } from "../design-system/Dropdown";
 import { DisplayFavicon } from "./DisplayFavicon";
 import { Text, Button } from "@/design-system";
-import { MoreVertical, Play, Edit, Trash2, Copy, CopyPlus } from "lucide-react";
+import {
+  MoreVertical,
+  Play,
+  Edit,
+  Trash2,
+  Copy,
+  CopyPlus,
+  Pin,
+  PinOff,
+} from "lucide-react";
 
 interface MacroCardProps {
   macro: Macro;
@@ -12,6 +21,7 @@ interface MacroCardProps {
   onDelete: () => void;
   onCopy: () => void;
   onDuplicate: () => void;
+  onPin: () => void;
   isSelected?: boolean;
 }
 
@@ -21,6 +31,7 @@ export const MacroCard = ({
   onEdit,
   onDelete,
   onCopy,
+  onPin,
   onDuplicate,
   isSelected = false,
 }: MacroCardProps) => {
@@ -34,6 +45,11 @@ export const MacroCard = ({
       label: "Edit",
       onClick: onEdit,
       icon: Edit,
+    },
+    {
+      label: macro.pinned ? "Unpin" : "Pin",
+      onClick: onPin,
+      icon: macro.pinned ? PinOff : Pin,
     },
     {
       label: "Copy",
