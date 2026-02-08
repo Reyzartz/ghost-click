@@ -56,7 +56,7 @@ export const Alert = ({
   return (
     <div
       className={clsx(
-        "rounded border px-3 py-2 text-sm",
+        "rounded border px-3 py-2 text-xs",
         styles.container,
         className
       )}

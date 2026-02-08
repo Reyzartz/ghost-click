@@ -105,34 +105,31 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
         <div className="flex shrink-0 items-center gap-2">
           {state.isPlaying ? (
             <>
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={handleStop}
+                icon={Square}
+                title="Stop Playback"
+              />
+
               {state.isPaused ? (
                 <Button
                   variant="success"
                   size="sm"
                   onClick={handleResume}
                   icon={Play}
-                >
-                  Resume
-                </Button>
+                  title="Resume Playback"
+                />
               ) : (
                 <Button
                   variant="secondary"
                   size="sm"
                   onClick={handlePause}
                   icon={Pause}
-                >
-                  Pause
-                </Button>
+                  title="Pause Playback"
+                />
               )}
-
-              <Button
-                variant="danger"
-                size="sm"
-                onClick={handleStop}
-                icon={Square}
-              >
-                Stop
-              </Button>
             </>
           ) : (
             <>
@@ -141,17 +138,15 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
                 size="sm"
                 onClick={handleReplay}
                 icon={RotateCcw}
-              >
-                Replay
-              </Button>
+                title="Replay Playback"
+              />
               <Button
                 variant="secondary"
                 size="sm"
                 onClick={handleEditMacro}
                 icon={Edit}
-              >
-                Edit Macro
-              </Button>
+                title="Edit Macro"
+              />
             </>
           )}
         </div>

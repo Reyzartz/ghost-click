@@ -138,27 +138,24 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                     size="sm"
                     onClick={handleResume}
                     icon={Play}
-                  >
-                    Resume
-                  </Button>
+                    title={"Resume Playback"}
+                  />
                 ) : (
                   <Button
                     variant="secondary"
                     size="sm"
                     onClick={handlePause}
                     icon={Pause}
-                  >
-                    Pause
-                  </Button>
+                    title={"Pause Playback"}
+                  />
                 )}
                 <Button
                   variant="danger"
                   size="sm"
                   onClick={handleStop}
                   icon={Square}
-                >
-                  Stop
-                </Button>
+                  title={"Stop Playback"}
+                />
               </>
             ) : (
               <>
@@ -170,22 +167,19 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                   disabled={
                     !state.macro?.name.trim() || state.macro.steps.length === 0
                   }
-                >
-                  Test Run
-                </Button>
+                  title={"Test Run Macro"}
+                />
 
                 {!state.isCreating && (
                   <ConfirmActionButton
                     variant="danger"
                     size="sm"
                     icon={Trash2}
-                    title="Delete Macro"
                     message="Are you sure you want to delete this macro? This action cannot be undone."
                     confirmText="Delete"
                     onClick={() => void handleDelete()}
-                  >
-                    Delete
-                  </ConfirmActionButton>
+                    title={"Delete Macro"}
+                  />
                 )}
               </>
             )}

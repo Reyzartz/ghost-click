@@ -41,7 +41,7 @@ export const MacroSection = ({
       {!loading && macros.length === 0 && (
         <Card className="bg-slate-50 text-slate-600">{emptyMessage}</Card>
       )}
-      <ul className="space-y-2">
+      <ul className="flex flex-col gap-1.5">
         {macros.map((macro, index) => (
           <MacroCard
             key={macro.id}
