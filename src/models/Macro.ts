@@ -9,4 +9,5 @@ export interface Macro {
   steps: MacroStep[];
   createdAt: number;
   updatedAt: number;
+  lastPlayedAt: number | null;
 }

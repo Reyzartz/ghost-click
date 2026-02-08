@@ -196,9 +196,7 @@ export class MacroShareService extends BaseService {
   /**
    * Read shareable macro from clipboard and create macro instance
    */
-  async pasteFromClipboard(): Promise<
-    Omit<Macro, "id" | "createdAt" | "updatedAt">
-  > {
+  async pasteFromClipboard(): Promise<ShareableMacro> {
     try {
       const clipboardText = await navigator.clipboard.readText();
       return this.fromShareableString(clipboardText);

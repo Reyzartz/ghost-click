@@ -200,6 +200,7 @@ export class RecorderService extends BaseService {
       steps: [...steps],
       createdAt: existing?.createdAt ?? now,
       updatedAt: now,
+      lastPlayedAt: existing?.lastPlayedAt ?? null,
     };
 
     await this.macroRepository.save(macro);

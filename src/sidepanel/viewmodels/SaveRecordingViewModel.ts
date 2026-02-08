@@ -133,6 +133,7 @@ export class SaveRecordingViewModel extends BaseViewModel {
       steps: this.steps,
       createdAt: now,
       updatedAt: now,
+      lastPlayedAt: null,
     };
 
     this.logger.info("Creating macro for editing", { name: macro.name });

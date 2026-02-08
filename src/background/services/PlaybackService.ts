@@ -60,6 +60,13 @@ export class PlaybackService extends BaseService {
         return;
       }
 
+      // Update lastPlayedAt timestamp
+      const updatedMacro = {
+        ...macro,
+        lastPlayedAt: Date.now(),
+      };
+      await this.macroRepository.save(updatedMacro);
+
       await this.playbackEngine.playMacro(macro);
     } catch (err) {
       this.logger.error("Playback error", { error: err, macroId });

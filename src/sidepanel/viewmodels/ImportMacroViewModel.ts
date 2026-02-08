@@ -119,6 +119,7 @@ export class ImportMacroViewModel extends BaseViewModel {
         steps: this.state.parsedMacro.steps,
         createdAt: Date.now(),
         updatedAt: Date.now(),
+        lastPlayedAt: Date.now(),
       };
 
       this.logger.info("Saving imported macro", { name: macro.name });
@@ -152,6 +153,7 @@ export class ImportMacroViewModel extends BaseViewModel {
       steps: this.state.parsedMacro.steps,
       createdAt: now,
       updatedAt: now,
+      lastPlayedAt: null,
     };
 
     this.logger.info("Creating macro for editing", { name: macro.name });

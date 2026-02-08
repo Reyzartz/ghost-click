@@ -4,14 +4,11 @@ import { RecordingStateRepository } from "@/repositories/RecordingStateRepositor
 import { MacroShareService } from "@/services/MacroShareService";
 import { BaseViewModel } from "@/utils/BaseViewModel";
 import { Emitter } from "@/utils/Emitter";
-import { MacroUtils } from "@/utils/MacroUtils";
-import { TabsManager } from "@/utils/TabsManager";
 
 export interface MacroListState {
   loading: boolean;
   macros: Macro[];
   allMacros: Macro[];
-  currentDomain: string;
   isRecording: boolean;
   error?: string | null;
   searchQuery: string;
@@ -19,7 +16,7 @@ export interface MacroListState {
   selectedIndex: number;
 }
 
-export type MacroSortBy = "createdAt" | "updatedAt";
+export type MacroSortBy = "createdAt" | "updatedAt" | "lastPlayedAt";
 export type MacroSortOrder = "asc" | "desc";
 
 export class MacroListViewModel extends BaseViewModel {
@@ -27,7 +24,6 @@ export class MacroListViewModel extends BaseViewModel {
     loading: true,
     macros: [],
     allMacros: [],
-    currentDomain: "",
     isRecording: false,
     error: null,
     searchQuery: "",
@@ -47,7 +43,7 @@ export class MacroListViewModel extends BaseViewModel {
 
   async init(): Promise<void> {
     this.logger.info("Initializing macro list view model");
-    await this.loadCurrentDomain();
+    await this.loadMacros();
 
     this.setState({
       isRecording: await this.recordingStateRepository.isRecording(),
@@ -58,18 +54,9 @@ export class MacroListViewModel extends BaseViewModel {
       void this.loadMacros();
     });
 
-    // Listen for tab changes
-    chrome.tabs.onActivated.addListener(() => {
-      this.logger.info("Tab activated, checking domain");
-      void this.loadCurrentDomain();
-    });
-
-    // Listen for tab updates (navigation)
-    chrome.tabs.onUpdated.addListener((_tabId, changeInfo, tab) => {
-      if (changeInfo.status === "complete" && tab.active) {
-        this.logger.info("Tab updated and complete, checking domain");
-        void this.loadCurrentDomain();
-      }
+    this.emitter.on("PLAYBACK_COMPLETED", () => {
+      this.logger.info("Playback completed; reloading recently played");
+      void this.loadMacros();
     });
 
     this.emitter.on("START_RECORDING", () => {
@@ -188,18 +175,12 @@ export class MacroListViewModel extends BaseViewModel {
   }
 
   private async loadMacros(
-    sortBy: MacroSortBy = "updatedAt",
+    sortBy: MacroSortBy = "lastPlayedAt",
     sortOrder: MacroSortOrder = "desc"
   ): Promise<void> {
-    this.logger.info("Loading macros", { domain: this.state.currentDomain });
+    this.logger.info("Loading macros");
     this.setState({ loading: true, error: null });
     try {
-      const macros = MacroListViewModel.sortMacros(
-        await this.macroRepository.loadByDomain(this.state.currentDomain),
-        sortBy,
-        sortOrder
-      );
-
       const allMacros = MacroListViewModel.sortMacros(
         await this.macroRepository.loadAll(),
         sortBy,
@@ -209,7 +190,6 @@ export class MacroListViewModel extends BaseViewModel {
       this.logger.info("Loaded macros", {
         sortBy,
         sortOrder,
-        currentDomainCount: macros.length,
         allCount: allMacros.length,
       });
 
@@ -217,26 +197,16 @@ export class MacroListViewModel extends BaseViewModel {
         ? this.filterMacros(this.state.searchQuery)
         : [];
 
-      this.setState({ macros, allMacros, loading: false, filteredMacros });
+      this.setState({
+        macros: allMacros,
+        allMacros,
+        loading: false,
+        filteredMacros,
+      });
     } catch (err) {
       this.logger.error("Failed to load macros", { err });
       this.setState({ error: "Failed to load macros", loading: false });
     }
-  }
-
-  private async loadCurrentDomain(): Promise<void> {
-    const activeTab = await TabsManager.getActiveTab();
-    if (!activeTab || !activeTab.url) {
-      this.logger.info("No active tab found; cannot determine domain");
-      this.setState({ currentDomain: "" });
-      void this.loadMacros();
-      return;
-    }
-
-    const domain = MacroUtils.extractDomainFromURL(activeTab.url);
-    this.logger.info("Current domain detected", { domain });
-    this.setState({ currentDomain: domain });
-    void this.loadMacros();
   }
 
   private static sortMacros(
@@ -249,6 +219,14 @@ export class MacroListViewModel extends BaseViewModel {
       case "createdAt":
       case "updatedAt":
         res.sort((a, b) => b.createdAt - a.createdAt);
+        break;
+
+      case "lastPlayedAt":
+        res.sort((a, b) => {
+          const aTime = a.lastPlayedAt ?? a.updatedAt;
+          const bTime = b.lastPlayedAt ?? b.updatedAt;
+          return bTime - aTime;
+        });
         break;
     }
 

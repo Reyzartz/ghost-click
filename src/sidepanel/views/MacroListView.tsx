@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { SidePanelApp } from "../SidePanelApp";
 import { Alert, Text, Button } from "@/design-system";
 import { MacroSection } from "@/components/MacroSection";
@@ -15,19 +15,20 @@ import { SearchInput } from "@/components/SearchInput";
 import { MacroUtils } from "@/utils/MacroUtils";
 import { TabsManager } from "@/utils/TabsManager";
 import { Layout } from "@/components/Layout";
+import clsx from "clsx";
 
 export const MacroListView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<MacroListState>({
     loading: true,
     macros: [],
     allMacros: [],
-    currentDomain: "",
     isRecording: false,
     error: null,
     searchQuery: "",
     filteredMacros: [],
     selectedIndex: 0,
   });
+
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -58,12 +59,6 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
         break;
     }
   };
-
-  const otherDomainMacros = useMemo(
-    () =>
-      state.allMacros.filter((macro) => macro.domain !== state.currentDomain),
-    [state.allMacros, state.currentDomain]
-  );
 
   const handlePlay = (macroId: string): void => {
     app.emitter.emit("PLAY_MACRO", { macroId });
@@ -119,18 +114,17 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
           <div className="grow overflow-hidden">
             <Text variant="h2">Macros</Text>
 
-            {state.currentDomain &&
-              !app.macroListViewModel.showSearchResults() && (
-                <Text variant="small" color="muted" className="truncate">
-                  Domain: {state.currentDomain}
-                </Text>
+            <Text
+              variant="small"
+              color="muted"
+              className={clsx(
+                "truncate transition-[height] duration-200",
+                app.macroListViewModel.showSearchResults() ? "h-4" : "h-0"
               )}
-            {app.macroListViewModel.showSearchResults() && (
-              <Text variant="small" color="muted" className="truncate">
-                {state.filteredMacros.length} results for &quot;
-                {state.searchQuery}&quot;
-              </Text>
-            )}
+            >
+              {state.filteredMacros.length} results for &quot;
+              {state.searchQuery}&quot;
+            </Text>
           </div>
 
           <div className="flex shrink-0 items-center gap-1.5">
@@ -175,27 +169,30 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
     >
       {state.error && <Alert variant="error">{state.error}</Alert>}
 
-      <SearchInput
-        value={state.searchQuery}
-        onChange={(value) => app.macroListViewModel.setSearchQuery(value)}
-        placeholder="Search macros..."
-        onKeyDown={handleKeyDown}
-        ref={searchInputRef}
-      />
+      <div className="flex flex-col gap-0.5">
+        <SearchInput
+          value={state.searchQuery}
+          onChange={(value) => app.macroListViewModel.setSearchQuery(value)}
+          placeholder="Search macros..."
+          onKeyDown={handleKeyDown}
+          ref={searchInputRef}
+        />
 
-      {app.macroListViewModel.showSearchResults() && (
         <Text
           variant="small"
           color="muted"
-          className="flex items-center gap-0.5"
+          className={clsx(
+            "flex items-center gap-2 truncate transition-[height] duration-200",
+            app.macroListViewModel.showSearchResults() ? "h-4" : "h-0"
+          )}
         >
           Use <ArrowUp size={12} className="inline" />
           <ArrowDown size={12} className="inline" /> to navigate, Enter to play,
           Esc to clear
         </Text>
-      )}
+      </div>
 
-      <div className="flex-1 overflow-scroll">
+      <div className="flex flex-1 flex-col gap-2 overflow-scroll">
         {app.macroListViewModel.showSearchResults() ? (
           <MacroSection
             title="Search Results"
@@ -212,30 +209,16 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
         ) : (
           <>
             <MacroSection
-              title="Current Domain"
+              title="All Macros"
               macros={state.macros}
               loading={state.loading}
-              emptyMessage="No macros saved for this domain."
+              emptyMessage="No macros saved yet."
               onPlay={handlePlay}
               onEdit={handleEdit}
               onDelete={handleDelete}
               onCopy={handleCopy}
               onDuplicate={handleDuplicate}
             />
-
-            {!state.loading && otherDomainMacros.length > 0 && (
-              <MacroSection
-                title="All Domains"
-                macros={otherDomainMacros}
-                loading={state.loading}
-                emptyMessage="No macros from other domains."
-                onPlay={handlePlay}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                onCopy={handleCopy}
-                onDuplicate={handleDuplicate}
-              />
-            )}
           </>
         )}
       </div>
