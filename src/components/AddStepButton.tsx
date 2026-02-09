@@ -2,6 +2,7 @@ import {
   ClickStep,
   InputStep,
   KeyPressStep,
+  MacroStep,
   NavigateStep,
   StepType,
 } from "@/models";
@@ -22,9 +23,7 @@ import { MacroUtils } from "@/utils/MacroUtils";
 import { EditNavigateStep } from "./EditNavigateStep";
 
 interface AddStepButtonProps {
-  onAddStep: (
-    step: ClickStep | InputStep | KeyPressStep | NavigateStep
-  ) => void;
+  onAddStep: (step: MacroStep) => void;
   disabled?: boolean;
 }
 
@@ -42,70 +41,10 @@ const AddStepButton = memo<AddStepButtonProps>(
       setIsAdding(false);
     };
 
-    const createEmptyStep = (
-      type: StepType
-    ): ClickStep | InputStep | KeyPressStep | NavigateStep => {
-      const baseStep = {
-        id: MacroUtils.generateStepId(),
-        name: MacroUtils.getStepName("<unknown>", type),
-        // TODO: this filed will remove in the future, need to update all related code
-        // eslint-disable-next-line react-hooks/purity
-        timestamp: Date.now(),
-        delay: 1000,
-        retryCount: MacroUtils.DEFAULT_RETRY_COUNT,
-        retryInterval: MacroUtils.DEFAULT_RETRY_INTERVAL_MS,
-        target: {
-          id: "",
-          className: "",
-          xpath: "",
-          defaultSelector: MacroUtils.DEFAULT_SELECTOR_TYPE,
-        },
-      };
-
-      switch (type) {
-        case "CLICK":
-          return {
-            ...baseStep,
-            type: "CLICK",
-          } as ClickStep;
-        case "INPUT":
-          return {
-            ...baseStep,
-            type: "INPUT",
-            value: "",
-          } as InputStep;
-        case "KEYPRESS":
-          return {
-            ...baseStep,
-            type: "KEYPRESS",
-            key: "",
-            code: "",
-            ctrlKey: false,
-            shiftKey: false,
-            altKey: false,
-            metaKey: false,
-          } as KeyPressStep;
-        case "NAVIGATE":
-          return {
-            ...baseStep,
-            type: "NAVIGATE",
-            url: "",
-          } as NavigateStep;
-      }
-    };
-
-    const handleAddStep = (
-      _stepId: string,
-      updates: Partial<ClickStep | InputStep | KeyPressStep | NavigateStep>
-    ): void => {
+    const handleAddStep = (_stepId: string, updatedStep: MacroStep): void => {
       if (!selectedType) return;
 
-      const newStep = {
-        ...createEmptyStep(selectedType),
-        ...updates,
-      } as ClickStep | InputStep | KeyPressStep | NavigateStep;
-
-      onAddStep(newStep);
+      onAddStep(updatedStep);
       handleClose();
     };
 
@@ -184,7 +123,7 @@ const AddStepButton = memo<AddStepButtonProps>(
       );
     }
 
-    const emptyStep = createEmptyStep(selectedType);
+    const emptyStep = MacroUtils.createEmptyStep(selectedType);
 
     return (
       <div className="flex flex-col items-center">

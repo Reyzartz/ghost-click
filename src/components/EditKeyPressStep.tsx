@@ -19,7 +19,7 @@ import {
 interface EditKeyPressStepProps {
   step: KeyPressStep;
   isOpen: boolean;
-  onUpdateStep: (stepId: string, step: Partial<KeyPressStep>) => void;
+  onUpdateStep: (stepId: string, step: KeyPressStep) => void;
   onClose: () => void;
 }
 

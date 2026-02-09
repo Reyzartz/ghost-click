@@ -1,4 +1,9 @@
-import { MacroStep, NavigateStep, StepType } from "@/models/MacroStep";
+import {
+  BaseMacroStep,
+  MacroStep,
+  NavigateStep,
+  StepType,
+} from "@/models/MacroStep";
 import { Settings, DEFAULT_SETTINGS } from "@/models/Settings";
 
 class MacroUtils {
@@ -145,6 +150,63 @@ class MacroUtils {
       };
     });
   }
+
+  static createEmptyStep = (
+    type: StepType,
+    settings: Settings = DEFAULT_SETTINGS
+  ): MacroStep => {
+    const baseStep: BaseMacroStep = {
+      id: MacroUtils.generateStepId(),
+      name: MacroUtils.getStepName("<unknown>", type),
+      type,
+      // TODO: this filed will remove in the future, need to update all related code
+      timestamp: Date.now(),
+      delay: settings.minimumDelayMs,
+      retryCount: settings.defaultRetryCount,
+      retryInterval: settings.defaultRetryIntervalMs,
+    };
+
+    const defaultTarget = {
+      id: "",
+      className: "",
+      xpath: "",
+      defaultSelector: settings.defaultSelectorType,
+    };
+
+    switch (type) {
+      case "CLICK":
+        return {
+          ...baseStep,
+          target: defaultTarget,
+          type: "CLICK",
+        };
+      case "INPUT":
+        return {
+          ...baseStep,
+          target: defaultTarget,
+          type: "INPUT",
+          value: "",
+        };
+      case "KEYPRESS":
+        return {
+          ...baseStep,
+          type: "KEYPRESS",
+          key: "",
+          code: "",
+          ctrlKey: false,
+          shiftKey: false,
+          altKey: false,
+          metaKey: false,
+          target: defaultTarget,
+        };
+      case "NAVIGATE":
+        return {
+          ...baseStep,
+          type: "NAVIGATE",
+          url: "",
+        };
+    }
+  };
 }
 
 export { MacroUtils };

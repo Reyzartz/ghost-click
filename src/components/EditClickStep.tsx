@@ -17,7 +17,7 @@ import {
 interface EditClickStepProps {
   step: ClickStep;
   isOpen: boolean;
-  onUpdateStep: (stepId: string, step: Partial<ClickStep>) => void;
+  onUpdateStep: (stepId: string, step: ClickStep) => void;
   onClose: () => void;
 }
 

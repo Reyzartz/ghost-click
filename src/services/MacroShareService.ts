@@ -35,31 +35,50 @@ export class MacroShareService extends BaseService {
           name: yup.string().required("Step name is required"),
           type: yup
             .string()
-            .oneOf(["CLICK", "INPUT", "KEYPRESS"], "Invalid step type")
+            .oneOf(
+              ["CLICK", "INPUT", "KEYPRESS", "NAVIGATE"],
+              "Invalid step type"
+            )
             .required("Step type is required"),
-          timestamp: yup.number().required("Timestamp is required").min(0),
+          timestamp: yup.number().nullable(),
           delay: yup.number().required("Delay is required").min(0),
           retryCount: yup.number().required("Retry count is required").min(0),
           retryInterval: yup
             .number()
             .required("Retry interval is required")
             .min(0),
-          target: yup
-            .object({
-              id: yup.string(),
-              className: yup.string(),
-              xpath: yup.string(),
-              defaultSelector: yup
-                .string()
-                .oneOf(["id", "className", "xpath"], "Invalid default selector")
-                .required("Default selector is required"),
-            })
-            .test(
-              "at-least-one-selector",
-              "At least one of id, className, or xpath is required",
-              (value) => !!(value?.id || value?.className || value?.xpath)
-            )
-            .required("Target is required"),
+          target: yup.object().when("type", {
+            is: (type: string) => ["CLICK", "INPUT", "KEYPRESS"].includes(type),
+            then: (schema) =>
+              schema
+                .shape({
+                  id: yup.string(),
+                  className: yup.string(),
+                  xpath: yup.string(),
+                  defaultSelector: yup
+                    .string()
+                    .oneOf(
+                      ["id", "className", "xpath"],
+                      "Invalid default selector"
+                    )
+                    .required("Default selector is required"),
+                })
+                .required("Target is required")
+                .test(
+                  "at-least-one-selector",
+                  "At least one of id, className, or xpath is required",
+                  (value) => !!(value?.id || value?.className || value?.xpath)
+                ),
+            otherwise: (schema) => schema.optional(),
+          }),
+          url: yup.string().when("type", {
+            is: "NAVIGATE",
+            then: (schema) =>
+              schema
+                .required("URL is required for NAVIGATE steps")
+                .url("Must be a valid URL"),
+            otherwise: (schema) => schema.optional(),
+          }),
           value: yup.string().when("type", {
             is: "INPUT",
             then: (schema) =>

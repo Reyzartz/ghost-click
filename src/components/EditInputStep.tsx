@@ -18,7 +18,7 @@ import {
 interface EditInputStepProps {
   step: InputStep;
   isOpen: boolean;
-  onUpdateStep: (stepId: string, step: Partial<InputStep>) => void;
+  onUpdateStep: (stepId: string, step: InputStep) => void;
   onClose: () => void;
 }
 

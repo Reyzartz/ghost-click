@@ -16,7 +16,7 @@ import {
 interface EditNavigateStepProps {
   step: NavigateStep;
   isOpen: boolean;
-  onUpdateStep: (stepId: string, step: Partial<NavigateStep>) => void;
+  onUpdateStep: (stepId: string, step: NavigateStep) => void;
   onClose: () => void;
 }
 
