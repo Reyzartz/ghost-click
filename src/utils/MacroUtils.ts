@@ -5,9 +5,76 @@ import {
   StepType,
 } from "@/models/MacroStep";
 import { Settings, DEFAULT_SETTINGS } from "@/models/Settings";
+import * as yup from "yup";
 
 class MacroUtils {
   static DEFAULT_MACRO_NAME_PREFIX = "Untitled Macro ";
+
+  // Validation schemas
+  static readonly targetElementSelectorSchema = yup
+    .object({
+      id: yup.string(),
+      className: yup.string(),
+      xpath: yup.string(),
+      defaultSelector: yup
+        .string()
+        .oneOf(["id", "className", "xpath"], "Invalid default selector")
+        .required("Default selector is required"),
+    })
+    .test(
+      "at-least-one-selector",
+      "At least one of id, className, or xpath is required",
+      (value) => !!(value?.id || value?.className || value?.xpath)
+    );
+
+  static readonly baseStepSchema = yup.object({
+    name: yup
+      .string()
+      .required("Step name is required")
+      .min(1, "Name cannot be empty")
+      .max(100, "Name is too long"),
+    delay: yup
+      .number()
+      .required("Delay is required")
+      .min(0, "Delay cannot be negative")
+      .max(60000, "Delay cannot exceed 60 seconds"),
+    retryCount: yup
+      .number()
+      .required("Retry count is required")
+      .min(0, "Retry count cannot be negative")
+      .max(10, "Retry count cannot exceed 10"),
+    retryInterval: yup
+      .number()
+      .required("Retry interval is required")
+      .min(0, "Retry interval cannot be negative")
+      .max(10000, "Retry interval cannot exceed 10 seconds"),
+  });
+
+  static readonly clickStepSchema = MacroUtils.baseStepSchema.shape({
+    target:
+      MacroUtils.targetElementSelectorSchema.required("Target is required"),
+  });
+
+  static readonly inputStepSchema = MacroUtils.baseStepSchema.shape({
+    target:
+      MacroUtils.targetElementSelectorSchema.required("Target is required"),
+    value: yup.string().required("Value is required"),
+  });
+
+  static readonly keyPressStepSchema = MacroUtils.baseStepSchema.shape({
+    target:
+      MacroUtils.targetElementSelectorSchema.required("Target is required"),
+    key: yup.string().required("Key is required"),
+    code: yup.string().required("Code is required"),
+    ctrlKey: yup.boolean().required(),
+    shiftKey: yup.boolean().required(),
+    altKey: yup.boolean().required(),
+    metaKey: yup.boolean().required(),
+  });
+
+  static readonly navigateStepSchema = MacroUtils.baseStepSchema.shape({
+    url: yup.string().required("URL is required").url("Must be a valid URL"),
+  });
 
   static extractDomainFromURL(url: string): string {
     try {

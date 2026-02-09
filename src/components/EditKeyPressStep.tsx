@@ -15,6 +15,8 @@ import {
   ModalFooter,
   Input,
 } from "@/design-system";
+import { MacroUtils } from "@/utils/MacroUtils";
+import * as yup from "yup";
 
 interface EditKeyPressStepProps {
   step: KeyPressStep;
@@ -26,16 +28,61 @@ interface EditKeyPressStepProps {
 const EditKeyPressStep = memo<EditKeyPressStepProps>(
   ({ step, isOpen, onUpdateStep, onClose }) => {
     const [updatedStep, setUpdatedStep] = useState(step);
+    const [errors, setErrors] = useState<Record<string, string>>({});
     const [isRecording, setIsRecording] = useState(false);
     const recordingInputRef = useRef<HTMLInputElement>(null);
 
+    const validateField = (field: string, value: unknown): void => {
+      try {
+        const schema = yup.reach(
+          MacroUtils.keyPressStepSchema,
+          field
+        ) as yup.Schema;
+        schema.validateSync(value);
+        setErrors((prev) => {
+          const next = { ...prev };
+          delete next[field];
+          return next;
+        });
+      } catch (err) {
+        if (err instanceof yup.ValidationError) {
+          setErrors((prev) => ({ ...prev, [field]: err.message }));
+        }
+      }
+    };
+
+    const validateAll = (): boolean => {
+      try {
+        MacroUtils.keyPressStepSchema.validateSync(updatedStep, {
+          abortEarly: false,
+        });
+        setErrors({});
+        return true;
+      } catch (err) {
+        if (err instanceof yup.ValidationError) {
+          const newErrors: Record<string, string> = {};
+          err.inner.forEach((error) => {
+            if (error.path) {
+              newErrors[error.path] = error.message;
+            }
+          });
+          setErrors(newErrors);
+        }
+        return false;
+      }
+    };
+
     const handleSave = (): void => {
+      if (!validateAll()) {
+        return;
+      }
       onUpdateStep(step.id, updatedStep);
       onClose();
     };
 
     const handleCancel = (): void => {
       setUpdatedStep(step);
+      setErrors({});
       onClose();
     };
 
@@ -66,6 +113,7 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
         altKey: e.altKey,
         metaKey: e.metaKey,
       });
+      validateField("key", e.key);
       setIsRecording(false);
 
       // Blur the input to stop recording
@@ -101,7 +149,11 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
         <ModalBody className="space-y-2">
           <StepNameInput
             name={updatedStep.name}
-            onChange={(name) => setUpdatedStep((prev) => ({ ...prev, name }))}
+            onChange={(name) => {
+              setUpdatedStep((prev) => ({ ...prev, name }));
+              validateField("name", name);
+            }}
+            error={errors.name}
           />
 
           <Input
@@ -118,26 +170,37 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
               isRecording ? "border-blue-400 bg-blue-50" : "bg-slate-50"
             )}
             placeholder="Click to record"
+            error={errors.key}
           />
 
           <StepDelayInput
             delay={updatedStep.delay}
-            onChange={(delay) => setUpdatedStep((prev) => ({ ...prev, delay }))}
+            onChange={(delay) => {
+              setUpdatedStep((prev) => ({ ...prev, delay }));
+              validateField("delay", delay);
+            }}
+            error={errors.delay}
           />
 
           <StepTargetInput
             target={updatedStep.target}
-            onChange={(target) =>
-              setUpdatedStep((prev) => ({ ...prev, target }))
-            }
+            onChange={(target) => {
+              setUpdatedStep((prev) => ({ ...prev, target }));
+              validateField("target", target);
+            }}
+            error={errors.target}
           />
 
           <StepRetryInput
             retryCount={updatedStep.retryCount}
             retryInterval={updatedStep.retryInterval}
-            onChange={(updates) =>
-              setUpdatedStep((prev) => ({ ...prev, ...updates }))
-            }
+            onChange={(updates) => {
+              setUpdatedStep((prev) => ({ ...prev, ...updates }));
+              validateField("retryCount", updates.retryCount);
+              validateField("retryInterval", updates.retryInterval);
+            }}
+            retryCountError={errors.retryCount}
+            retryIntervalError={errors.retryInterval}
           />
         </ModalBody>
 

@@ -2,6 +2,7 @@ import { SelectHTMLAttributes, forwardRef } from "react";
 import { cva } from "class-variance-authority";
 import { clsx } from "clsx";
 import { Text } from "./Text";
+import { ChevronDownIcon } from "lucide-react";
 
 export type SelectSize = "sm" | "md" | "lg";
 
@@ -16,7 +17,7 @@ interface SelectProps extends Omit<
 }
 
 const selectVariants = cva(
-  "rounded border border-solid bg-white text-slate-700 transition-colors focus:border-slate-500 focus:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 cursor-pointer",
+  "appearance-none rounded border border-solid text-slate-700 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 cursor-pointer",
   {
     variants: {
       size: {
@@ -25,8 +26,8 @@ const selectVariants = cva(
         lg: "text-base leading-4.5 px-6 py-3",
       },
       hasError: {
-        true: "border-red-300 focus:border-red-500",
-        false: "border-slate-300",
+        true: "border-red-300 focus:border-red-500 bg-red-50",
+        false: "border-slate-300 bg-white focus:border-slate-500",
       },
       fullWidth: {
         true: "w-full",
@@ -58,28 +59,36 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     const selectId = id || label?.toLowerCase().replace(/\s+/g, "-");
 
     return (
-      <div className={clsx(fullWidth && "w-full")}>
+      <div className={clsx("relative", fullWidth && "w-full")}>
         {label && (
           <Text variant="small" color="muted" className="mb-1 block">
             {label}
           </Text>
         )}
 
-        <select
-          ref={ref}
-          id={selectId}
-          className={clsx(
-            selectVariants({
-              size,
-              hasError: !!error,
-              fullWidth,
-            }),
-            className
-          )}
-          {...props}
-        >
-          {children}
-        </select>
+        <div className="relative">
+          <select
+            ref={ref}
+            id={selectId}
+            className={clsx(
+              selectVariants({
+                size,
+                hasError: !!error,
+                fullWidth,
+              }),
+              className
+            )}
+            {...props}
+          >
+            {children}
+          </select>
+
+          <ChevronDownIcon
+            width={16}
+            className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-slate-700"
+          />
+        </div>
+
         {error && (
           <Text variant="small" color="error" className="mt-1">
             {error}

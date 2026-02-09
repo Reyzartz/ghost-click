@@ -56,7 +56,7 @@ const stepContentVariants = cva(
       },
       isDeletable: {
         true: "",
-        false: "!pr-3",
+        false: "pr-3!",
       },
     },
     defaultVariants: {
