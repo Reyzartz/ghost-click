@@ -1,10 +1,12 @@
 import { BaseService } from "@/utils/BaseService";
 import { Emitter } from "@/utils/Emitter";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
+import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
 
 export type SidePanelView =
   | "macroList"
   | "playbackProgress"
+  | "recordingProgress"
   | "editMacro"
   | "settings";
 
@@ -20,7 +22,8 @@ export class ViewService extends BaseService {
 
   constructor(
     protected readonly emitter: Emitter,
-    private readonly playbackStateRepository: PlaybackStateRepository
+    private readonly playbackStateRepository: PlaybackStateRepository,
+    private readonly recordingStateRepository: RecordingStateRepository
   ) {
     super("ViewService", emitter);
   }
@@ -28,8 +31,29 @@ export class ViewService extends BaseService {
   async init(): Promise<void> {
     this.logger.info("ViewService initialized");
 
-    // Check if playback is already in progress on startup
+    // Check if playback or recording is already in progress on startup
     await this.checkPlaybackState();
+    await this.checkRecordingState();
+
+    // Listen for recording events to switch views
+    this.emitter.on("START_RECORDING", () => {
+      this.logger.info(
+        "Start recording event - switching to recording progress view"
+      );
+      this.navigateToView("recordingProgress");
+    });
+
+    this.emitter.on("SAVE_RECORDING_CONFIRMED", () => {
+      this.logger.info("Recording saved - switching back to macro list view");
+      this.navigateToView("macroList");
+    });
+
+    this.emitter.on("SAVE_RECORDING_CANCELLED", () => {
+      this.logger.info(
+        "Recording cancelled - switching back to macro list view"
+      );
+      this.navigateToView("macroList");
+    });
 
     // Listen for playback events to switch views
     this.emitter.on("PLAY_MACRO", () => {
@@ -91,13 +115,24 @@ export class ViewService extends BaseService {
           "Playback in progress - showing playback progress view"
         );
         this.setState({ currentView: "playbackProgress" });
-      } else {
-        this.logger.info("No playback in progress - showing macro list view");
-        this.setState({ currentView: "macroList" });
       }
     } catch (err) {
       this.logger.error("Failed to check playback state", { err });
-      this.setState({ currentView: "macroList" });
+    }
+  }
+
+  private async checkRecordingState(): Promise<void> {
+    try {
+      const recordingState = await this.recordingStateRepository.get();
+
+      if (recordingState?.isRecording) {
+        this.logger.info(
+          "Recording in progress - showing recording progress view"
+        );
+        this.setState({ currentView: "recordingProgress" });
+      }
+    } catch (err) {
+      this.logger.error("Failed to check recording state", { err });
     }
   }
 

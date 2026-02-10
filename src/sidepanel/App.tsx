@@ -3,6 +3,7 @@ import { SidePanelApp } from "./SidePanelApp";
 import { ViewState } from "./services/ViewService";
 import { MacroListView } from "./views/MacroListView";
 import { PlaybackProgressView } from "./views/PlaybackProgressView";
+import { RecordingProgressView } from "./views/RecordingProgressView";
 import { EditMacroView } from "./views/EditMacroView";
 import { SettingsView } from "./views/SettingsView";
 import { ImportMacroModal } from "./views/ImportMacroModal";
@@ -25,6 +26,9 @@ export default function App({ app }: { app: SidePanelApp }) {
       {viewState.currentView === "macroList" && <MacroListView app={app} />}
       {viewState.currentView === "playbackProgress" && (
         <PlaybackProgressView app={app} />
+      )}
+      {viewState.currentView === "recordingProgress" && (
+        <RecordingProgressView app={app} />
       )}
       {viewState.currentView === "editMacro" && <EditMacroView app={app} />}
       {viewState.currentView === "settings" && <SettingsView app={app} />}

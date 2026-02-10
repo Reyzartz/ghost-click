@@ -32,6 +32,8 @@ export class ShortcutService extends BaseService {
   onCommandListener(command: string): void {
     switch (command) {
       case ShortcutService.commands.START_RECORDING:
+        this.sidepanelStateService.openSidePanel();
+
         void this.startRecording();
         break;
 

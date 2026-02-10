@@ -7,6 +7,7 @@ import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository"
 import { SettingsRepository } from "@/repositories/SettingsRepository";
 import { MacroListViewModel } from "./viewmodels/MacroListViewModel";
 import { PlaybackProgressViewModel } from "./viewmodels/PlaybackProgressViewModel";
+import { RecordingProgressViewModel } from "./viewmodels/RecordingProgressViewModel";
 import { EditMacroViewModel } from "./viewmodels/EditMacroViewModel";
 import { ImportMacroViewModel } from "./viewmodels/ImportMacroViewModel";
 import { DuplicateMacroViewModel } from "./viewmodels/DuplicateMacroViewModel";
@@ -24,6 +25,7 @@ export class SidePanelApp extends BaseApp {
   readonly macroShareService: MacroShareService;
   readonly macroListViewModel: MacroListViewModel;
   readonly playbackProgressViewModel: PlaybackProgressViewModel;
+  readonly recordingProgressViewModel: RecordingProgressViewModel;
   readonly editMacroViewModel: EditMacroViewModel;
   readonly importMacroViewModel: ImportMacroViewModel;
   readonly duplicateMacroViewModel: DuplicateMacroViewModel;
@@ -40,7 +42,11 @@ export class SidePanelApp extends BaseApp {
     const recordingStateRepository = new RecordingStateRepository(storage);
     const settingsRepository = new SettingsRepository(storage);
     const macroShareService = new MacroShareService(emitter);
-    const viewService = new ViewService(emitter, playbackStateRepository);
+    const viewService = new ViewService(
+      emitter,
+      playbackStateRepository,
+      recordingStateRepository
+    );
     const macroListViewModel = new MacroListViewModel(
       macroRepository,
       recordingStateRepository,
@@ -50,6 +56,11 @@ export class SidePanelApp extends BaseApp {
     const playbackProgressViewModel = new PlaybackProgressViewModel(
       macroRepository,
       playbackStateRepository,
+      emitter
+    );
+    const recordingProgressViewModel = new RecordingProgressViewModel(
+      recordingStateRepository,
+      settingsRepository,
       emitter
     );
     const editMacroViewModel = new EditMacroViewModel(
@@ -82,6 +93,7 @@ export class SidePanelApp extends BaseApp {
     this.viewService = viewService;
     this.macroListViewModel = macroListViewModel;
     this.playbackProgressViewModel = playbackProgressViewModel;
+    this.recordingProgressViewModel = recordingProgressViewModel;
     this.editMacroViewModel = editMacroViewModel;
     this.importMacroViewModel = importMacroViewModel;
     this.duplicateMacroViewModel = duplicateMacroViewModel;
@@ -96,6 +108,7 @@ export class SidePanelApp extends BaseApp {
     await this.macroShareService.init();
     await this.macroListViewModel.init();
     await this.playbackProgressViewModel.init();
+    await this.recordingProgressViewModel.init();
     await this.editMacroViewModel.init();
     await this.importMacroViewModel.init();
     await this.duplicateMacroViewModel.init();

@@ -104,7 +104,6 @@ export class RecorderService extends BaseService {
 
     this.logger.info("Recording started", { sessionId, initialUrl, tabId });
 
-    // Save recording state to repository
     void this.recordingStateRepository.save({
       isRecording: true,
       sessionId,
@@ -132,7 +131,18 @@ export class RecorderService extends BaseService {
 
     this.logger.info("Recording stopped", { sessionId: this.currentSessionId });
 
-    const processedSteps = await this.postProcessSteps(this.macroSteps);
+    const settings = await this.settingsRepository.get();
+
+    const processedSteps = MacroUtils.postProcessSteps(
+      this.macroSteps,
+      this.initialUrl,
+      settings
+    );
+
+    this.logger.info("Post-processed steps", {
+      original: this.macroSteps.length,
+      processed: processedSteps.length,
+    });
 
     this.isRecording = false;
     const sessionId = this.currentSessionId;
@@ -153,30 +163,6 @@ export class RecorderService extends BaseService {
       initialUrl,
       steps: processedSteps,
     });
-  }
-
-  private async postProcessSteps(steps: MacroStep[]): Promise<MacroStep[]> {
-    if (steps.length === 0) return steps;
-
-    const settings = await this.settingsRepository.get();
-    let processedSteps = steps;
-
-    processedSteps = MacroUtils.addFirstStep(
-      processedSteps,
-      this.initialUrl,
-      settings
-    );
-    // Merge adjacent INPUT steps targeting the same element
-    processedSteps = MacroUtils.mergeInputSteps(processedSteps);
-    // Calculate delays between steps
-    processedSteps = MacroUtils.calculateDelays(processedSteps, settings);
-
-    this.logger.info("Post-processed steps", {
-      original: steps.length,
-      processed: processedSteps.length,
-    });
-
-    return processedSteps;
   }
 
   private async saveMacro(

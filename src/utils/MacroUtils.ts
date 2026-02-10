@@ -176,7 +176,7 @@ class MacroUtils {
     initialUrl: string,
     settings: Settings = DEFAULT_SETTINGS
   ): MacroStep[] {
-    if (steps.length === 0) return steps;
+    if (steps.length === 0 || steps[0].type !== "NAVIGATE") return steps;
 
     const initalStep: NavigateStep = {
       id: MacroUtils.generateStepId(),
@@ -274,6 +274,28 @@ class MacroUtils {
         };
     }
   };
+
+  static postProcessSteps(
+    steps: MacroStep[],
+    initialUrl: string,
+    settings: Settings = DEFAULT_SETTINGS
+  ): MacroStep[] {
+    if (steps.length === 0) return steps;
+
+    let processedSteps = steps;
+
+    processedSteps = MacroUtils.addFirstStep(
+      processedSteps,
+      initialUrl,
+      settings
+    );
+    // Merge adjacent INPUT steps targeting the same element
+    processedSteps = MacroUtils.mergeInputSteps(processedSteps);
+    // Calculate delays between steps
+    processedSteps = MacroUtils.calculateDelays(processedSteps, settings);
+
+    return processedSteps;
+  }
 }
 
 export { MacroUtils };
