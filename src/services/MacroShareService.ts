@@ -71,6 +71,14 @@ export class MacroShareService extends BaseService {
                 ),
             otherwise: (schema) => schema.optional(),
           }),
+          clicksCount: yup.number().when("type", {
+            is: "CLICK",
+            then: (schema) =>
+              schema
+                .required("Clicks count is required for CLICK steps")
+                .min(1, "Clicks count must be at least 1"),
+            otherwise: (schema) => schema.optional(),
+          }),
           url: yup.string().when("type", {
             is: "NAVIGATE",
             then: (schema) =>

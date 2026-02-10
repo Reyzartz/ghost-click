@@ -22,6 +22,7 @@ export interface TargetElementSelector {
 export interface ClickStep extends BaseMacroStep {
   type: "CLICK";
   target: TargetElementSelector;
+  clicksCount: number;
 }
 
 export interface InputStep extends BaseMacroStep {

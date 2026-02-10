@@ -144,6 +144,7 @@ export class UserInputService extends BaseService {
         target,
         settings.defaultSelectorType
       ),
+      clicksCount: 1,
     };
 
     this.logger.info("Click captured", clickData);

@@ -7,6 +7,7 @@ import { StepTargetInput } from "./StepTargetInput";
 import { MousePointerClickIcon } from "lucide-react";
 import {
   Button,
+  Input,
   Modal,
   ModalHeader,
   ModalBody,
@@ -106,6 +107,20 @@ const EditClickStep = memo<EditClickStepProps>(
               validateField("delay", delay);
             }}
             error={errors.delay}
+          />
+
+          <Input
+            type="number"
+            label="Clicks Count"
+            value={updatedStep.clicksCount}
+            onChange={(e) => {
+              const clicksCount = parseInt(e.target.value, 10);
+              setUpdatedStep((prev) => ({ ...prev, clicksCount }));
+              validateField("clicksCount", clicksCount);
+            }}
+            min={1}
+            max={100}
+            error={errors.clicksCount}
           />
 
           <StepTargetInput

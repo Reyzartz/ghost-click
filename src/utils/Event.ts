@@ -59,6 +59,7 @@ interface BaseUserEventData {
 export interface UserClickEventData extends BaseUserEventData {
   type: "CLICK";
   target: TargetElementSelector;
+  clicksCount: number;
 }
 
 export interface UserInputEventData extends BaseUserEventData {

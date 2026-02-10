@@ -175,11 +175,19 @@ export class PlaybackEngine {
     // Update current step id
     await this.playbackStateRepository.update({ currentStepId: step.id });
 
-    // Send action to content script to execute
-    this.emitter.emit("EXECUTE_ACTION", { step });
+    const clicksCount = step.clicksCount;
+    for (let i = 0; i < clicksCount; i++) {
+      // Send action to content script to execute
+      this.emitter.emit("EXECUTE_ACTION", { step });
 
-    // Wait a bit for the action to complete
-    await PlaybackEngine.sleep(100);
+      // Wait a bit for the action to complete
+      await PlaybackEngine.sleep(100);
+
+      // Add small delay between clicks if there are multiple
+      if (i < clicksCount - 1) {
+        await PlaybackEngine.sleep(50);
+      }
+    }
   }
 
   private async executeInputStep(step: InputStep): Promise<void> {

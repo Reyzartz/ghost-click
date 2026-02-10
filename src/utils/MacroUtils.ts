@@ -53,6 +53,10 @@ class MacroUtils {
   static readonly clickStepSchema = MacroUtils.baseStepSchema.shape({
     target:
       MacroUtils.targetElementSelectorSchema.required("Target is required"),
+    clicksCount: yup
+      .number()
+      .required("Clicks count is required")
+      .min(1, "Clicks count must be at least 1"),
   });
 
   static readonly inputStepSchema = MacroUtils.baseStepSchema.shape({
@@ -171,6 +175,49 @@ class MacroUtils {
     return processed;
   }
 
+  static mergeClickSteps(steps: MacroStep[]): MacroStep[] {
+    const processed: MacroStep[] = [];
+
+    let i = 0;
+    while (i < steps.length) {
+      const currentStep = steps[i];
+
+      // If it's a CLICK step, look for adjacent CLICK steps with same xpath
+      if (currentStep.type === "CLICK") {
+        let clickCount = 1;
+        let j = i + 1;
+
+        // Count all adjacent CLICK steps with the same xpath
+        while (j < steps.length && steps[j].type === "CLICK") {
+          const nextStep = steps[j];
+          if (
+            "target" in nextStep &&
+            "target" in currentStep &&
+            nextStep.target.xpath === currentStep.target.xpath
+          ) {
+            clickCount++;
+            j++;
+          } else {
+            break;
+          }
+        }
+
+        // Add the click step with the total count
+        processed.push({
+          ...currentStep,
+          clicksCount: clickCount,
+        });
+        i = j;
+      } else {
+        // For non-CLICK steps, add as-is
+        processed.push(currentStep);
+        i++;
+      }
+    }
+
+    return processed;
+  }
+
   static addFirstStep(
     steps: MacroStep[],
     initialUrl: string,
@@ -246,6 +293,7 @@ class MacroUtils {
           ...baseStep,
           target: defaultTarget,
           type: "CLICK",
+          clicksCount: 1,
         };
       case "INPUT":
         return {
@@ -289,6 +337,8 @@ class MacroUtils {
       initialUrl,
       settings
     );
+    // Merge adjacent CLICK steps targeting the same element
+    processedSteps = MacroUtils.mergeClickSteps(processedSteps);
     // Merge adjacent INPUT steps targeting the same element
     processedSteps = MacroUtils.mergeInputSteps(processedSteps);
     // Calculate delays between steps
