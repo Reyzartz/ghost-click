@@ -5,6 +5,7 @@ import { EditClickStep } from "./EditClickStep";
 import { EditInputStep } from "./EditInputStep";
 import { EditKeyPressStep } from "./EditKeyPressStep";
 import { EditNavigateStep } from "./EditNavigateStep";
+import { StepMeta } from "./StepMeta";
 import {
   Undo2,
   Trash2,
@@ -215,10 +216,7 @@ export const EditStepItem = ({
               )}
             </div>
 
-            <Text variant="xs" color="muted" className="ml-5 pl-0.5">
-              {step.delay}ms delay{" "}
-              {step.retryCount > 0 && `• ${step.retryCount} retries`}
-            </Text>
+            <StepMeta step={step} className="ml-5 pl-0.5" />
           </div>
 
           {isErrored && (
