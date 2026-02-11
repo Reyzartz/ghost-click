@@ -1,11 +1,4 @@
-import {
-  ClickStep,
-  InputStep,
-  KeyPressStep,
-  MacroStep,
-  NavigateStep,
-  StepType,
-} from "@/models";
+import { MacroStep, StepType } from "@/models";
 import { clsx } from "clsx";
 import { memo, useState } from "react";
 import { EditClickStep } from "./EditClickStep";
@@ -123,13 +116,11 @@ const AddStepButton = memo<AddStepButtonProps>(
       );
     }
 
-    const emptyStep = MacroUtils.createEmptyStep(selectedType);
-
     return (
       <div className="flex flex-col items-center">
         {selectedType === "CLICK" && (
           <EditClickStep
-            step={emptyStep as ClickStep}
+            step={MacroUtils.createClickStep()}
             isOpen={true}
             onUpdateStep={handleAddStep}
             onClose={handleClose}
@@ -137,7 +128,7 @@ const AddStepButton = memo<AddStepButtonProps>(
         )}
         {selectedType === "INPUT" && (
           <EditInputStep
-            step={emptyStep as InputStep}
+            step={MacroUtils.createInputStep()}
             isOpen={true}
             onUpdateStep={handleAddStep}
             onClose={handleClose}
@@ -145,7 +136,7 @@ const AddStepButton = memo<AddStepButtonProps>(
         )}
         {selectedType === "KEYPRESS" && (
           <EditKeyPressStep
-            step={emptyStep as KeyPressStep}
+            step={MacroUtils.createKeyPressStep()}
             isOpen={true}
             onUpdateStep={handleAddStep}
             onClose={handleClose}
@@ -153,7 +144,7 @@ const AddStepButton = memo<AddStepButtonProps>(
         )}
         {selectedType === "NAVIGATE" && (
           <EditNavigateStep
-            step={emptyStep as NavigateStep}
+            step={MacroUtils.createNavigateStep()}
             isOpen={true}
             onUpdateStep={handleAddStep}
             onClose={handleClose}

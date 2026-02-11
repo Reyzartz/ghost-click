@@ -68,17 +68,19 @@ export class ShortcutService extends BaseService {
       return;
     }
 
-    const initialUrl = activeTab.url;
     const tabId = activeTab.id;
+    const url = activeTab.url;
 
-    if (initialUrl === undefined || tabId === undefined) {
-      this.logger.error("Cannot start recording: no active tab URL or ID");
+    if (tabId === undefined || url === undefined) {
+      this.logger.error("Cannot start recording: no active tab ID or URL");
       return;
     }
 
+    const domain = MacroUtils.extractDomainFromURL(url);
+
     this.emitter.emit("START_RECORDING", {
       sessionId,
-      initialUrl,
+      domain,
       tabId,
     });
   }

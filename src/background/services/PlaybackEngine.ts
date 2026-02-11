@@ -52,7 +52,6 @@ export class PlaybackEngine {
     this.isPaused = false;
     this.logger.info("Starting playback", {
       macroId: macro.id,
-      initialUrl: macro.initialUrl,
       steps: macro.steps.length,
     });
 
@@ -65,8 +64,6 @@ export class PlaybackEngine {
     });
 
     try {
-      // Navigate to initial URL before playback
-
       for (const step of macro.steps) {
         // Check if stop was requested
         if (this.shouldStop) {

@@ -16,13 +16,8 @@ import { EditIcon, RotateCwIcon, SaveIcon } from "lucide-react";
 export const SaveRecordingModal = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<SaveRecordingState>({
     isOpen: false,
+    macro: null,
     macroName: "",
-    sessionId: "",
-    initialUrl: "",
-    domain: "",
-    faviconUrl: "",
-    stepCount: 0,
-    duration: 0,
   });
 
   useEffect(() => {
@@ -69,16 +64,16 @@ export const SaveRecordingModal = ({ app }: { app: SidePanelApp }) => {
       <ModalHeader>
         <div className="flex gap-2">
           <DisplayFavicon
-            faviconUrl={state.faviconUrl}
-            name={state.domain}
+            faviconUrl={state.macro?.faviconUrl ?? ""}
+            name={state.macro?.domain ?? ""}
             size="large"
           />
 
           <div className="space-y-0.5">
             <Text variant="h2">Save Recording</Text>
-            {state.domain && (
+            {state.macro?.domain && (
               <Text variant="small" color="muted">
-                {state.domain}
+                {state.macro.domain}
               </Text>
             )}
           </div>
@@ -91,13 +86,20 @@ export const SaveRecordingModal = ({ app }: { app: SidePanelApp }) => {
             <Text variant="small" color="muted">
               Steps recorded:
             </Text>
-            <Text variant="small">{state.stepCount}</Text>
+            <Text variant="small">{state.macro?.steps.length ?? 0}</Text>
           </div>
           <div className="flex items-center gap-2">
             <Text variant="small" color="muted">
               Duration:
             </Text>
-            <Text variant="small">{formatDuration(state.duration)}</Text>
+            <Text variant="small">
+              {formatDuration(
+                state.macro
+                  ? state.macro.steps[state.macro.steps.length - 1].timestamp -
+                      state.macro.steps[0].timestamp
+                  : 0
+              )}
+            </Text>
           </div>
         </div>
 

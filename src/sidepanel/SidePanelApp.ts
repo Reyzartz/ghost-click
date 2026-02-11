@@ -60,7 +60,6 @@ export class SidePanelApp extends BaseApp {
     );
     const recordingProgressViewModel = new RecordingProgressViewModel(
       recordingStateRepository,
-      settingsRepository,
       emitter
     );
     const editMacroViewModel = new EditMacroViewModel(

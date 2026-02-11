@@ -37,7 +37,7 @@ export interface StartRecordingEvent extends BaseEvent {
   name: "START_RECORDING";
   data: {
     sessionId: string;
-    initialUrl: string;
+    domain: string;
     tabId?: number;
   };
 }
@@ -46,51 +46,12 @@ export interface StopRecordingEvent extends BaseEvent {
   name: "STOP_RECORDING";
 }
 
-export type UserEventType = "CLICK" | "INPUT" | "KEYPRESS" | "NAVIGATE";
-
-interface BaseUserEventData {
-  id: string;
-  name: string;
-  sessionId: string;
-  timestamp: number;
-  type: UserEventType;
-}
-
-export interface UserClickEventData extends BaseUserEventData {
-  type: "CLICK";
-  target: TargetElementSelector;
-  clicksCount: number;
-}
-
-export interface UserInputEventData extends BaseUserEventData {
-  type: "INPUT";
-  target: TargetElementSelector;
-  value: string;
-}
-
-export interface UserKeyPressEventData extends BaseUserEventData {
-  type: "KEYPRESS";
-  target: TargetElementSelector;
-  key: string;
-  code: string;
-  ctrlKey: boolean;
-  shiftKey: boolean;
-  altKey: boolean;
-  metaKey: boolean;
-}
-
-export interface UserNavigateEventData extends BaseUserEventData {
-  type: "NAVIGATE";
-  url: string;
-}
-
 export interface UserActionEvent extends BaseEvent {
   name: "USER_ACTION";
-  data:
-    | UserClickEventData
-    | UserInputEventData
-    | UserKeyPressEventData
-    | UserNavigateEventData;
+  data: {
+    sessionId: string;
+    step: MacroStep;
+  };
 }
 
 export interface SavedMacroEvent extends BaseEvent {
@@ -147,20 +108,14 @@ export interface ToggleQuickActionsEvent extends BaseEvent {
 export interface ShowSaveRecordingModalEvent extends BaseEvent {
   name: "SHOW_SAVE_RECORDING_MODAL";
   data: {
-    sessionId: string;
-    initialUrl: string;
-    steps: MacroStep[];
+    macro: Macro;
   };
 }
 
 export interface SaveRecordingConfirmedEvent extends BaseEvent {
   name: "SAVE_RECORDING_CONFIRMED";
   data: {
-    sessionId: string;
-    name: string;
-    initialUrl: string;
-    steps: MacroStep[];
-    faviconUrl: string;
+    macro: Macro;
   };
 }
 
@@ -175,7 +130,6 @@ export interface ReRecordRequestedEvent extends BaseEvent {
   name: "RE_RECORD_REQUESTED";
   data: {
     sessionId: string;
-    initialUrl: string;
   };
 }
 

@@ -12,7 +12,6 @@ export const RecordingProgressView = ({ app }: { app: SidePanelApp }) => {
     loading: true,
     isRecording: false,
     sessionId: null,
-    initialUrl: "",
     steps: [],
     error: null,
   });

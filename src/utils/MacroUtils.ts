@@ -1,8 +1,13 @@
+import { Macro } from "@/models/Macro";
 import {
   BaseMacroStep,
+  ClickStep,
+  InputStep,
+  KeyPressStep,
   MacroStep,
   NavigateStep,
   StepType,
+  TargetElementSelector,
 } from "@/models/MacroStep";
 import { Settings, DEFAULT_SETTINGS } from "@/models/Settings";
 import * as yup from "yup";
@@ -218,27 +223,6 @@ class MacroUtils {
     return processed;
   }
 
-  static addFirstStep(
-    steps: MacroStep[],
-    initialUrl: string,
-    settings: Settings = DEFAULT_SETTINGS
-  ): MacroStep[] {
-    if (steps.length === 0 || steps[0].type !== "NAVIGATE") return steps;
-
-    const initalStep: NavigateStep = {
-      id: MacroUtils.generateStepId(),
-      name: MacroUtils.getStepName(initialUrl, "NAVIGATE"),
-      type: "NAVIGATE",
-      url: initialUrl,
-      timestamp: steps[0].timestamp - settings.minimumDelayMs,
-      delay: 0, // Will be calculated in post-processing
-      retryCount: settings.defaultRetryCount,
-      retryInterval: settings.defaultRetryIntervalMs,
-    };
-
-    return [initalStep, ...steps];
-  }
-
   static calculateDelays(
     steps: MacroStep[],
     settings: Settings = DEFAULT_SETTINGS
@@ -265,78 +249,141 @@ class MacroUtils {
     });
   }
 
-  static createEmptyStep = (
+  static createBaseStep(
     type: StepType,
-    settings: Settings = DEFAULT_SETTINGS
-  ): MacroStep => {
-    const baseStep: BaseMacroStep = {
+    settings: Settings = DEFAULT_SETTINGS,
+    data: Partial<BaseMacroStep> = {}
+  ): BaseMacroStep {
+    return {
       id: MacroUtils.generateStepId(),
       name: MacroUtils.getStepName("<unknown>", type),
       type,
-      // TODO: this filed will remove in the future, need to update all related code
       timestamp: Date.now(),
       delay: settings.minimumDelayMs,
       retryCount: settings.defaultRetryCount,
       retryInterval: settings.defaultRetryIntervalMs,
+      ...data,
     };
+  }
 
-    const defaultTarget = {
+  static createDefaultTarget(
+    settings: Settings,
+    target: Partial<TargetElementSelector> = {}
+  ): TargetElementSelector {
+    return {
       id: "",
       className: "",
       xpath: "",
       defaultSelector: settings.defaultSelectorType,
+      ...target,
     };
+  }
 
-    switch (type) {
-      case "CLICK":
-        return {
-          ...baseStep,
-          target: defaultTarget,
-          type: "CLICK",
-          clicksCount: 1,
-        };
-      case "INPUT":
-        return {
-          ...baseStep,
-          target: defaultTarget,
-          type: "INPUT",
-          value: "",
-        };
-      case "KEYPRESS":
-        return {
-          ...baseStep,
-          type: "KEYPRESS",
-          key: "",
-          code: "",
-          ctrlKey: false,
-          shiftKey: false,
-          altKey: false,
-          metaKey: false,
-          target: defaultTarget,
-        };
-      case "NAVIGATE":
-        return {
-          ...baseStep,
-          type: "NAVIGATE",
-          url: "",
-        };
-    }
-  };
+  static createClickStep(
+    settings: Settings = DEFAULT_SETTINGS,
+    data: Partial<ClickStep> = {}
+  ): ClickStep {
+    const baseStep: BaseMacroStep = MacroUtils.createBaseStep(
+      "CLICK",
+      settings
+    );
 
-  static postProcessSteps(
+    const defaultTarget = MacroUtils.createDefaultTarget(settings);
+
+    return {
+      ...baseStep,
+      target: defaultTarget,
+      type: "CLICK",
+      clicksCount: 1,
+      ...data,
+    };
+  }
+
+  static createInputStep(
+    settings: Settings = DEFAULT_SETTINGS,
+    data: Partial<InputStep> = {}
+  ): InputStep {
+    const baseStep: BaseMacroStep = MacroUtils.createBaseStep(
+      "INPUT",
+      settings
+    );
+
+    const defaultTarget = MacroUtils.createDefaultTarget(settings);
+
+    return {
+      ...baseStep,
+      target: defaultTarget,
+      type: "INPUT",
+      value: "",
+      ...data,
+    };
+  }
+
+  static createKeyPressStep(
+    settings: Settings = DEFAULT_SETTINGS,
+    data: Partial<KeyPressStep> = {}
+  ): KeyPressStep {
+    const baseStep: BaseMacroStep = MacroUtils.createBaseStep(
+      "KEYPRESS",
+      settings
+    );
+
+    const defaultTarget = MacroUtils.createDefaultTarget(settings);
+
+    return {
+      ...baseStep,
+      type: "KEYPRESS",
+      key: "",
+      code: "",
+      ctrlKey: false,
+      shiftKey: false,
+      altKey: false,
+      metaKey: false,
+      target: defaultTarget,
+      ...data,
+    };
+  }
+
+  static createNavigateStep(
+    settings: Settings = DEFAULT_SETTINGS,
+    data: Partial<NavigateStep> = {}
+  ): NavigateStep {
+    const baseStep: BaseMacroStep = MacroUtils.createBaseStep(
+      "NAVIGATE",
+      settings
+    );
+
+    return {
+      ...baseStep,
+      type: "NAVIGATE",
+      url: "",
+      ...data,
+    };
+  }
+
+  static createInitialMacro(macro: Partial<Macro> = {}): Macro {
+    return {
+      id: crypto.randomUUID(),
+      name: MacroUtils.getDefaultMacroName(),
+      domain: "",
+      faviconUrl: "",
+      steps: [],
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      lastPlayedAt: null,
+      pinned: false,
+      ...macro,
+    };
+  }
+
+  static optimizeSteps(
     steps: MacroStep[],
-    initialUrl: string,
     settings: Settings = DEFAULT_SETTINGS
   ): MacroStep[] {
     if (steps.length === 0) return steps;
 
     let processedSteps = steps;
 
-    processedSteps = MacroUtils.addFirstStep(
-      processedSteps,
-      initialUrl,
-      settings
-    );
     // Merge adjacent CLICK steps targeting the same element
     processedSteps = MacroUtils.mergeClickSteps(processedSteps);
     // Merge adjacent INPUT steps targeting the same element

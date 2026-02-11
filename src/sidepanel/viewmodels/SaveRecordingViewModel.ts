@@ -1,32 +1,21 @@
 import { BaseViewModel } from "@/utils/BaseViewModel";
 import { Emitter } from "@/utils/Emitter";
-import { Macro, MacroStep } from "@/models";
+import { Macro } from "@/models";
 import { MacroUtils } from "@/utils/MacroUtils";
 
 export type SaveRecordingState = {
   isOpen: boolean;
+  macro: Macro | null;
   macroName: string;
-  sessionId: string;
-  initialUrl: string;
-  domain: string;
-  faviconUrl: string;
-  stepCount: number;
-  duration: number;
 };
 
 export class SaveRecordingViewModel extends BaseViewModel {
   private state: SaveRecordingState = {
     isOpen: false,
+    macro: null,
     macroName: "",
-    sessionId: "",
-    initialUrl: "",
-    domain: "",
-    faviconUrl: "",
-    stepCount: 0,
-    duration: 0,
   };
   private listeners: Array<(state: SaveRecordingState) => void> = [];
-  private steps: MacroStep[] = [];
 
   constructor(protected readonly emitter: Emitter) {
     super("SaveRecordingViewModel", emitter);
@@ -55,43 +44,19 @@ export class SaveRecordingViewModel extends BaseViewModel {
     this.listeners.forEach((l) => l(this.state));
   }
 
-  private showModal(data: {
-    sessionId: string;
-    initialUrl: string;
-    steps: MacroStep[];
-  }): void {
-    this.steps = data.steps;
-
-    // Extract domain from URL
-    const domain = MacroUtils.extractDomainFromURL(data.initialUrl);
-
-    // Get favicon from current page
-    const faviconUrl = MacroUtils.getFaviconFromURL(domain);
-
-    // Calculate duration (difference between first and last step)
-    const startTimestamp = this.steps.length > 0 ? this.steps[0].timestamp : 0;
-    const endTimestamp =
-      this.steps.length > 0 ? this.steps[this.steps.length - 1].timestamp : 0;
-    const duration =
-      startTimestamp && endTimestamp ? endTimestamp - startTimestamp : 0;
-
+  private showModal(data: { macro: Macro }): void {
     // Generate default name
     const defaultName = MacroUtils.getDefaultMacroName();
 
     this.setState({
       isOpen: true,
+      macro: data.macro,
       macroName: defaultName,
-      sessionId: data.sessionId,
-      initialUrl: data.initialUrl,
-      domain,
-      faviconUrl,
-      stepCount: this.steps.length,
-      duration,
     });
 
     this.logger.info("Save recording modal shown", {
-      sessionId: data.sessionId,
-      stepCount: this.steps.length,
+      macroId: data.macro.id,
+      stepCount: data.macro.steps.length,
     });
   }
 
@@ -101,40 +66,41 @@ export class SaveRecordingViewModel extends BaseViewModel {
 
   saveRecording(macroName: string): void {
     const trimmedName = macroName.trim();
-    if (!trimmedName) {
-      this.logger.warn("Cannot save recording with empty name");
+    if (!trimmedName || !this.state.macro) {
+      this.logger.warn(
+        "Cannot save recording with empty name or missing macro"
+      );
       return;
     }
 
+    const macroToSave: Macro = {
+      ...this.state.macro,
+      name: trimmedName,
+      updatedAt: Date.now(),
+    };
+
     this.logger.info("Saving recording", {
-      sessionId: this.state.sessionId,
+      macroId: macroToSave.id,
       name: trimmedName,
     });
 
     this.emitter.emit("SAVE_RECORDING_CONFIRMED", {
-      sessionId: this.state.sessionId,
-      name: trimmedName,
-      initialUrl: this.state.initialUrl,
-      steps: this.steps,
-      faviconUrl: this.state.faviconUrl,
+      macro: macroToSave,
     });
 
     this.closeModal();
   }
 
   saveAndEdit(name: string): void {
-    const now = Date.now();
+    if (!this.state.macro) {
+      this.logger.warn("Cannot save and edit: missing macro");
+      return;
+    }
+
     const macro: Macro = {
-      id: MacroUtils.generateMacroId(),
+      ...this.state.macro,
       name: name.trim(),
-      initialUrl: this.state.initialUrl,
-      domain: this.state.domain,
-      faviconUrl: this.state.faviconUrl,
-      steps: this.steps,
-      createdAt: now,
-      updatedAt: now,
-      lastPlayedAt: null,
-      pinned: false,
+      updatedAt: Date.now(),
     };
 
     this.logger.info("Creating macro for editing", { name: macro.name });
@@ -144,25 +110,34 @@ export class SaveRecordingViewModel extends BaseViewModel {
   }
 
   cancelRecording(): void {
+    if (!this.state.macro) {
+      this.logger.warn("Cannot cancel recording: missing macro");
+      return;
+    }
+
     this.logger.info("Recording cancelled", {
-      sessionId: this.state.sessionId,
+      macroId: this.state.macro.id,
     });
 
     this.emitter.emit("SAVE_RECORDING_CANCELLED", {
-      sessionId: this.state.sessionId,
+      sessionId: this.state.macro.id,
     });
 
     this.closeModal();
   }
 
   reRecord(): void {
+    if (!this.state.macro) {
+      this.logger.warn("Cannot re-record: missing macro");
+      return;
+    }
+
     this.logger.info("Re-recording requested", {
-      sessionId: this.state.sessionId,
+      macroId: this.state.macro.id,
     });
 
     this.emitter.emit("RE_RECORD_REQUESTED", {
-      sessionId: this.state.sessionId,
-      initialUrl: this.state.initialUrl,
+      sessionId: this.state.macro.id,
     });
 
     this.closeModal();
@@ -171,14 +146,8 @@ export class SaveRecordingViewModel extends BaseViewModel {
   private closeModal(): void {
     this.setState({
       isOpen: false,
+      macro: null,
       macroName: "",
-      sessionId: "",
-      initialUrl: "",
-      domain: "",
-      faviconUrl: "",
-      stepCount: 0,
-      duration: 0,
     });
-    this.steps = [];
   }
 }

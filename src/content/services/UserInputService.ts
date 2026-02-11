@@ -1,10 +1,5 @@
 import { BaseService } from "@/utils/BaseService";
 import { Emitter } from "@/utils/Emitter";
-import {
-  UserClickEventData,
-  UserInputEventData,
-  UserKeyPressEventData,
-} from "@/utils/Event";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
 import { SettingsRepository } from "@/repositories/SettingsRepository";
 import { ElementSelector } from "@/utils/ElementSelector";
@@ -31,7 +26,7 @@ export class UserInputService extends BaseService {
     await this.setInitialRecordingState();
 
     this.emitter.on("START_RECORDING", (data) => {
-      this.startCapture(data.sessionId);
+      void this.startCapture(data.sessionId);
     });
 
     this.emitter.on("STOP_RECORDING", () => {
@@ -52,7 +47,7 @@ export class UserInputService extends BaseService {
     }
   }
 
-  private startCapture(sessionId: string): void {
+  private async startCapture(sessionId: string): Promise<void> {
     if (this.isRecording) {
       this.logger.warn("Already capturing user input");
       return;
@@ -61,6 +56,20 @@ export class UserInputService extends BaseService {
     this.isRecording = true;
     this.currentSessionId = sessionId;
     this.logger.info("Started capturing user input", { sessionId });
+
+    // Get settings for creating the navigate step
+    const settings = await this.settingsRepository.get();
+
+    // Emit NAVIGATE event for the current page URL as the first step
+    const navigateStep = MacroUtils.createNavigateStep(settings, {
+      name: MacroUtils.getStepName(window.location.href, "NAVIGATE"),
+      url: window.location.href,
+    });
+
+    this.emitter.emit("USER_ACTION", {
+      sessionId,
+      step: navigateStep,
+    });
 
     this.addClickHandlers();
   }
@@ -134,23 +143,21 @@ export class UserInputService extends BaseService {
 
     const settings = await this.settingsRepository.get();
 
-    const clickData: UserClickEventData = {
-      id: MacroUtils.generateStepId(),
-      name: this.getElementName(target),
-      sessionId: this.currentSessionId,
-      timestamp: Date.now(),
-      type: "CLICK",
+    const clickStep = MacroUtils.createClickStep(settings, {
+      name: MacroUtils.getStepName(this.getElementName(target), "CLICK"),
       target: ElementSelector.getElementSelector(
         target,
         settings.defaultSelectorType
       ),
-      clicksCount: 1,
-    };
+    });
 
-    this.logger.info("Click captured", clickData);
+    this.logger.info("Click captured", clickStep);
 
     // Emit USER_ACTION event
-    this.emitter.emit("USER_ACTION", clickData);
+    this.emitter.emit("USER_ACTION", {
+      sessionId: this.currentSessionId,
+      step: clickStep,
+    });
   }
 
   private async captureInput(event: Event): Promise<void> {
@@ -170,23 +177,22 @@ export class UserInputService extends BaseService {
 
     const settings = await this.settingsRepository.get();
 
-    const inputData: UserInputEventData = {
-      id: MacroUtils.generateStepId(),
-      name: target.value,
-      sessionId: this.currentSessionId,
-      timestamp: Date.now(),
-      type: "INPUT" as const,
+    const inputStep = MacroUtils.createInputStep(settings, {
+      name: MacroUtils.getStepName(target.value, "INPUT"),
       target: ElementSelector.getElementSelector(
         target,
         settings.defaultSelectorType
       ),
       value: target.value,
-    };
+    });
 
-    this.logger.info("Input captured", inputData);
+    this.logger.info("Input captured", inputStep);
 
     // Emit USER_ACTION event
-    this.emitter.emit("USER_ACTION", inputData);
+    this.emitter.emit("USER_ACTION", {
+      sessionId: this.currentSessionId,
+      step: inputStep,
+    });
   }
 
   private async captureKeyPress(event: KeyboardEvent): Promise<void> {
@@ -215,12 +221,8 @@ export class UserInputService extends BaseService {
 
     const settings = await this.settingsRepository.get();
 
-    const keyPressData: UserKeyPressEventData = {
-      id: MacroUtils.generateStepId(),
-      name: event.key,
-      sessionId: this.currentSessionId,
-      timestamp: Date.now(),
-      type: "KEYPRESS" as const,
+    const keyPressStep = MacroUtils.createKeyPressStep(settings, {
+      name: MacroUtils.getStepName(event.key, "KEYPRESS"),
       target: ElementSelector.getElementSelector(
         target,
         settings.defaultSelectorType
@@ -231,11 +233,14 @@ export class UserInputService extends BaseService {
       shiftKey: event.shiftKey,
       altKey: event.altKey,
       metaKey: event.metaKey,
-    };
+    });
 
-    this.logger.info("KeyPress captured", keyPressData);
+    this.logger.info("KeyPress captured", keyPressStep);
 
     // Emit USER_ACTION event
-    this.emitter.emit("USER_ACTION", keyPressData);
+    this.emitter.emit("USER_ACTION", {
+      sessionId: this.currentSessionId,
+      step: keyPressStep,
+    });
   }
 }

@@ -1,7 +1,6 @@
 import { RecordingState } from "@/models/RecordingState";
 import { Storage } from "@/utils/Storage";
 import { Logger } from "@/utils/Logger";
-import { MacroStep } from "@/models";
 
 const RECORDING_STATE_KEY = "recordingState";
 
@@ -30,9 +29,8 @@ export class RecordingStateRepository {
     const updated: RecordingState = {
       isRecording: current?.isRecording ?? false,
       sessionId: current?.sessionId ?? null,
-      initialUrl: current?.initialUrl ?? "",
       tabId: current?.tabId ?? null,
-      macroSteps: current?.macroSteps ?? [],
+      macro: current?.macro ?? null,
       ...partial,
     };
     await this.save(updated);
@@ -51,15 +49,5 @@ export class RecordingStateRepository {
   async getSessionId(): Promise<string | null> {
     const state = await this.get();
     return state?.sessionId ?? null;
-  }
-
-  async addStep(step: MacroStep): Promise<void> {
-    const state = await this.get();
-    if (!state) {
-      this.logger.warn("Cannot add step: no recording state");
-      return;
-    }
-    const updatedSteps = [...state.macroSteps, step];
-    await this.update({ macroSteps: updatedSteps });
   }
 }

@@ -113,7 +113,6 @@ export class ImportMacroViewModel extends BaseViewModel {
       const macro: Macro = {
         id: MacroUtils.generateMacroId(),
         name: this.state.macroName.trim(),
-        initialUrl: this.state.parsedMacro.initialUrl,
         domain: this.state.parsedMacro.domain,
         faviconUrl: MacroUtils.getFaviconFromURL(this.state.parsedMacro.domain),
         steps: this.state.parsedMacro.steps,
@@ -148,7 +147,6 @@ export class ImportMacroViewModel extends BaseViewModel {
     const macro: Macro = {
       id: MacroUtils.generateMacroId(),
       name: this.state.macroName.trim(),
-      initialUrl: this.state.parsedMacro.initialUrl,
       domain: this.state.parsedMacro.domain,
       faviconUrl: MacroUtils.getFaviconFromURL(this.state.parsedMacro.domain),
       steps: this.state.parsedMacro.steps,

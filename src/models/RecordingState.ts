@@ -1,9 +1,8 @@
-import { MacroStep } from "./MacroStep";
+import { Macro } from "./Macro";
 
 export interface RecordingState {
   isRecording: boolean;
   sessionId: string | null;
-  initialUrl: string;
   tabId: number | null;
-  macroSteps: MacroStep[];
+  macro: Macro | null;
 }

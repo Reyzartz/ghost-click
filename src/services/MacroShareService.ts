@@ -6,7 +6,6 @@ import * as yup from "yup";
 export interface ShareableMacro {
   version: string;
   name: string;
-  initialUrl: string;
   domain: string;
   faviconUrl: string | null;
   steps: Macro["steps"];
@@ -21,10 +20,6 @@ export class MacroShareService extends BaseService {
       .string()
       .required("Macro name is required")
       .min(1, "Name cannot be empty"),
-    initialUrl: yup
-      .string()
-      .required("Initial URL is required")
-      .url("Must be a valid URL"),
     domain: yup.string().required("Domain is required"),
     faviconUrl: yup.string().url("Must be a valid URL").nullable(),
     steps: yup
@@ -151,7 +146,6 @@ export class MacroShareService extends BaseService {
     const shareable: ShareableMacro = {
       version: MacroShareService.SHARE_VERSION,
       name: macro.name,
-      initialUrl: macro.initialUrl,
       domain: macro.domain,
       faviconUrl: macro.faviconUrl,
       steps: macro.steps,
@@ -198,7 +192,6 @@ export class MacroShareService extends BaseService {
     return {
       name: shareable.name,
       version: shareable.version,
-      initialUrl: shareable.initialUrl,
       domain: shareable.domain,
       faviconUrl: shareable.faviconUrl,
       steps: shareable.steps,

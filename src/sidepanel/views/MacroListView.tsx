@@ -100,14 +100,16 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
 
   const handleStartRecording = async () => {
     const activeTab = await TabsManager.getActiveTab();
-    if (!activeTab || !activeTab.id) {
+    if (!activeTab || !activeTab.id || !activeTab.url) {
       app.logger.error("No active tab found for recording");
       return;
     }
 
+    const domain = MacroUtils.extractDomainFromURL(activeTab.url);
+
     app.emitter.emit("START_RECORDING", {
       sessionId: MacroUtils.generateSessionId(),
-      initialUrl: window.location.href,
+      domain,
       tabId: activeTab.id,
     });
   };

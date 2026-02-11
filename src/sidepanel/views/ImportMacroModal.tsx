@@ -117,10 +117,6 @@ export const ImportMacroModal = ({ app }: { app: SidePanelApp }) => {
                 label="Domain"
                 value={state.parsedMacro.domain}
               />
-              <MacroMetadataRow
-                label="Initial URL"
-                value={state.parsedMacro.initialUrl}
-              />
             </div>
           )}
         </div>

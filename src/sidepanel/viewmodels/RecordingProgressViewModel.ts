@@ -1,15 +1,12 @@
 import { MacroStep } from "@/models";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
-import { SettingsRepository } from "@/repositories/SettingsRepository";
 import { BaseViewModel } from "@/utils/BaseViewModel";
 import { Emitter } from "@/utils/Emitter";
-import { MacroUtils } from "@/utils/MacroUtils";
 
 export interface RecordingProgressState {
   loading: boolean;
   isRecording: boolean;
   sessionId: string | null;
-  initialUrl: string;
   steps: MacroStep[];
   error?: string | null;
 }
@@ -19,7 +16,6 @@ export class RecordingProgressViewModel extends BaseViewModel {
     loading: true,
     isRecording: false,
     sessionId: null,
-    initialUrl: "",
     steps: [],
     error: null,
   };
@@ -27,7 +23,6 @@ export class RecordingProgressViewModel extends BaseViewModel {
 
   constructor(
     private readonly recordingStateRepository: RecordingStateRepository,
-    private readonly settings: SettingsRepository,
     protected readonly emitter: Emitter
   ) {
     super("RecordingProgressViewModel", emitter);
@@ -45,7 +40,6 @@ export class RecordingProgressViewModel extends BaseViewModel {
       this.setState({
         isRecording: true,
         sessionId: data.sessionId,
-        initialUrl: data.initialUrl,
         steps: [],
         error: null,
         loading: false,
@@ -71,7 +65,6 @@ export class RecordingProgressViewModel extends BaseViewModel {
       this.setState({
         isRecording: false,
         sessionId: null,
-        initialUrl: "",
         steps: [],
       });
     });
@@ -82,7 +75,6 @@ export class RecordingProgressViewModel extends BaseViewModel {
       this.setState({
         isRecording: false,
         sessionId: null,
-        initialUrl: "",
         steps: [],
       });
     });
@@ -101,17 +93,13 @@ export class RecordingProgressViewModel extends BaseViewModel {
 
     const recordingState = await this.recordingStateRepository.get();
 
-    if (!recordingState) {
+    if (!recordingState || !recordingState.macro) {
       this.logger.error("No recording state found when adding step");
       return;
     }
 
     this.setState({
-      steps: MacroUtils.postProcessSteps(
-        [...recordingState.macroSteps],
-        this.state.initialUrl,
-        await this.settings.get()
-      ),
+      steps: recordingState.macro.steps,
     });
   }
 
@@ -120,20 +108,15 @@ export class RecordingProgressViewModel extends BaseViewModel {
       this.setState({ loading: true });
       const recordingState = await this.recordingStateRepository.get();
 
-      if (recordingState?.isRecording) {
+      if (recordingState?.isRecording && recordingState.macro) {
         this.logger.info("Loaded recording state", {
           sessionId: recordingState.sessionId,
-          stepsCount: recordingState.macroSteps.length,
+          stepsCount: recordingState.macro.steps.length,
         });
         this.setState({
           isRecording: true,
           sessionId: recordingState.sessionId,
-          initialUrl: recordingState.initialUrl,
-          steps: MacroUtils.postProcessSteps(
-            [...recordingState.macroSteps],
-            this.state.initialUrl,
-            await this.settings.get()
-          ),
+          steps: recordingState.macro.steps,
           loading: false,
         });
       } else {
