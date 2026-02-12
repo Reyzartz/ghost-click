@@ -194,7 +194,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
       )}
 
       {state.loading && !state.macro ? (
-        <div className="py-8 text-center text-slate-500">Loading...</div>
+        <div className="text-text-muted py-8 text-center">Loading...</div>
       ) : state.macro ? (
         <div className="flex grow flex-col gap-3 overflow-hidden">
           <Input
@@ -212,9 +212,9 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
             <Text variant="body" className="mb-2 font-medium">
               Steps ({state.macro.steps.length})
             </Text>
-            <div className="grow overflow-scroll rounded-lg border border-slate-200 bg-slate-50">
+            <div className="border-border bg-surface-muted grow overflow-scroll rounded-lg border">
               {state.macro.steps.length === 0 ? (
-                <div className="px-3 py-4 text-center text-slate-500">
+                <div className="text-text-muted px-3 py-4 text-center">
                   <Text>No steps added yet.</Text>
                 </div>
               ) : (
@@ -226,7 +226,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                     />
                     <div
                       className={clsx(
-                        "text-slate-300 transition-[height] duration-200",
+                        "text-text-disabled transition-[height] duration-200",
                         state.isPlaying ? "h-0 overflow-hidden" : "h-4"
                       )}
                     >
@@ -258,12 +258,12 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
                           isErrored={state.erroredStepIds.includes(step.id)}
                           isDeletable={isDeletable}
                         />
-                        <div className="text-xs text-slate-300">|</div>
+                        <div className="text-text-disabled text-xs">|</div>
                         <AddStepButton
                           onAddStep={(step) => handleAddStep(step, index + 1)}
                           disabled={state.isPlaying}
                         />
-                        <div className="text-slate-300 group-last:hidden">
+                        <div className="text-text-disabled group-last:hidden">
                           <ArrowDown size={16} />
                         </div>
                       </div>
@@ -304,7 +304,9 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
           </div>
         </div>
       ) : (
-        <div className="py-8 text-center text-slate-500">No macro selected</div>
+        <div className="text-text-muted py-8 text-center">
+          No macro selected
+        </div>
       )}
     </Layout>
   );

@@ -55,13 +55,13 @@ export const Dropdown = ({ items, trigger }: DropdownProps) => {
       </div>
 
       {isOpen && (
-        <div className="absolute top-full right-0 z-10 mt-1 min-w-30 rounded border border-slate-200 bg-white shadow-lg">
+        <div className="border-border bg-surface absolute top-full right-0 z-10 mt-1 min-w-30 rounded border shadow-lg">
           {items.map((item, index) => {
             const IconComponent = item.icon;
             return (
               <button
                 key={index}
-                className="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm first:rounded-t last:rounded-b hover:bg-slate-50"
+                className="hover:bg-surface-hover flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm first:rounded-t last:rounded-b"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleItemClick(item.onClick);
@@ -72,8 +72,8 @@ export const Dropdown = ({ items, trigger }: DropdownProps) => {
                     size={14}
                     className={clsx(
                       item.variant === "danger"
-                        ? "text-red-700"
-                        : "text-slate-900"
+                        ? "text-error-text"
+                        : "text-text"
                     )}
                   />
                 )}

@@ -74,8 +74,8 @@ export const MacroCard = ({
       className={clsx(
         "group cursor-pointer rounded border p-2 transition-colors",
         isSelected
-          ? "border-slate-300 bg-slate-100"
-          : "border-slate-200 hover:bg-slate-100"
+          ? "border-border-secondary bg-surface-hover"
+          : "border-border hover:bg-surface-hover"
       )}
       onClick={onPlay}
       ref={(el) => {
@@ -94,7 +94,7 @@ export const MacroCard = ({
             faviconUrl={macro.faviconUrl}
             className={clsx(
               "mt-0.5 transition-colors",
-              isSelected ? "bg-white" : "group-hover:bg-white"
+              isSelected ? "bg-surface" : "group-hover:bg-surface"
             )}
           />
 
@@ -107,7 +107,7 @@ export const MacroCard = ({
               </Text>
 
               {macro.domain && (
-                <Text variant="small" className="truncate text-slate-400">
+                <Text variant="small" className="text-text-subtle truncate">
                   • {macro.domain}
                 </Text>
               )}

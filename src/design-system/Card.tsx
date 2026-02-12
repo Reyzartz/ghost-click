@@ -22,9 +22,9 @@ export const Card = ({
   ...props
 }: CardProps) => {
   const classes = clsx(
-    "rounded border border-slate-200 bg-white",
+    "rounded border border-border bg-surface",
     paddingStyles[padding],
-    hover && "hover:border-slate-300 transition-colors",
+    hover && "hover:border-border-hover transition-colors",
     className
   );
 

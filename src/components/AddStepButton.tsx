@@ -45,11 +45,11 @@ const AddStepButton = memo<AddStepButtonProps>(
       return (
         <div
           className={clsx(
-            "group/add flex flex-col gap-2 overflow-hidden border-[1.5px] border-dashed border-slate-300 bg-slate-50 transition-all duration-300 ease-in-out",
+            "group/add border-border-secondary bg-surface-muted flex flex-col gap-2 overflow-hidden border-[1.5px] border-dashed transition-all duration-300 ease-in-out",
             disabled
               ? "h-0 w-0 cursor-not-allowed overflow-hidden px-0 py-0"
               : !isAdding
-                ? "h-6 w-6 cursor-pointer rounded-2xl hover:border-slate-400"
+                ? "hover:border-border-hover h-6 w-6 cursor-pointer rounded-2xl"
                 : "h-37 w-74 rounded p-2"
           )}
         >
@@ -104,7 +104,7 @@ const AddStepButton = memo<AddStepButtonProps>(
               onClick={() => setIsAdding(true)}
               title="Add new step"
               className={clsx(
-                "flex h-full w-full items-center justify-center text-slate-300 duration-300 group-hover/add:text-slate-400",
+                "text-text-disabled group-hover/add:text-text-muted flex h-full w-full items-center justify-center duration-300",
                 disabled ? "cursor-not-allowed" : "cursor-pointer"
               )}
               disabled={disabled}

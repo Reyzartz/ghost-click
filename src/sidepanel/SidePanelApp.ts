@@ -16,6 +16,7 @@ import { SettingsViewModel } from "./viewmodels/SettingsViewModel";
 import { ViewService } from "./services/ViewService";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
 import { MacroShareService } from "@/sidepanel/services/MacroShareService";
+import { ThemeService } from "@/services/ThemeService";
 
 export class SidePanelApp extends BaseApp {
   readonly macroRepository: MacroRepository;
@@ -23,6 +24,7 @@ export class SidePanelApp extends BaseApp {
   readonly recordingStateRepository: RecordingStateRepository;
   readonly settingsRepository: SettingsRepository;
   readonly macroShareService: MacroShareService;
+  readonly themeService: ThemeService;
   readonly macroListViewModel: MacroListViewModel;
   readonly playbackProgressViewModel: PlaybackProgressViewModel;
   readonly recordingProgressViewModel: RecordingProgressViewModel;
@@ -81,14 +83,16 @@ export class SidePanelApp extends BaseApp {
       settingsRepository,
       emitter
     );
+    const themeService = new ThemeService(settingsRepository, emitter);
 
-    super(emitter, logger, [viewService]);
+    super(emitter, logger, [viewService, themeService]);
 
     this.macroRepository = macroRepository;
     this.playbackStateRepository = playbackStateRepository;
     this.recordingStateRepository = recordingStateRepository;
     this.settingsRepository = settingsRepository;
     this.macroShareService = macroShareService;
+    this.themeService = themeService;
     this.viewService = viewService;
     this.macroListViewModel = macroListViewModel;
     this.playbackProgressViewModel = playbackProgressViewModel;

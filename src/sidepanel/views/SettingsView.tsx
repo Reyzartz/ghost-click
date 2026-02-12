@@ -3,7 +3,7 @@ import { SidePanelApp } from "../SidePanelApp";
 import { SettingsState } from "../viewmodels/SettingsViewModel";
 import { Text, Alert, Button, Input, Select } from "@/design-system";
 import { SettingsItem } from "@/components/SettingsItem";
-import { RefreshCw, Clock, Target, Gauge } from "lucide-react";
+import { RefreshCw, Clock, Target, Gauge, Palette } from "lucide-react";
 import { Layout } from "@/components/Layout";
 
 export const SettingsView = ({ app }: { app: SidePanelApp }) => {
@@ -70,7 +70,37 @@ export const SettingsView = ({ app }: { app: SidePanelApp }) => {
         <div className="flex-1 overflow-y-auto pb-4">
           {state.error && <Alert variant="error">{state.error}</Alert>}
 
+          {/* Appearance Section */}
+          <Text variant="h4" className="mt-4 mb-2">
+            Appearance
+          </Text>
+
+          {/* Theme */}
+          <SettingsItem
+            icon={Palette}
+            label="Theme"
+            description="Choose your preferred color theme"
+          >
+            <Select
+              value={state.formSettings.theme as string}
+              size="sm"
+              onChange={(e) =>
+                app.settingsViewModel.updateFormField("theme", e.target.value)
+              }
+              error={state.formErrors.theme}
+              className="w-32"
+              fullWidth={false}
+            >
+              <option value="system">System</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </Select>
+          </SettingsItem>
+
           {/* Playback Settings Section */}
+          <Text variant="h4" className="mt-4 mb-2">
+            Playback
+          </Text>
 
           {/* Default Retry Count */}
           <SettingsItem

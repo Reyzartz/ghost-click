@@ -24,7 +24,7 @@ const DisplayFavicon = memo(
       <div
         className={clsx(
           sizeMap[size],
-          "flex shrink-0 items-center justify-center rounded bg-slate-100",
+          "bg-surface-hover flex shrink-0 items-center justify-center rounded",
           className
         )}
       >

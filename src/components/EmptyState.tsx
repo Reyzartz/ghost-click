@@ -5,5 +5,5 @@ interface EmptyStateProps {
 }
 
 export const EmptyState = ({ message }: EmptyStateProps) => {
-  return <Card className="bg-slate-50 text-slate-600">{message}</Card>;
+  return <Card className="bg-surface-muted text-text-muted">{message}</Card>;
 };

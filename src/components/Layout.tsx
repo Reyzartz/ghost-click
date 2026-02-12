@@ -39,7 +39,7 @@ export const Header = ({
     <div
       className={clsx(
         "flex items-center gap-1.5 px-2 py-1.5",
-        showBorder && "border-b border-slate-200",
+        showBorder && "border-border border-b",
         className
       )}
     >

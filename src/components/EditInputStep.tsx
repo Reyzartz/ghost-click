@@ -86,7 +86,7 @@ const EditInputStep = memo<EditInputStepProps>(
     return (
       <Modal isOpen={isOpen} onClose={handleCancel} maxWidth="md">
         <ModalHeader className="flex items-center gap-2">
-          <TextCursorInputIcon size={20} className="text-slate-600" />
+          <TextCursorInputIcon size={20} className="text-text-muted" />
           <Text variant="h2">Edit Input Step</Text>
         </ModalHeader>
 

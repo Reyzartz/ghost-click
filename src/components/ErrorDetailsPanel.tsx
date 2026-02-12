@@ -16,18 +16,18 @@ export const ErrorDetailsPanel = ({
   const [showDetails, setShowDetails] = useState(false);
 
   return (
-    <div className="shrink-0 overflow-hidden rounded border border-red-300 bg-red-50">
+    <div className="border-error-border bg-error-bg shrink-0 overflow-hidden rounded border">
       <div
-        className="flex cursor-pointer items-center justify-between px-3 py-2 hover:bg-red-100"
+        className="hover:bg-error-bg-hover flex cursor-pointer items-center justify-between px-3 py-2"
         onClick={() => setShowDetails(!showDetails)}
       >
         <div className="flex items-center gap-2">
-          <AlertTriangle size={16} className="text-red-600" />
-          <Text variant="small" className="font-medium text-red-900">
+          <AlertTriangle size={16} className="text-error-icon" />
+          <Text variant="small" className="text-error-text font-medium">
             {errorMessage}
           </Text>
         </div>
-        <div className="flex items-center gap-1 text-red-600">
+        <div className="text-error-icon flex items-center gap-1">
           {showDetails ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
           <Text variant="small" color="error">
             Details
@@ -37,11 +37,11 @@ export const ErrorDetailsPanel = ({
 
       <div
         className={clsx(
-          "overflow-auto border-red-200 bg-red-50 transition-[max-height] duration-300",
+          "border-error-border bg-error-bg overflow-auto transition-[max-height] duration-300",
           showDetails ? "max-h-48 border-t" : "max-h-0"
         )}
       >
-        <ul className="divide-y divide-red-200">
+        <ul className="divide-error-border divide-y">
           {errorDetails.map((err, idx) => (
             <li key={idx} className="px-3 py-2">
               <div className="flex items-start gap-2">
@@ -50,13 +50,16 @@ export const ErrorDetailsPanel = ({
                 </Text>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <Text variant="small" className="font-medium text-red-900">
+                    <Text
+                      variant="small"
+                      className="text-error-text font-medium"
+                    >
                       {err.stepName}
                     </Text>
                     <Text
                       variant="small"
                       color="error"
-                      className="rounded bg-red-100 px-1.5 py-0.5"
+                      className="bg-error-bg-hover rounded px-1.5 py-0.5"
                     >
                       {err.stepType}
                     </Text>

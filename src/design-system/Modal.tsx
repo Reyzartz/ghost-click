@@ -38,7 +38,7 @@ export const Modal = ({
     >
       <div
         className={clsx(
-          "relative mx-4 w-full overflow-hidden rounded-lg bg-white shadow-xl",
+          "bg-surface relative mx-4 w-full overflow-hidden rounded-lg shadow-xl",
           maxWidthStyles[maxWidth],
           className
         )}

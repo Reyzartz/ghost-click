@@ -17,7 +17,7 @@ interface SelectProps extends Omit<
 }
 
 const selectVariants = cva(
-  "appearance-none rounded border border-solid text-slate-700 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 cursor-pointer",
+  "appearance-none rounded border border-solid text-text-secondary transition-colors focus:outline-none disabled:cursor-not-allowed disabled:bg-surface-muted cursor-pointer",
   {
     variants: {
       size: {
@@ -26,8 +26,8 @@ const selectVariants = cva(
         lg: "text-base leading-4.5 px-6 py-3",
       },
       hasError: {
-        true: "border-red-300 focus:border-red-500 bg-red-50",
-        false: "border-slate-300 bg-white focus:border-slate-500",
+        true: "border-error-border focus:border-error bg-error-bg",
+        false: "border-border-secondary bg-surface focus:border-border-focus",
       },
       fullWidth: {
         true: "w-full",
@@ -85,7 +85,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
           <ChevronDownIcon
             width={16}
-            className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-slate-700"
+            className="text-text-secondary\ pointer-events-none absolute top-1/2 right-3 -translate-y-1/2"
           />
         </div>
 

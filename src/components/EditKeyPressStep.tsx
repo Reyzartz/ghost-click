@@ -142,7 +142,7 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
     return (
       <Modal isOpen={isOpen} onClose={handleCancel} maxWidth="md">
         <ModalHeader className="flex items-center gap-2">
-          <KeyboardIcon size={20} className="text-slate-600" />
+          <KeyboardIcon size={20} className="text-text-muted" />
           <Text variant="h2">Edit Key Press Step</Text>
         </ModalHeader>
 
@@ -167,7 +167,7 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
             readOnly
             className={clsx(
               "cursor-pointer",
-              isRecording ? "border-blue-400 bg-blue-50" : "bg-slate-50"
+              isRecording ? "border-info-border bg-info-bg" : "bg-surface-muted"
             )}
             placeholder="Click to record"
             error={errors.key}

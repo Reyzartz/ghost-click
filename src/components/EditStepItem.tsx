@@ -25,11 +25,11 @@ const stepItemVariants = cva(
   {
     variants: {
       status: {
-        deleted: "border-red-300 bg-red-50",
-        errored: "border-red-300 bg-red-50 text-red-700",
-        current: "border-green-300 bg-green-100",
-        completed: "border-slate-200 bg-slate-100",
-        default: "border-slate-200 bg-white",
+        deleted: "border-error-border bg-error-bg",
+        errored: "border-error-border bg-error-bg text-error-text",
+        current: "border-success-border bg-success-bg-hover",
+        completed: "border-border bg-surface-hover",
+        default: "border-border bg-surface",
       },
       isEditDisabled: {
         true: "cursor-not-allowed",
@@ -220,11 +220,13 @@ export const EditStepItem = ({
           </div>
 
           {isErrored && (
-            <AlertCircle size={16} className="shrink-0 text-red-600" />
+            <AlertCircle size={16} className="text-error-icon shrink-0" />
           )}
-          {isCurrent && <Play size={16} className="shrink-0 text-green-600" />}
+          {isCurrent && (
+            <Play size={16} className="text-success-icon shrink-0" />
+          )}
           {isCompleted && (
-            <Check size={16} className="shrink-0 text-green-600" />
+            <Check size={16} className="text-success-icon shrink-0" />
           )}
         </div>
 

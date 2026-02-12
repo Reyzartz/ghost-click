@@ -176,7 +176,11 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
       )}
 
       <div className="max-h-full grow space-y-2 overflow-y-auto">
-        <Text variant="caption" color="muted" className="sticky top-0 bg-white">
+        <Text
+          variant="caption"
+          color="muted"
+          className="bg-surface sticky top-0"
+        >
           All Steps
         </Text>
         <ul className="space-y-1">

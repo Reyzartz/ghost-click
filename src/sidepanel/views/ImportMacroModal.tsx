@@ -68,7 +68,7 @@ export const ImportMacroModal = ({ app }: { app: SidePanelApp }) => {
         <Text variant="h2">Import Macro</Text>
       </ModalHeader>
 
-      <ModalBody className="mx-4 mb-4 rounded-lg border border-solid border-slate-200 bg-slate-50 py-3 pr-3 pl-3">
+      <ModalBody className="border-border bg-surface-muted mx-4 mb-4 rounded-lg border border-solid py-3 pr-3 pl-3">
         <Input
           label="Macro Name"
           type="text"
@@ -108,7 +108,7 @@ export const ImportMacroModal = ({ app }: { app: SidePanelApp }) => {
           )}
         >
           {state.parsedMacro && (
-            <div className="mt-2 divide-slate-200 rounded border border-slate-300 bg-white px-3 py-2">
+            <div className="divide-border border-border-secondary bg-surface mt-2 rounded border px-3 py-2">
               <MacroMetadataRow
                 label="Steps"
                 value={state.parsedMacro.steps.length}

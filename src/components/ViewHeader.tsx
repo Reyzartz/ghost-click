@@ -14,7 +14,7 @@ export const ViewHeader = ({
   showBorder = false,
   className = "",
 }: ViewHeaderProps) => {
-  const borderClass = showBorder ? "border-b border-gray-200" : "";
+  const borderClass = showBorder ? "border-b border-border" : "";
 
   return (
     <div

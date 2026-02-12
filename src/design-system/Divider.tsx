@@ -20,13 +20,13 @@ export const Divider = ({
   ...props
 }: DividerProps) => {
   if (orientation === "vertical") {
-    return <div className={clsx("w-px bg-slate-200", className)} {...props} />;
+    return <div className={clsx("bg-border w-px", className)} {...props} />;
   }
 
   return (
     <hr
       className={clsx(
-        "border-0 border-t border-slate-200",
+        "border-border border-0 border-t",
         spacingStyles[spacing],
         className
       )}

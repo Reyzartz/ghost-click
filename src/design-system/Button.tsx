@@ -25,14 +25,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "bg-slate-900 text-white hover:bg-slate-800 disabled:bg-slate-300 border-slate-900",
-        secondary: "bg-white border-slate-300 text-slate-700 hover:bg-slate-50",
+          "bg-primary text-text-inverse hover:bg-primary-hover disabled:bg-text-disabled border-primary",
+        secondary:
+          "bg-surface border-border-secondary text-text-secondary hover:bg-surface-muted",
         danger:
-          "bg-red-50 text-red-700 hover:bg-red-100 disabled:bg-red-200 border-red-300",
+          "bg-error-bg text-error-text hover:bg-error-bg-hover disabled:bg-error-bg border-error-border",
         ghost:
-          "bg-transparent text-slate-700 hover:bg-slate-100 border-transparent",
+          "bg-transparent text-text-secondary hover:bg-surface-hover border-transparent",
         success:
-          "bg-green-50 text-green-700 hover:bg-green-100 border-green-200",
+          "bg-success-bg text-success-text hover:bg-success-bg-hover border-success-border",
       },
       size: {
         sm: "text-xs leading-3.5",

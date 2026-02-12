@@ -86,7 +86,7 @@ const EditClickStep = memo<EditClickStepProps>(
     return (
       <Modal isOpen={isOpen} onClose={handleCancel} maxWidth="md">
         <ModalHeader className="flex items-center gap-2">
-          <MousePointerClickIcon size={20} className="text-slate-600" />
+          <MousePointerClickIcon size={20} className="text-text-muted" />
           <Text variant="h2">Edit Click Step</Text>
         </ModalHeader>
 

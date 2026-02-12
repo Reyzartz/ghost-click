@@ -16,8 +16,8 @@ export const SettingsItem = ({
   children,
 }: SettingsItemProps) => {
   return (
-    <div className="flex items-center gap-3 border-b border-slate-200 py-3 first-of-type:pt-0">
-      <Icon className="h-4 w-4 text-gray-600" />
+    <div className="border-border flex items-center gap-3 border-b py-3 first-of-type:pt-0">
+      <Icon className="text-text-muted h-4 w-4" />
 
       <div className="min-w-0 flex-1">
         <Text variant="body" className="font-medium">

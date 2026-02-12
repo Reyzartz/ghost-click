@@ -41,11 +41,11 @@ export const StepListItem = ({
       className={clsx(
         "rounded px-3 py-2",
         isCurrent
-          ? "border border-green-300 bg-green-100 font-medium"
+          ? "border-success-border bg-success-bg-hover border font-medium"
           : isCompleted
-            ? "border border-slate-200 bg-slate-100 text-slate-500"
-            : "border border-slate-200 bg-white",
-        isErrored && "border-red-300 bg-red-50 text-red-700"
+            ? "border-border bg-surface-hover text-text-muted border"
+            : "border-border bg-surface border",
+        isErrored && "border-error-border bg-error-bg text-error-text"
       )}
       autoFocus={isCurrent}
       ref={(el) => {
@@ -57,20 +57,20 @@ export const StepListItem = ({
       <div
         className={clsx(
           "flex items-center gap-2",
-          isCompleted && isErrored && "text-red-600",
-          isCompleted && !isErrored && "text-green-600"
+          isCompleted && isErrored && "text-error-icon",
+          isCompleted && !isErrored && "text-success-icon"
         )}
       >
         <IconComponent size={16} />
         <Text variant="small">{step.name}</Text>
         {isCurrent && !isErrored && (
-          <Play size={14} className="ml-auto text-green-600" />
+          <Play size={14} className="text-success-icon ml-auto" />
         )}
         {isCompleted && !isErrored && (
-          <Check size={14} className="ml-auto text-green-600" />
+          <Check size={14} className="text-success-icon ml-auto" />
         )}
         {isErrored && (
-          <AlertCircle size={14} className="ml-auto text-red-600" />
+          <AlertCircle size={14} className="text-error-icon ml-auto" />
         )}
       </div>
     </li>

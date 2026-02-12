@@ -106,7 +106,9 @@ const StepTargetInput = memo<StepTargetInputProps>(
         <div
           className={clsx(
             "flex flex-col gap-2 rounded border p-2",
-            error ? "border-red-500 bg-red-50" : "border-slate-200 bg-slate-50"
+            error
+              ? "border-error-border bg-error-bg"
+              : "border-border bg-surface-muted"
           )}
         >
           <Input

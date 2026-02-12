@@ -63,7 +63,7 @@ export const QuickActionsView = ({ app }: { app: ContentApp }) => {
       onClick={() => app.quickActionsViewModel.close()}
     >
       <div
-        className="overflow-hidden rounded-lg bg-white p-4 shadow-2xl"
+        className="bg-surface overflow-hidden rounded-lg p-4 shadow-2xl"
         style={{
           width: 600,
           maxHeight: 800,
@@ -72,7 +72,7 @@ export const QuickActionsView = ({ app }: { app: ContentApp }) => {
       >
         <div>
           <header className="mb-3 flex items-center gap-2">
-            <TimerIcon size={20} className="text-slate-800" />
+            <TimerIcon size={20} className="text-text-secondary" />
             <Text variant="h2">Quick Actions</Text>
           </header>
 

@@ -14,7 +14,7 @@ export const InfoPanel = ({ items, className, ...props }: InfoPanelProps) => {
   return (
     <Card
       padding="md"
-      className={clsx("space-y-2 bg-slate-50", className)}
+      className={clsx("bg-surface-muted space-y-2", className)}
       {...props}
     >
       {items.map((item, index) => (

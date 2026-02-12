@@ -10,14 +10,14 @@ import { QuickActionsView } from "./views/QuickActionsView";
 
 const statusStyles: Record<AppStatus, string> = {
   idle: "",
-  recording: "border-solid border-4 border-red-500",
-  playing: "border-solid border-4 border-green-500",
+  recording: "border-solid border-4 border-error",
+  playing: "border-solid border-4 border-success",
 };
 
 const notificationTypeStyles = {
-  success: "bg-green-500 text-white",
-  error: "bg-red-500 text-white",
-  info: "bg-blue-500 text-white",
+  success: "bg-success text-text-inverse",
+  error: "bg-error text-text-inverse",
+  info: "bg-info text-text-inverse",
 };
 
 function App({ app }: { app: ContentApp }) {

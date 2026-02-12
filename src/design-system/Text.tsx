@@ -16,11 +16,11 @@ const textVariants = cva("", {
       caption: "text-xs uppercase tracking-wide",
     },
     color: {
-      default: "text-slate-900",
-      muted: "text-slate-500",
-      success: "text-green-700",
-      error: "text-red-700",
-      warning: "text-amber-700",
+      default: "text-text",
+      muted: "text-text-muted",
+      success: "text-success-text",
+      error: "text-error-text",
+      warning: "text-warning-text",
     },
   },
   defaultVariants: {

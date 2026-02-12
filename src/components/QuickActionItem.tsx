@@ -20,8 +20,8 @@ const QuickActionItem = ({
       className={clsx(
         "group cursor-pointer rounded-lg border border-solid px-3 py-2 transition-colors",
         isSelected
-          ? "border-slate-200 bg-slate-100"
-          : "border-transparent hover:bg-slate-50"
+          ? "border-border bg-surface-hover"
+          : "hover:bg-surface-muted border-transparent"
       )}
       onClick={onSelect}
       ref={(el) => {
@@ -38,7 +38,7 @@ const QuickActionItem = ({
           <DisplayFavicon
             name={macro.name}
             faviconUrl={macro.faviconUrl}
-            className={clsx(isSelected && "bg-white")}
+            className={clsx(isSelected && "bg-surface")}
           />
 
           <div className="grow overflow-hidden">
@@ -50,7 +50,7 @@ const QuickActionItem = ({
               </Text>
 
               {macro.domain && (
-                <Text variant="small" className="truncate text-slate-400">
+                <Text variant="small" className="text-text-subtle truncate">
                   • {macro.domain}
                 </Text>
               )}
@@ -58,7 +58,7 @@ const QuickActionItem = ({
           </div>
         </div>
 
-        {isSelected && <Play size={16} className="text-slate-300" />}
+        {isSelected && <Play size={16} className="text-text-disabled" />}
       </div>
     </li>
   );
