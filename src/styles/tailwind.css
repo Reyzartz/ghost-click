@@ -1,6 +1,7 @@
-@import "tailwindcss";
+/*
+ * Ghost Click - Main Tailwind Entry Point
+ * Imports theme configuration and Tailwind base styles
+ */
 
-/* Place any global layers here if needed
-@layer components {}
-@layer utilities {}
-*/
+/* Import theme with semantic colors and design tokens */
+@import "./theme.css";

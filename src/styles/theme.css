@@ -1,0 +1,238 @@
+@import "tailwindcss";
+
+/* BASE THEME VARIABLES (Light Theme) */
+
+@theme {
+  /* Typography - Font Families */
+  --font-sans:
+    ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+
+  /* Typography - Font Sizes with Line Heights */
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5rem;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.75rem;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 1.875rem;
+  --text-3xl--line-height: 2.25rem;
+
+  /* Typography - Font Weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Typography - Letter Spacing */
+  --tracking-normal: 0em;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+
+  /* Typography - Line Heights */
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+
+  /* Background colors */
+  --color-background: oklch(100% 0 0);
+  --color-background-secondary: oklch(98.5% 0.002 247.839);
+  --color-background-tertiary: oklch(96.7% 0.003 264.542);
+
+  /* Surface colors */
+  --color-surface: oklch(100% 0 0);
+  --color-surface-hover: oklch(96.7% 0.003 264.542);
+  --color-surface-active: oklch(92.8% 0.006 264.531);
+  --color-surface-muted: oklch(98.5% 0.002 247.839);
+
+  /* Border colors */
+  --color-border: oklch(92.8% 0.006 264.531);
+  --color-border-secondary: oklch(87.2% 0.01 258.338);
+  --color-border-hover: oklch(55.1% 0.027 264.364);
+  --color-border-focus: oklch(55.1% 0.027 264.364);
+
+  /* Text colors */
+  --color-text: oklch(21% 0.034 264.665);
+  --color-text-secondary: oklch(27.8% 0.033 256.848);
+  --color-text-muted: oklch(55.1% 0.027 264.364);
+  --color-text-subtle: oklch(70.7% 0.022 261.325);
+  --color-text-disabled: oklch(87.2% 0.01 258.338);
+  --color-text-inverse: oklch(100% 0 0);
+
+  /* Primary/Accent colors */
+  --color-primary: oklch(60% 0.18 250); /* Material Blue 600 - same as info */
+  --color-primary-hover: oklch(50% 0.17 250); /* Material Blue 700 */
+  --color-primary-active: oklch(50% 0.17 250);
+
+  --color-accent: oklch(60% 0.18 250); /* Material Blue 600 */
+  --color-accent-hover: oklch(50% 0.17 250); /* Material Blue 700 */
+  --color-accent-muted: oklch(85% 0.1 250); /* Material Blue 200 */
+
+  /* Success (Material Green) */
+  --color-success: oklch(65% 0.17 145);
+  --color-success-hover: oklch(55% 0.15 145);
+  --color-success-text: oklch(38% 0.13 145);
+  --color-success-border: oklch(85% 0.12 145);
+  --color-success-bg: oklch(95% 0.05 145);
+  --color-success-bg-hover: oklch(90% 0.08 145);
+  --color-success-icon: oklch(55% 0.15 145);
+
+  /* Error/Danger (Material Red) */
+  --color-error: oklch(55% 0.22 25);
+  --color-error-hover: oklch(48% 0.2 25);
+  --color-error-text: oklch(35% 0.18 25);
+  --color-error-border: oklch(85% 0.11 25);
+  --color-error-bg: oklch(95% 0.04 25);
+  --color-error-bg-hover: oklch(90% 0.07 25);
+  --color-error-icon: oklch(48% 0.2 25);
+
+  /* Warning (Material Orange) */
+
+  --color-warning: oklch(70% 0.15 65);
+  --color-warning-hover: oklch(60% 0.14 60);
+  --color-warning-text: oklch(45% 0.13 55);
+  --color-warning-border: oklch(88% 0.1 70);
+  --color-warning-bg: oklch(96% 0.04 75);
+  --color-warning-bg-hover: oklch(92% 0.07 72);
+  --color-warning-icon: oklch(60% 0.14 60);
+
+  /* Info (Material Blue) */
+  --color-info: oklch(60% 0.18 250);
+  --color-info-hover: oklch(50% 0.17 250);
+  --color-info-text: oklch(35% 0.15 250);
+  --color-info-border: oklch(85% 0.1 250);
+  --color-info-bg: oklch(95% 0.03 250);
+  --color-info-bg-hover: oklch(90% 0.06 250);
+  --color-info-icon: oklch(50% 0.17 250);
+
+  /* Spacing */
+  --spacing: 0.25rem;
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg:
+    0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl:
+    0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  /* Transitions */
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Breakpoints */
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+}
+
+/* Explicit dark theme via data attribute (overrides prefers-color-scheme) */
+[data-theme="dark"] {
+  /* Background colors */
+  --color-background: oklch(13% 0.028 261.692);
+  --color-background-secondary: oklch(20.8% 0.042 265.755);
+  --color-background-tertiary: oklch(27.8% 0.033 256.848);
+
+  /* Surface colors */
+  --color-surface: oklch(20.8% 0.042 265.755);
+  --color-surface-hover: oklch(27.8% 0.033 256.848);
+  --color-surface-active: oklch(37.3% 0.034 259.733);
+  --color-surface-muted: oklch(13% 0.028 261.692);
+
+  /* Border colors */
+  --color-border: oklch(37.3% 0.034 259.733);
+  --color-border-secondary: oklch(44.6% 0.03 256.802);
+  --color-border-hover: oklch(55.1% 0.027 264.364);
+
+  /* Text colors */
+  --color-text: oklch(96.7% 0.003 264.542);
+  --color-text-secondary: oklch(87.2% 0.01 258.338);
+  --color-text-muted: oklch(70.7% 0.022 261.325);
+  --color-text-subtle: oklch(55.1% 0.027 264.364);
+  --color-text-inverse: oklch(21% 0.034 264.665);
+
+  /* Primary/Accent */
+  --color-primary: oklch(72% 0.16 250); /* Material Blue - same as info dark */
+  --color-primary-hover: oklch(78% 0.17 250);
+  --color-primary-active: oklch(78% 0.17 250);
+
+  --color-accent: oklch(72% 0.16 250);
+  --color-accent-hover: oklch(78% 0.17 250);
+  --color-accent-muted: oklch(45% 0.13 250);
+
+  /* Success (Material Green - Dark Mode) */
+  --color-success: oklch(75% 0.15 145);
+  --color-success-hover: oklch(80% 0.16 145);
+  --color-success-text: oklch(85% 0.14 145);
+  --color-success-border: oklch(45% 0.12 145);
+  --color-success-bg: oklch(25% 0.08 145);
+  --color-success-bg-hover: oklch(30% 0.1 145);
+  --color-success-icon: oklch(80% 0.16 145);
+
+  /* Error (Material Red - Dark Mode) */
+  --color-error: oklch(70% 0.2 25);
+  --color-error-hover: oklch(75% 0.21 25);
+  --color-error-text: oklch(85% 0.18 25);
+  --color-error-border: oklch(45% 0.15 25);
+  --color-error-bg: oklch(25% 0.1 25);
+  --color-error-bg-hover: oklch(30% 0.12 25);
+  --color-error-icon: oklch(75% 0.21 25);
+
+  /* Warning (Material Orange - Dark Mode) */
+  --color-warning: oklch(78% 0.14 65);
+  --color-warning-hover: oklch(82% 0.15 65);
+  --color-warning-text: oklch(88% 0.13 65);
+  --color-warning-border: oklch(50% 0.11 65);
+  --color-warning-bg: oklch(28% 0.08 65);
+  --color-warning-bg-hover: oklch(33% 0.1 65);
+  --color-warning-icon: oklch(82% 0.15 65);
+
+  /* Info (Material Blue - Dark Mode) */
+  --color-info: oklch(72% 0.16 250);
+  --color-info-hover: oklch(78% 0.17 250);
+  --color-info-text: oklch(85% 0.15 250);
+  --color-info-border: oklch(45% 0.13 250);
+  --color-info-bg: oklch(25% 0.09 250);
+  --color-info-bg-hover: oklch(30% 0.11 250);
+  --color-info-icon: oklch(78% 0.17 250);
+}
+
+/* Global Styles */
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--color-border);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-text);
+    background-color: var(--color-background);
+    line-height: var(--leading-normal);
+  }
+}
