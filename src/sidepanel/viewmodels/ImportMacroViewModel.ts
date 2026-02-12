@@ -3,7 +3,7 @@ import { MacroRepository } from "@/repositories/MacroRepository";
 import {
   MacroShareService,
   ShareableMacro,
-} from "@/services/MacroShareService";
+} from "@/sidepanel/services/MacroShareService";
 import { BaseViewModel } from "@/utils/BaseViewModel";
 import { Emitter } from "@/utils/Emitter";
 import { MacroUtils } from "@/utils/MacroUtils";

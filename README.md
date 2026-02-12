@@ -23,7 +23,7 @@ bun dev
    - Select the `dist` directory from this project
 
 4. Test the extension:
-   - Click the extension icon in the toolbar to open the popup
+   - Click the extension icon in the toolbar to open the sidepanel
    - Click "Test Background Connection" to verify the service worker is running
    - Navigate to any webpage and click "Inject Content Script" to test content script injection
 

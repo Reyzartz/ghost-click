@@ -1,7 +1,7 @@
 import { Macro } from "@/models";
 import { MacroRepository } from "@/repositories/MacroRepository";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
-import { MacroShareService } from "@/services/MacroShareService";
+import { MacroShareService } from "@/sidepanel/services/MacroShareService";
 import { BaseViewModel } from "@/utils/BaseViewModel";
 import { Emitter } from "@/utils/Emitter";
 
