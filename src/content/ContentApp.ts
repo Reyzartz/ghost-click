@@ -13,11 +13,15 @@ import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository"
 import { MacroRepository } from "@/repositories/MacroRepository";
 import { SettingsRepository } from "@/repositories/SettingsRepository";
 import { Storage } from "@/utils/Storage";
+import { ThemeService } from "@/services/ThemeService";
 
 export class ContentApp extends BaseApp {
   readonly statusIndicatorViewModel: StatusIndicatorViewModel;
   readonly notificationViewModel: NotificationViewModel;
   readonly quickActionsViewModel: QuickActionsViewModel;
+  private themeService?: ThemeService;
+  private readonly settingsRepository: SettingsRepository;
+  private readonly emitterInstance: Emitter;
 
   constructor() {
     const emitter = new Emitter("content");
@@ -57,9 +61,23 @@ export class ContentApp extends BaseApp {
 
     super(emitter, logger, services, viewModels);
 
+    this.emitterInstance = emitter;
+    this.settingsRepository = settingsRepository;
     this.statusIndicatorViewModel = statusIndicatorViewModel;
     this.notificationViewModel = notificationViewModel;
     this.quickActionsViewModel = quickActionsViewModel;
+  }
+
+  /**
+   * Set the theme target element (called from main.tsx with shadow DOM mount point)
+   */
+  setThemeTarget(targetElement: HTMLElement): void {
+    this.themeService = new ThemeService(
+      this.settingsRepository,
+      this.emitterInstance,
+      targetElement
+    );
+    void this.themeService.init();
   }
 
   async init(): Promise<void> {

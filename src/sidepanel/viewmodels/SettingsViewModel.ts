@@ -8,6 +8,7 @@ export interface SettingsFormErrors {
   defaultRetryIntervalMs?: string;
   defaultSelectorType?: string;
   minimumDelayMs?: string;
+  theme?: string;
 }
 
 export interface SettingsState {
@@ -75,7 +76,7 @@ export class SettingsViewModel extends BaseViewModel {
     const updatedFormSettings = {
       ...this.state.formSettings,
       [field]: value,
-    };
+    } as Settings;
 
     const errors = this.validateSettings(updatedFormSettings);
 
@@ -106,6 +107,10 @@ export class SettingsViewModel extends BaseViewModel {
 
     if (!["xpath", "id", "className"].includes(settings.defaultSelectorType)) {
       errors.defaultSelectorType = "Invalid selector type";
+    }
+
+    if (!["system", "light", "dark"].includes(settings.theme)) {
+      errors.theme = "Invalid theme";
     }
 
     return errors;

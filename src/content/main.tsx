@@ -37,7 +37,11 @@ shadowRoot.appendChild(styleEl);
 
 // Mount point inside shadow root
 const mount = document.createElement("div");
+mount.id = "ghost-click-mount";
 shadowRoot.appendChild(mount);
+
+// Pass the mount element to ContentApp for theme management
+contentApp.setThemeTarget(mount);
 
 createRoot(mount).render(
   <StrictMode>
