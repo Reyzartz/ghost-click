@@ -1,10 +1,9 @@
 import { TargetElementSelector } from "@/models";
 import { memo, useEffect, useState } from "react";
 import { Square, Search } from "lucide-react";
-import { Text, Button, Input, Select } from "@/design-system";
+import { Text, Button, Input, Select, Card } from "@/design-system";
 import { TabsManager } from "@/utils/TabsManager";
 import { ElementSelectedEvent } from "@/utils/Event";
-import clsx from "clsx";
 
 interface StepTargetInputProps {
   target: TargetElementSelector;
@@ -73,14 +72,20 @@ const StepTargetInput = memo<StepTargetInputProps>(
           <Text variant="small" color="muted" className="font-medium">
             Target Selector:
           </Text>
+        </div>
 
-          <div className="flex gap-2">
+        <Card
+          className="relative flex flex-col gap-2"
+          size="sm"
+          variant={error ? "errored" : "selected"}
+        >
+          <>
             {!isInspecting ? (
               <Button
                 onClick={() => {
                   void startInspection();
                 }}
-                variant="primary"
+                variant="secondary"
                 size="sm"
                 icon={Search}
                 title="Inspect element on page"
@@ -97,20 +102,11 @@ const StepTargetInput = memo<StepTargetInputProps>(
                 icon={Square}
                 title="Stop inspection"
               >
-                Stop
+                Stop Inspecting
               </Button>
             )}
-          </div>
-        </div>
+          </>
 
-        <div
-          className={clsx(
-            "flex flex-col gap-2 rounded border p-2",
-            error
-              ? "border-error-border bg-error-bg"
-              : "border-border bg-surface-muted"
-          )}
-        >
           <Input
             type="text"
             label="Element ID"
@@ -156,7 +152,7 @@ const StepTargetInput = memo<StepTargetInputProps>(
               {error}
             </Text>
           )}
-        </div>
+        </Card>
       </div>
     );
   }

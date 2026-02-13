@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
-import { clsx } from "clsx";
 import { SidePanelApp } from "../SidePanelApp";
 import { Alert, Button, Input, Text } from "@/design-system";
-import { ArrowDown, Trash2, Play, Pause, Square } from "lucide-react";
-import { EditStepItem } from "@/components/EditStepItem";
-import { AddStepButton } from "@/components/AddStepButton";
 import { MacroStep } from "@/models";
 import { DisplayFavicon } from "@/components/DisplayFavicon";
 import { ConfirmActionButton } from "@/components/ConfirmActionModal";
+import { EditMacroHeaderControls } from "@/components/EditMacroHeaderControls";
+import { MacroStepsEditor } from "@/components/MacroStepsEditor";
 import { EditMacroState } from "../viewmodels/EditMacroViewModel";
 import { Layout } from "@/components/Layout";
 
@@ -55,15 +53,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
   };
 
   const handlePlayPreview = (): void => {
-    if (state.macro === null) return;
-
-    // Filter out deleted steps before playing
-    const filteredSteps = state.macro.steps.filter(
-      (step) => !state.deletedStepIds.has(step.id)
-    );
-    const macroToPlay = { ...state.macro, steps: filteredSteps };
-
-    app.emitter.emit("PLAY_MACRO_PREVIEW", { macro: macroToPlay });
+    app.editMacroViewModel.playPreview();
   };
 
   const handleUpdateStep = (stepId: string, step: Partial<MacroStep>): void => {
@@ -83,21 +73,15 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
   };
 
   const handlePause = (): void => {
-    app.emitter.emit("PAUSE_PLAYBACK", undefined, {
-      currentTab: false,
-    });
+    app.editMacroViewModel.pausePlayback();
   };
 
   const handleResume = (): void => {
-    app.emitter.emit("RESUME_PLAYBACK", undefined, {
-      currentTab: false,
-    });
+    app.editMacroViewModel.resumePlayback();
   };
 
   const handleStop = (): void => {
-    app.emitter.emit("STOP_PLAYBACK", undefined, {
-      currentTab: false,
-    });
+    app.editMacroViewModel.stopPlayback();
   };
 
   return (
@@ -120,61 +104,17 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
             <Text variant="h3">{state.macro?.name}</Text>
           </div>
 
-          <div className="flex shrink-0 items-center gap-2">
-            {state.isPlaying ? (
-              <>
-                {state.isPaused ? (
-                  <Button
-                    variant="success"
-                    size="sm"
-                    onClick={handleResume}
-                    icon={Play}
-                    title={"Resume Playback"}
-                  />
-                ) : (
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={handlePause}
-                    icon={Pause}
-                    title={"Pause Playback"}
-                  />
-                )}
-                <Button
-                  variant="danger"
-                  size="sm"
-                  onClick={handleStop}
-                  icon={Square}
-                  title={"Stop Playback"}
-                />
-              </>
-            ) : (
-              <>
-                <Button
-                  onClick={handlePlayPreview}
-                  variant="primary"
-                  size="sm"
-                  icon={Play}
-                  disabled={
-                    !state.macro?.name.trim() || state.macro.steps.length === 0
-                  }
-                  title={"Test Run Macro"}
-                />
-
-                {!state.isCreating && (
-                  <ConfirmActionButton
-                    variant="danger"
-                    size="sm"
-                    icon={Trash2}
-                    message="Are you sure you want to delete this macro? This action cannot be undone."
-                    confirmText="Delete"
-                    onClick={() => void handleDelete()}
-                    title={"Delete Macro"}
-                  />
-                )}
-              </>
-            )}
-          </div>
+          <EditMacroHeaderControls
+            macro={state.macro}
+            isPlaying={state.isPlaying}
+            isPaused={state.isPaused}
+            isCreating={state.isCreating}
+            onPlayPreview={handlePlayPreview}
+            onPause={handlePause}
+            onResume={handleResume}
+            onStop={handleStop}
+            onDelete={() => void handleDelete()}
+          />
         </div>
       )}
 
@@ -208,71 +148,19 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
             disabled={state.loading}
           />
 
-          <div className="flex grow flex-col overflow-hidden">
-            <Text variant="body" className="mb-2 font-medium">
-              Steps ({state.macro.steps.length})
-            </Text>
-            <div className="border-border bg-surface-muted grow overflow-scroll rounded-lg border">
-              {state.macro.steps.length === 0 ? (
-                <div className="text-text-muted px-3 py-4 text-center">
-                  <Text>No steps added yet.</Text>
-                </div>
-              ) : (
-                <div className="p-4">
-                  <div className="flex w-full flex-col items-center">
-                    <AddStepButton
-                      onAddStep={(step) => handleAddStep(step, 0)}
-                      disabled={state.isPlaying}
-                    />
-                    <div
-                      className={clsx(
-                        "text-text-disabled transition-[height] duration-200",
-                        state.isPlaying ? "h-0 overflow-hidden" : "h-4"
-                      )}
-                    >
-                      <ArrowDown size={16} />
-                    </div>
-                  </div>
-
-                  {state.macro.steps.map((step, index) => {
-                    const isFirstStep = index === 0;
-                    const isDeletable =
-                      !isFirstStep || step.type !== "NAVIGATE";
-
-                    return (
-                      <div
-                        key={step.id}
-                        className="group flex w-full flex-col items-center"
-                      >
-                        <EditStepItem
-                          step={step}
-                          index={index}
-                          handleUpdateStep={handleUpdateStep}
-                          handleDeleteStep={handleDeleteStep}
-                          isDeleted={state.deletedStepIds.has(step.id)}
-                          isNew={state.newStepIds.has(step.id)}
-                          isEditDisabled={state.isPlaying}
-                          handleUndoDelete={handleUndoDelete}
-                          isCurrent={state.currentStepId === step.id}
-                          isCompleted={state.completedStepIds.includes(step.id)}
-                          isErrored={state.erroredStepIds.includes(step.id)}
-                          isDeletable={isDeletable}
-                        />
-                        <div className="text-text-disabled text-xs">|</div>
-                        <AddStepButton
-                          onAddStep={(step) => handleAddStep(step, index + 1)}
-                          disabled={state.isPlaying}
-                        />
-                        <div className="text-text-disabled group-last:hidden">
-                          <ArrowDown size={16} />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          </div>
+          <MacroStepsEditor
+            macro={state.macro}
+            deletedStepIds={state.deletedStepIds}
+            newStepIds={state.newStepIds}
+            isPlaying={state.isPlaying}
+            currentStepId={state.currentStepId}
+            completedStepIds={state.completedStepIds}
+            erroredStepIds={state.erroredStepIds}
+            onUpdateStep={handleUpdateStep}
+            onAddStep={handleAddStep}
+            onDeleteStep={handleDeleteStep}
+            onUndoDelete={handleUndoDelete}
+          />
 
           <div className="flex shrink-0 gap-2">
             <ConfirmActionButton
@@ -304,9 +192,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
           </div>
         </div>
       ) : (
-        <div className="text-text-muted py-8 text-center">
-          No macro selected
-        </div>
+        <Text className="py-8 text-center">No macro selected</Text>
       )}
     </Layout>
   );

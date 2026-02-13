@@ -10,26 +10,11 @@ import {
   Text,
   Textarea,
   ModalFooter,
+  Card,
 } from "@/design-system";
 import { ImportMacroState } from "../viewmodels/ImportMacroViewModel";
 import { EditIcon, SaveIcon } from "lucide-react";
-
-const MacroMetadataRow = ({
-  label,
-  value,
-}: {
-  label: string;
-  value: string | number;
-}) => (
-  <div className="flex items-center justify-between p-1.5">
-    <Text variant="small" color="muted">
-      {label}
-    </Text>
-    <Text variant="small" className="font-medium">
-      {value}
-    </Text>
-  </div>
-);
+import { MacroMetadataRow } from "@/components/MetaDataRow";
 
 export const ImportMacroModal = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<ImportMacroState>({
@@ -95,7 +80,7 @@ export const ImportMacroModal = ({ app }: { app: SidePanelApp }) => {
           className="grow font-mono text-xs"
           containerClassName={clsx(
             "flex flex-col transition-all duration-200",
-            state.parsedMacro ? "h-34" : "h-62"
+            state.parsedMacro ? "h-45.5" : "h-62"
           )}
           autoFocus
           error={state.error}
@@ -104,11 +89,11 @@ export const ImportMacroModal = ({ app }: { app: SidePanelApp }) => {
         <div
           className={clsx(
             "overflow-hidden transition-[opacity,height] duration-200",
-            state.parsedMacro ? "h-28 opacity-100" : "h-0 opacity-0"
+            state.parsedMacro ? "h-16.5 opacity-100" : "h-0 opacity-0"
           )}
         >
           {state.parsedMacro && (
-            <div className="divide-border border-border-secondary bg-surface mt-2 rounded border px-3 py-2">
+            <Card className="mt-2">
               <MacroMetadataRow
                 label="Steps"
                 value={state.parsedMacro.steps.length}
@@ -117,7 +102,7 @@ export const ImportMacroModal = ({ app }: { app: SidePanelApp }) => {
                 label="Domain"
                 value={state.parsedMacro.domain}
               />
-            </div>
+            </Card>
           )}
         </div>
       </ModalBody>

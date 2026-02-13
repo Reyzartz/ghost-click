@@ -9,9 +9,11 @@ import {
   Input,
   Text,
   ModalFooter,
+  Card,
 } from "@/design-system";
 import { SaveRecordingState } from "../viewmodels/SaveRecordingViewModel";
 import { EditIcon, RotateCwIcon, SaveIcon } from "lucide-react";
+import { MacroMetadataRow } from "@/components/MetaDataRow";
 
 export const SaveRecordingModal = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<SaveRecordingState>({
@@ -80,29 +82,23 @@ export const SaveRecordingModal = ({ app }: { app: SidePanelApp }) => {
         </div>
       </ModalHeader>
 
-      <ModalBody className="space-y-4">
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <Text variant="small" color="muted">
-              Steps recorded:
-            </Text>
-            <Text variant="small">{state.macro?.steps.length ?? 0}</Text>
-          </div>
-          <div className="flex items-center gap-2">
-            <Text variant="small" color="muted">
-              Duration:
-            </Text>
-            <Text variant="small">
-              {formatDuration(
-                state.macro
-                  ? state.macro.steps[state.macro.steps.length - 1].timestamp -
-                      state.macro.steps[0].timestamp
-                  : 0
-              )}
-            </Text>
-          </div>
-        </div>
+      <ModalBody className="space-y-2">
+        {state.macro && (
+          <Card>
+            <MacroMetadataRow
+              label="Steps recorded"
+              value={state.macro?.steps.length ?? 0}
+            />
 
+            <MacroMetadataRow
+              label="Duration"
+              value={formatDuration(
+                state.macro.steps[state.macro.steps.length - 1].timestamp -
+                  state.macro.steps[0].timestamp
+              )}
+            />
+          </Card>
+        )}
         <Input
           label="Macro Name"
           type="text"

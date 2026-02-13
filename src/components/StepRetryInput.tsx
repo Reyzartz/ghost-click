@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Text, Input } from "@/design-system";
+import { Text, Input, Card } from "@/design-system";
 
 interface StepRetryInputProps {
   retryCount: number;
@@ -23,7 +23,7 @@ const StepRetryInput = memo<StepRetryInputProps>(
           Retry Settings:
         </Text>
 
-        <div className="border-border bg-surface-muted flex flex-col gap-2 rounded border p-2">
+        <Card className="flex flex-col gap-2" size="sm">
           <Input
             type="number"
             min={0}
@@ -56,7 +56,7 @@ const StepRetryInput = memo<StepRetryInputProps>(
             label="Interval (ms)"
             error={retryIntervalError}
           />
-        </div>
+        </Card>
       </div>
     );
   }

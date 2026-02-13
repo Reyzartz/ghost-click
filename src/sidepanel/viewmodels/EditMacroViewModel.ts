@@ -301,6 +301,39 @@ export class EditMacroViewModel extends BaseViewModel {
     this.setState({ macro: updatedMacro, newStepIds });
   }
 
+  playPreview(): void {
+    if (!this.state.macro) {
+      this.logger.error("Cannot play preview: no macro loaded");
+      return;
+    }
+
+    this.logger.info("Preparing macro preview", {
+      macroId: this.state.macro.id,
+    });
+
+    const filteredSteps = this.state.macro.steps.filter(
+      (step) => !this.state.deletedStepIds.has(step.id)
+    );
+    const macroToPlay = { ...this.state.macro, steps: filteredSteps };
+
+    this.emitter.emit("PLAY_MACRO_PREVIEW", { macro: macroToPlay });
+  }
+
+  pausePlayback(): void {
+    this.logger.info("Requesting pause playback");
+    this.emitter.emit("PAUSE_PLAYBACK", undefined, { currentTab: false });
+  }
+
+  resumePlayback(): void {
+    this.logger.info("Requesting resume playback");
+    this.emitter.emit("RESUME_PLAYBACK", undefined, { currentTab: false });
+  }
+
+  stopPlayback(): void {
+    this.logger.info("Requesting stop playback");
+    this.emitter.emit("STOP_PLAYBACK", undefined, { currentTab: false });
+  }
+
   deleteStep(stepId: string): void {
     if (!this.state.macro) {
       this.logger.error("Cannot delete step: no macro loaded");

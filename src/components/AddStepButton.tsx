@@ -45,7 +45,7 @@ const AddStepButton = memo<AddStepButtonProps>(
       return (
         <div
           className={clsx(
-            "group/add border-border-secondary bg-surface-muted flex flex-col gap-2 overflow-hidden border-[1.5px] border-dashed transition-all duration-300 ease-in-out",
+            "group/add border-border-secondary flex flex-col gap-2 overflow-hidden border-[1.5px] border-dashed transition-all duration-300 ease-in-out",
             disabled
               ? "h-0 w-0 cursor-not-allowed overflow-hidden px-0 py-0"
               : !isAdding
