@@ -68,7 +68,7 @@ export const ImportMacroModal = ({ app }: { app: SidePanelApp }) => {
         <Text variant="h2">Import Macro</Text>
       </ModalHeader>
 
-      <ModalBody className="border-border bg-surface-muted mx-4 mb-4 rounded-lg border border-solid py-3 pr-3 pl-3">
+      <ModalBody>
         <Input
           label="Macro Name"
           type="text"

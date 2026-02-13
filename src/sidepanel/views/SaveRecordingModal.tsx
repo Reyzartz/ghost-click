@@ -80,7 +80,7 @@ export const SaveRecordingModal = ({ app }: { app: SidePanelApp }) => {
         </div>
       </ModalHeader>
 
-      <ModalBody className="border-border bg-surface-muted mx-4 mb-4 space-y-4 rounded-lg border border-solid px-3 py-3">
+      <ModalBody className="space-y-4">
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <Text variant="small" color="muted">

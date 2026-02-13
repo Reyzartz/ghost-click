@@ -13,7 +13,7 @@ interface InfoPanelProps extends HTMLAttributes<HTMLDivElement> {
 export const InfoPanel = ({ items, className, ...props }: InfoPanelProps) => {
   return (
     <Card
-      padding="md"
+      size="lg"
       className={clsx("bg-surface-muted space-y-2", className)}
       {...props}
     >

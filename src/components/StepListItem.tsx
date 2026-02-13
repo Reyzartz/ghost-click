@@ -10,7 +10,7 @@ import {
   GlobeIcon,
   LucideIcon,
 } from "lucide-react";
-import { Text, Icon } from "@/design-system";
+import { Text, Icon, Card } from "@/design-system";
 
 interface StepListItemProps {
   step: MacroStep;
@@ -34,23 +34,22 @@ export const StepListItem = ({
   isErrored,
 }: StepListItemProps) => {
   const IconComponent = StepTypeToIcon[step.type];
+
+  const variant = isErrored
+    ? "errored"
+    : isCurrent
+      ? "current"
+      : isCompleted
+        ? "completed"
+        : "default";
+
   return (
-    <li
-      className={clsx(
-        "rounded px-3 py-2",
-        isCurrent
-          ? "border-success-border bg-success-bg-hover border font-medium"
-          : isCompleted
-            ? "border-border bg-surface-hover text-text-muted border"
-            : "border-border bg-surface border",
-        isErrored && "border-error-border bg-error-bg text-error-text"
-      )}
+    <Card
+      as="li"
+      variant={variant}
+      size="sm"
+      autoScroll={isCurrent}
       autoFocus={isCurrent}
-      ref={(el) => {
-        if (isCurrent && el) {
-          el.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        }
-      }}
     >
       <div
         className={clsx(
@@ -76,6 +75,6 @@ export const StepListItem = ({
           />
         )}
       </div>
-    </li>
+    </Card>
   );
 };

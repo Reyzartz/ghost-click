@@ -1,7 +1,7 @@
 import { Macro } from "@/models";
 import { clsx } from "clsx";
 import { Play } from "lucide-react";
-import { Text, Icon } from "@/design-system";
+import { Text, Icon, Card } from "@/design-system";
 import { DisplayFavicon } from "./DisplayFavicon";
 
 interface QuickActionItemProps {
@@ -16,22 +16,16 @@ const QuickActionItem = ({
   onSelect,
 }: QuickActionItemProps) => {
   return (
-    <li
-      className={clsx(
-        "group cursor-pointer rounded-lg border border-solid px-3 py-2 transition-colors",
-        isSelected
-          ? "border-border bg-surface-hover"
-          : "hover:bg-surface-muted border-transparent"
-      )}
+    <Card
+      as="li"
+      variant={isSelected ? "selected" : "default"}
+      size="md"
       onClick={onSelect}
-      ref={(el) => {
-        if (isSelected && el) {
-          el.scrollIntoView({
-            block: "nearest",
-            behavior: "smooth",
-          });
-        }
-      }}
+      autoScroll={isSelected}
+      className={clsx(
+        "group",
+        !isSelected && "hover:bg-surface-muted border-transparent"
+      )}
     >
       <div className="flex items-center justify-between gap-4">
         <div className="flex grow items-center gap-3 overflow-hidden">
@@ -60,7 +54,7 @@ const QuickActionItem = ({
 
         {isSelected && <Icon icon={Play} size="sm" color="muted" />}
       </div>
-    </li>
+    </Card>
   );
 };
 

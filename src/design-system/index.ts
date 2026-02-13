@@ -8,6 +8,7 @@ export { Textarea } from "./Textarea";
 export { Select } from "./Select";
 
 export { Card } from "./Card";
+export type { CardVariant, CardSize } from "./Card";
 
 export { Badge } from "./Badge";
 export type { BadgeVariant } from "./Badge";

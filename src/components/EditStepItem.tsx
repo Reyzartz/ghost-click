@@ -18,34 +18,11 @@ import {
   GlobeIcon,
   LucideIcon,
 } from "lucide-react";
-import { Text, Button, Badge, Icon } from "@/design-system";
+import { Text, Button, Badge, Icon, Card } from "@/design-system";
 import { cva } from "class-variance-authority";
 
-const stepItemVariants = cva(
-  "group/step relative max-w-full list-none rounded border",
-  {
-    variants: {
-      status: {
-        deleted: "border-error-border bg-error-bg",
-        errored: "border-error-border bg-error-bg text-error-text",
-        current: "border-success-border bg-success-bg-hover",
-        completed: "border-border bg-surface-hover",
-        default: "border-border bg-surface",
-      },
-      isEditDisabled: {
-        true: "cursor-not-allowed",
-        false: "cursor-pointer",
-      },
-    },
-    defaultVariants: {
-      status: "default",
-      isEditDisabled: false,
-    },
-  }
-);
-
 const stepContentVariants = cva(
-  "mx-auto flex w-full max-w-max items-start gap-2 p-3 py-1.5 transition-all duration-200 delay-200",
+  "mx-auto flex w-full max-w-max items-start gap-2 transition-all duration-200 delay-200",
   {
     variants: {
       isDeleted: {
@@ -127,7 +104,7 @@ export const EditStepItem = ({
 
   const IconComponent = StepTypeToIcon[step.type];
 
-  const stepStatus = useMemo(() => {
+  const cardVariant = useMemo(() => {
     if (isDeleted) return "deleted";
     if (isErrored) return "errored";
     if (isCurrent) return "current";
@@ -175,13 +152,17 @@ export const EditStepItem = ({
         </>
       )}
 
-      <li
+      <Card
+        as="li"
         ref={stepRef}
-        className={stepItemVariants({
-          status: stepStatus,
-          isEditDisabled,
-        })}
+        variant={cardVariant}
+        size="md"
         onClick={onEditHandler}
+        autoScroll={isCurrent}
+        className={clsx(
+          "group/step relative max-w-full",
+          isEditDisabled && "cursor-not-allowed"
+        )}
       >
         <div
           className={stepContentVariants({
@@ -261,7 +242,7 @@ export const EditStepItem = ({
             </div>
           )
         )}
-      </li>
+      </Card>
     </>
   );
 };

@@ -2,7 +2,7 @@ import { Macro } from "@/models";
 import { clsx } from "clsx";
 import { Dropdown, DropdownItem } from "../design-system/Dropdown";
 import { DisplayFavicon } from "./DisplayFavicon";
-import { Text, Button } from "@/design-system";
+import { Text, Button, Card } from "@/design-system";
 import {
   MoreVertical,
   Play,
@@ -70,22 +70,13 @@ export const MacroCard = ({
   ];
 
   return (
-    <li
-      className={clsx(
-        "group cursor-pointer rounded border p-2 transition-colors",
-        isSelected
-          ? "border-border-secondary bg-surface-hover"
-          : "border-border hover:bg-surface-hover"
-      )}
+    <Card
+      as="li"
+      variant={isSelected ? "selected" : "default"}
+      size="sm"
       onClick={onPlay}
-      ref={(el) => {
-        if (isSelected && el) {
-          el.scrollIntoView({
-            block: "nearest",
-            behavior: "smooth",
-          });
-        }
-      }}
+      autoScroll={isSelected}
+      className="group"
     >
       <div className="flex items-center justify-between gap-4">
         <div className="flex grow items-start gap-3 overflow-hidden">
@@ -127,6 +118,6 @@ export const MacroCard = ({
           }
         />
       </div>
-    </li>
+    </Card>
   );
 };
