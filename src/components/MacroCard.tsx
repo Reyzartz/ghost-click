@@ -93,15 +93,8 @@ export const MacroCard = ({
             <Text className="line-clamp-1 font-medium">{macro.name}</Text>
             <div className="flex items-center gap-2">
               <Text variant="small" color="muted" className="shrink-0">
-                {macro.steps.length} step
-                {macro.steps.length === 1 ? "" : "s"}
+                {macro.steps.length} steps • {macro.domain}
               </Text>
-
-              {macro.domain && (
-                <Text variant="small" className="text-text-subtle truncate">
-                  • {macro.domain}
-                </Text>
-              )}
             </div>
           </div>
         </div>
