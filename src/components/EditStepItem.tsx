@@ -16,8 +16,9 @@ import {
   Check,
   AlertCircle,
   GlobeIcon,
+  LucideIcon,
 } from "lucide-react";
-import { Text, Button, Badge } from "@/design-system";
+import { Text, Button, Badge, Icon } from "@/design-system";
 import { cva } from "class-variance-authority";
 
 const stepItemVariants = cva(
@@ -83,10 +84,7 @@ interface EditStepItemProps {
   isDeletable?: boolean;
 }
 
-const StepTypeToIcon: Record<
-  string,
-  React.FC<{ size?: number; className?: string }>
-> = {
+const StepTypeToIcon: Record<string, LucideIcon> = {
   CLICK: MousePointerClickIcon,
   INPUT: TextCursorInputIcon,
   KEYPRESS: KeyboardIcon,
@@ -202,7 +200,11 @@ export const EditStepItem = ({
                 )}
                 color={isDeleted ? "muted" : isErrored ? "error" : "default"}
               >
-                <IconComponent size={16} className="mt-0.5 mr-1.5 shrink-0" />
+                <Icon
+                  icon={IconComponent}
+                  size="sm"
+                  className="mt-0.5 mr-1.5"
+                />
                 {step.name}
               </Text>
 
@@ -219,15 +221,9 @@ export const EditStepItem = ({
             <StepMeta step={step} className="ml-5 pl-0.5" />
           </div>
 
-          {isErrored && (
-            <AlertCircle size={16} className="text-error-icon shrink-0" />
-          )}
-          {isCurrent && (
-            <Play size={16} className="text-success-icon shrink-0" />
-          )}
-          {isCompleted && (
-            <Check size={16} className="text-success-icon shrink-0" />
-          )}
+          {isErrored && <Icon icon={AlertCircle} size="sm" color="error" />}
+          {isCurrent && <Icon icon={Play} size="sm" color="success" />}
+          {isCompleted && <Icon icon={Check} size="sm" color="success" />}
         </div>
 
         {isDeleted ? (

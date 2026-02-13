@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { SidePanelApp } from "../SidePanelApp";
-import { Alert, Text, Button } from "@/design-system";
+import { Alert, Text, Button, Icon } from "@/design-system";
 import { MacroSection } from "@/components/MacroSection";
 import {
   Circle,
@@ -197,9 +197,9 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
             app.macroListViewModel.showSearchResults() ? "h-4" : "h-0"
           )}
         >
-          Use <ArrowUp size={12} className="inline" />
-          <ArrowDown size={12} className="inline" /> to navigate, Enter to play,
-          Esc to clear
+          Use <Icon icon={ArrowUp} size="xs" className="inline" />
+          <Icon icon={ArrowDown} size="xs" className="inline" /> to navigate,
+          Enter to play, Esc to clear
         </Text>
       </div>
 

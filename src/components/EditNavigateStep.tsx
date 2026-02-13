@@ -11,6 +11,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Icon,
 } from "@/design-system";
 import { MacroUtils } from "@/utils/MacroUtils";
 import * as yup from "yup";
@@ -84,7 +85,7 @@ export const EditNavigateStep = memo<EditNavigateStepProps>(
     return (
       <Modal isOpen={isOpen} onClose={handleCancel} maxWidth="md">
         <ModalHeader className="flex items-center gap-2">
-          <GlobeIcon size={20} className="text-text-muted" />
+          <Icon icon={GlobeIcon} size="md" color="muted" />
           <Text variant="h2">Edit Navigate Step</Text>
         </ModalHeader>
 

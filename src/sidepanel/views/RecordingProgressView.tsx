@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { SidePanelApp } from "../SidePanelApp";
-import { Alert, Button, Text } from "@/design-system";
+import { Alert, Button, Text, Icon } from "@/design-system";
 import { ArrowDown, Square, Circle } from "lucide-react";
 import { EditStepItem } from "@/components/EditStepItem";
 import { MacroStep } from "@/models";
@@ -50,7 +50,12 @@ export const RecordingProgressView = ({ app }: { app: SidePanelApp }) => {
       {state.isRecording && (
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Circle size={16} className="fill-error text-error animate-pulse" />
+            <Icon
+              icon={Circle}
+              size="sm"
+              color="error"
+              className="fill-error animate-pulse"
+            />
             <Text variant="body" className="text-error-text font-medium">
               Recording...
             </Text>

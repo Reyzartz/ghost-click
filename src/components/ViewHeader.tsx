@@ -1,4 +1,4 @@
-import { Button, Text } from "@/design-system";
+import { Button, Text, Icon } from "@/design-system";
 import { ChevronLeft } from "lucide-react";
 
 interface ViewHeaderProps {
@@ -21,7 +21,7 @@ export const ViewHeader = ({
       className={`flex items-center gap-2 px-4 py-3 ${borderClass} ${className}`}
     >
       <Button variant="ghost" size="sm" onClick={onBack} className="gap-1">
-        <ChevronLeft className="h-4 w-4" />
+        <Icon icon={ChevronLeft} size="sm" />
         Back
       </Button>
       <Text variant="h3" className="flex-1">

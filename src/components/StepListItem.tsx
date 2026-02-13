@@ -8,8 +8,9 @@ import {
   TextCursorInputIcon,
   KeyboardIcon,
   GlobeIcon,
+  LucideIcon,
 } from "lucide-react";
-import { Text } from "@/design-system";
+import { Text, Icon } from "@/design-system";
 
 interface StepListItemProps {
   step: MacroStep;
@@ -19,10 +20,7 @@ interface StepListItemProps {
   isErrored: boolean;
 }
 
-const StepTypeToIcon: Record<
-  MacroStep["type"],
-  React.ComponentType<{ size?: number }>
-> = {
+const StepTypeToIcon: Record<MacroStep["type"], LucideIcon> = {
   CLICK: MousePointerClickIcon,
   INPUT: TextCursorInputIcon,
   KEYPRESS: KeyboardIcon,
@@ -61,16 +59,21 @@ export const StepListItem = ({
           isCompleted && !isErrored && "text-success-icon"
         )}
       >
-        <IconComponent size={16} />
+        <Icon icon={IconComponent} size="sm" />
         <Text variant="small">{step.name}</Text>
         {isCurrent && !isErrored && (
-          <Play size={14} className="text-success-icon ml-auto" />
+          <Icon icon={Play} size="sm" color="success" className="ml-auto" />
         )}
         {isCompleted && !isErrored && (
-          <Check size={14} className="text-success-icon ml-auto" />
+          <Icon icon={Check} size="sm" color="success" className="ml-auto" />
         )}
         {isErrored && (
-          <AlertCircle size={14} className="text-error-icon ml-auto" />
+          <Icon
+            icon={AlertCircle}
+            size="sm"
+            color="error"
+            className="ml-auto"
+          />
         )}
       </div>
     </li>

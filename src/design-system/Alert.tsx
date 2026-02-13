@@ -7,6 +7,7 @@ import {
   Info,
   LucideIcon,
 } from "lucide-react";
+import { Icon } from "./Icon";
 
 export type AlertVariant = "success" | "error" | "warning" | "info";
 
@@ -64,7 +65,7 @@ export const Alert = ({
     >
       {showIcon ? (
         <div className="flex items-center gap-2">
-          <IconComponent size={16} className={styles.icon} />
+          <Icon icon={IconComponent} size="sm" color={variant} />
           <span>{children}</span>
         </div>
       ) : (

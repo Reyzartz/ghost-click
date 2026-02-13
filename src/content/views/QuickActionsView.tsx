@@ -3,7 +3,7 @@ import { QuickActionsState } from "../viewmodels/QuickActionsViewModel";
 import { ContentApp } from "../ContentApp";
 import { SearchInput } from "@/components/SearchInput";
 import { QuickActionItem } from "@/components/QuickActionItem";
-import { Text } from "@/design-system";
+import { Text, Icon } from "@/design-system";
 import { ArrowUp, ArrowDown, TimerIcon } from "lucide-react";
 
 export const QuickActionsView = ({ app }: { app: ContentApp }) => {
@@ -72,7 +72,7 @@ export const QuickActionsView = ({ app }: { app: ContentApp }) => {
       >
         <div>
           <header className="mb-3 flex items-center gap-2">
-            <TimerIcon size={20} className="text-text-secondary" />
+            <Icon icon={TimerIcon} size="md" color="muted" />
             <Text variant="h2">Quick Actions</Text>
           </header>
 
@@ -91,9 +91,9 @@ export const QuickActionsView = ({ app }: { app: ContentApp }) => {
             color="muted"
             className="mt-2 flex items-center gap-0.5"
           >
-            Use <ArrowUp size={12} className="inline" />
-            <ArrowDown size={12} className="inline" /> to navigate, Enter to
-            select, Esc to close
+            Use <Icon icon={ArrowUp} size="xs" className="inline" />
+            <Icon icon={ArrowDown} size="xs" className="inline" /> to navigate,
+            Enter to select, Esc to close
           </Text>
         </div>
 

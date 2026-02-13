@@ -1,7 +1,7 @@
 import { Macro } from "@/models";
 import { clsx } from "clsx";
 import { Play } from "lucide-react";
-import { Text } from "@/design-system";
+import { Text, Icon } from "@/design-system";
 import { DisplayFavicon } from "./DisplayFavicon";
 
 interface QuickActionItemProps {
@@ -58,7 +58,7 @@ const QuickActionItem = ({
           </div>
         </div>
 
-        {isSelected && <Play size={16} className="text-text-disabled" />}
+        {isSelected && <Icon icon={Play} size="sm" color="muted" />}
       </div>
     </li>
   );

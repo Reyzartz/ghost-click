@@ -24,4 +24,4 @@ export { Divider } from "./Divider";
 export { InfoPanel } from "./InfoPanel";
 
 export { Icon } from "./Icon";
-export type { IconName } from "./Icon";
+export type { IconSize, IconColor } from "./Icon";

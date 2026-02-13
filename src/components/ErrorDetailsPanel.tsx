@@ -2,7 +2,7 @@ import { useState } from "react";
 import { clsx } from "clsx";
 import { AlertTriangle, ChevronDown, ChevronRight } from "lucide-react";
 import { StepError } from "@/sidepanel/viewmodels/PlaybackProgressViewModel";
-import { Text } from "@/design-system";
+import { Text, Icon } from "@/design-system";
 
 interface ErrorDetailsPanelProps {
   errorMessage: string;
@@ -22,13 +22,17 @@ export const ErrorDetailsPanel = ({
         onClick={() => setShowDetails(!showDetails)}
       >
         <div className="flex items-center gap-2">
-          <AlertTriangle size={16} className="text-error-icon" />
+          <Icon icon={AlertTriangle} size="sm" color="error" />
           <Text variant="small" className="text-error-text font-medium">
             {errorMessage}
           </Text>
         </div>
         <div className="text-error-icon flex items-center gap-1">
-          {showDetails ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
+          {showDetails ? (
+            <Icon icon={ChevronDown} size="xs" />
+          ) : (
+            <Icon icon={ChevronRight} size="xs" />
+          )}
           <Text variant="small" color="error">
             Details
           </Text>

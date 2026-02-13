@@ -2,6 +2,7 @@ import { SelectHTMLAttributes, forwardRef } from "react";
 import { cva } from "class-variance-authority";
 import { clsx } from "clsx";
 import { Text } from "./Text";
+import { Icon } from "./Icon";
 import { ChevronDownIcon } from "lucide-react";
 
 export type SelectSize = "sm" | "md" | "lg";
@@ -83,9 +84,11 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             {children}
           </select>
 
-          <ChevronDownIcon
-            width={16}
-            className="text-text-secondary\ pointer-events-none absolute top-1/2 right-3 -translate-y-1/2"
+          <Icon
+            icon={ChevronDownIcon}
+            size="sm"
+            color="muted"
+            className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2"
           />
         </div>
 

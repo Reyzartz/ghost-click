@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { clsx } from "clsx";
 import { Text } from "./Text";
+import { Icon } from "./Icon";
 import { LucideIcon } from "lucide-react";
 
 export interface DropdownItem {
@@ -68,13 +68,10 @@ export const Dropdown = ({ items, trigger }: DropdownProps) => {
                 }}
               >
                 {IconComponent && (
-                  <IconComponent
-                    size={14}
-                    className={clsx(
-                      item.variant === "danger"
-                        ? "text-error-text"
-                        : "text-text"
-                    )}
+                  <Icon
+                    icon={IconComponent}
+                    size="sm"
+                    color={item.variant === "danger" ? "error" : "default"}
                   />
                 )}
                 <Text

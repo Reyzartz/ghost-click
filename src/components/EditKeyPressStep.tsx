@@ -14,6 +14,7 @@ import {
   ModalBody,
   ModalFooter,
   Input,
+  Icon,
 } from "@/design-system";
 import { MacroUtils } from "@/utils/MacroUtils";
 import * as yup from "yup";
@@ -142,7 +143,7 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
     return (
       <Modal isOpen={isOpen} onClose={handleCancel} maxWidth="md">
         <ModalHeader className="flex items-center gap-2">
-          <KeyboardIcon size={20} className="text-text-muted" />
+          <Icon icon={KeyboardIcon} size="md" color="muted" />
           <Text variant="h2">Edit Key Press Step</Text>
         </ModalHeader>
 

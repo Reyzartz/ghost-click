@@ -4,7 +4,7 @@ import { memo, useState } from "react";
 import { EditClickStep } from "./EditClickStep";
 import { EditInputStep } from "./EditInputStep";
 import { EditKeyPressStep } from "./EditKeyPressStep";
-import { Button, Text } from "@/design-system";
+import { Button, Text, Icon } from "@/design-system";
 import {
   GlobeIcon,
   KeyboardIcon,
@@ -109,7 +109,7 @@ const AddStepButton = memo<AddStepButtonProps>(
               )}
               disabled={disabled}
             >
-              <PlusIcon size={14} />
+              <Icon icon={PlusIcon} size="sm" color="muted" />
             </button>
           )}
         </div>
