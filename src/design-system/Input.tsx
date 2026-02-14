@@ -16,7 +16,7 @@ interface InputProps extends Omit<
 }
 
 const inputVariants = cva(
-  "rounded border border-solid text-text-secondary transition-colors focus:outline-none disabled:cursor-not-allowed disabled:bg-surface-muted",
+  "rounded text-text-secondary transition-all focus:ring-1 border focus:outline-none disabled:cursor-not-allowed disabled:bg-surface-muted disabled:opacity-60  ring-inset",
   {
     variants: {
       size: {
@@ -25,8 +25,9 @@ const inputVariants = cva(
         lg: "text-base leading-4.5 px-6 py-3",
       },
       hasError: {
-        true: "border-error-border focus:border-error bg-error-bg",
-        false: "border-border-secondary bg-surface focus:border-border-focus",
+        true: "bg-error-bg  focus:ring-error border-error-border",
+        false:
+          "bg-surface focus:bg-surface-active  focus:ring-primary border-border",
       },
       fullWidth: {
         true: "w-full",

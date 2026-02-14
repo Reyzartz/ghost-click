@@ -20,20 +20,19 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const buttonVariants = cva(
-  "cursor-pointer rounded font-medium transition-colors inline-flex items-center justify-center gap-2 whitespace-nowrap border border-solid disabled:cursor-not-allowed",
+  "cursor-pointer rounded font-medium transition-all inline-flex items-center justify-center gap-2 whitespace-nowrap disabled:cursor-not-allowed disabled:opacity-60",
   {
     variants: {
       variant: {
         primary:
-          "bg-primary text-text-inverse hover:bg-primary-hover disabled:bg-text-disabled border-primary",
+          "bg-primary text-text-inverse hover:bg-primary-hover active:scale-[0.98] disabled:bg-text-disabled",
         secondary:
-          "bg-surface border-border-secondary text-text-secondary hover:bg-surface-muted",
+          "bg-surface text-text-secondary hover:bg-surface-hover active:bg-surface-active border",
         danger:
-          "bg-error-bg text-error-text hover:bg-error-bg-hover disabled:bg-error-bg border-error-border",
-        ghost:
-          "bg-transparent text-text-secondary hover:bg-surface-hover border-transparent",
+          "bg-error text-text-inverse hover:bg-error-hover active:scale-[0.98]",
+        ghost: "bg-transparent text-text-secondary hover:bg-surface-hover",
         success:
-          "bg-success-bg text-success-text hover:bg-success-bg-hover border-success-border",
+          "bg-success text-text-inverse hover:bg-success-hover active:scale-[0.98]",
       },
       size: {
         sm: "text-xs leading-3.5",

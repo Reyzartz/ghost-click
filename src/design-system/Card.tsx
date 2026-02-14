@@ -5,8 +5,8 @@ import { clsx } from "clsx";
 export type CardVariant =
   | "default"
   | "selected"
-  | "current"
-  | "completed"
+  | "success"
+  | "secondary"
   | "errored"
   | "deleted";
 
@@ -22,15 +22,15 @@ interface CardProps extends HTMLAttributes<HTMLElement> {
   autoScroll?: boolean;
 }
 
-const cardVariants = cva("rounded border transition-colors list-none", {
+const cardVariants = cva("rounded transition-colors list-none border", {
   variants: {
     variant: {
-      default: "border-border bg-surface",
-      selected: "border-border-secondary bg-surface-hover",
-      current: "border-success-border bg-success-bg-hover font-medium",
-      completed: "border-border bg-surface-hover text-text-muted",
-      errored: "border-error-border bg-error-bg text-error-text",
-      deleted: "border-error-border bg-error-bg opacity-50",
+      default: "bg-surface",
+      selected: "bg-surface-hover border-accent-hover",
+      success: "bg-success-bg font-medium border-success-border",
+      secondary: "bg-background-secondary text-text-muted",
+      errored: "bg-error-bg text-error-text border-error-border",
+      deleted: "bg-error-bg opacity-50 border-error-border",
     },
     size: {
       sm: "px-2 py-1.5",
@@ -55,7 +55,7 @@ const cardVariants = cva("rounded border transition-colors list-none", {
     {
       hover: true,
       variant: "selected",
-      className: "hover:bg-surface-hover",
+      className: "hover:bg-surface-active",
     },
   ],
   defaultVariants: {
@@ -98,7 +98,7 @@ export const Card = forwardRef<HTMLElement, CardProps>(
           if (
             autoScroll &&
             el &&
-            (variant === "current" || variant === "selected")
+            (variant === "success" || variant === "selected")
           ) {
             el.scrollIntoView({
               block: "nearest",

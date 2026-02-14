@@ -8,6 +8,7 @@ import {
   LucideIcon,
 } from "lucide-react";
 import { Icon } from "./Icon";
+import { cva } from "class-variance-authority";
 
 export type AlertVariant = "success" | "error" | "warning" | "info";
 
@@ -17,25 +18,19 @@ interface AlertProps extends HTMLAttributes<HTMLDivElement> {
   showIcon?: boolean;
 }
 
-const variantStyles: Record<AlertVariant, { container: string; icon: string }> =
-  {
-    success: {
-      container: "bg-success-bg border-success-border text-success-text",
-      icon: "text-success-icon",
+const alertContainerStyles = cva("rounded px-3 py-2 text-xs border", {
+  variants: {
+    variant: {
+      success: "bg-success-bg text-success-text border-success-border",
+      error: "bg-error-bg text-error-text border-error-border",
+      warning: "bg-warning-bg text-warning-text border-warning-border",
+      info: "bg-info-bg text-info-text border-info-border",
     },
-    error: {
-      container: "bg-error-bg border-error-border text-error-text",
-      icon: "text-error-icon",
-    },
-    warning: {
-      container: "bg-warning-bg border-warning-border text-warning-text",
-      icon: "text-warning-icon",
-    },
-    info: {
-      container: "bg-info-bg border-info-border text-info-text",
-      icon: "text-info-icon",
-    },
-  };
+  },
+  defaultVariants: {
+    variant: "info",
+  },
+});
 
 const defaultIcons: Record<AlertVariant, LucideIcon> = {
   success: CheckCircle,
@@ -51,21 +46,18 @@ export const Alert = ({
   className,
   ...props
 }: AlertProps) => {
-  const styles = variantStyles[variant];
-  const IconComponent = defaultIcons[variant];
-
   return (
     <div
       className={clsx(
-        "rounded border px-3 py-2 text-xs",
-        styles.container,
+        "rounded px-3 py-2 text-xs",
+        alertContainerStyles({ variant }),
         className
       )}
       {...props}
     >
       {showIcon ? (
         <div className="flex items-center gap-2">
-          <Icon icon={IconComponent} size="sm" color={variant} />
+          <Icon icon={defaultIcons[variant]} size="sm" color={variant} />
           <span>{children}</span>
         </div>
       ) : (

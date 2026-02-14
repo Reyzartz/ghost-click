@@ -7,7 +7,7 @@ import { ConfirmActionButton } from "@/components/ConfirmActionModal";
 import { EditMacroHeaderControls } from "@/components/EditMacroHeaderControls";
 import { MacroStepsEditor } from "@/components/MacroStepsEditor";
 import { EditMacroState } from "../viewmodels/EditMacroViewModel";
-import { Layout } from "@/components/Layout";
+import { Layout } from "@/design-system/Layout";
 
 export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<EditMacroState>({

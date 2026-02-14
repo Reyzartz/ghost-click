@@ -47,75 +47,74 @@
   --leading-loose: 2;
 
   /* Background colors */
-  --color-background: oklch(100% 0 0);
-  --color-background-secondary: oklch(98.5% 0.002 247.839);
-  --color-background-tertiary: oklch(96.7% 0.003 264.542);
+  --color-background: oklch(98% 0.008 250);
+  --color-background-secondary: oklch(96% 0.008 250);
+  --color-background-tertiary: oklch(94% 0.015 250);
 
   /* Surface colors */
   --color-surface: oklch(100% 0 0);
-  --color-surface-hover: oklch(96.7% 0.003 264.542);
-  --color-surface-active: oklch(92.8% 0.006 264.531);
-  --color-surface-muted: oklch(98.5% 0.002 247.839);
+  --color-surface-hover: oklch(97% 0.01 250);
+  --color-surface-active: oklch(94% 0.015 250);
+  --color-surface-muted: oklch(96% 0.012 250);
 
   /* Border colors */
-  --color-border: oklch(92.8% 0.006 264.531);
-  --color-border-secondary: oklch(87.2% 0.01 258.338);
-  --color-border-hover: oklch(55.1% 0.027 264.364);
-  --color-border-focus: oklch(55.1% 0.027 264.364);
+  --color-border: oklch(88% 0.02 250);
+  --color-border-secondary: oklch(85% 0.025 250);
+  --color-border-hover: oklch(60% 0.18 250);
+  --color-border-focus: oklch(60% 0.2 250);
 
   /* Text colors */
-  --color-text: oklch(21% 0.034 264.665);
-  --color-text-secondary: oklch(27.8% 0.033 256.848);
-  --color-text-muted: oklch(55.1% 0.027 264.364);
-  --color-text-subtle: oklch(70.7% 0.022 261.325);
-  --color-text-disabled: oklch(87.2% 0.01 258.338);
+  --color-text: oklch(20% 0.05 250);
+  --color-text-secondary: oklch(35% 0.04 250);
+  --color-text-muted: oklch(55% 0.035 250);
+  --color-text-subtle: oklch(68% 0.03 250);
+  --color-text-disabled: oklch(80% 0.02 250);
   --color-text-inverse: oklch(100% 0 0);
 
   /* Primary/Accent colors */
-  --color-primary: oklch(60% 0.18 250); /* Material Blue 600 - same as info */
-  --color-primary-hover: oklch(50% 0.17 250); /* Material Blue 700 */
-  --color-primary-active: oklch(50% 0.17 250);
+  --color-primary: oklch(55% 0.22 250); /* Vibrant Material Blue */
+  --color-primary-hover: oklch(48% 0.24 250); /* Deeper Blue on hover */
+  --color-primary-active: oklch(45% 0.24 250);
 
-  --color-accent: oklch(60% 0.18 250); /* Material Blue 600 */
-  --color-accent-hover: oklch(50% 0.17 250); /* Material Blue 700 */
-  --color-accent-muted: oklch(85% 0.1 250); /* Material Blue 200 */
+  --color-accent: oklch(55% 0.22 250); /* Vibrant Material Blue */
+  --color-accent-hover: oklch(48% 0.24 250); /* Deeper Blue on hover */
+  --color-accent-muted: oklch(85% 0.12 250); /* Lighter Blue */
 
   /* Success (Material Green) */
-  --color-success: oklch(65% 0.17 145);
-  --color-success-hover: oklch(55% 0.15 145);
-  --color-success-text: oklch(38% 0.13 145);
-  --color-success-border: oklch(85% 0.12 145);
-  --color-success-bg: oklch(95% 0.05 145);
-  --color-success-bg-hover: oklch(90% 0.08 145);
-  --color-success-icon: oklch(55% 0.15 145);
+  --color-success: oklch(60% 0.2 145);
+  --color-success-hover: oklch(52% 0.19 145);
+  --color-success-text: oklch(52% 0.19 145);
+  --color-success-border: oklch(70% 0.15 145);
+  --color-success-bg: oklch(97% 0.08 145);
+  --color-success-bg-hover: oklch(92% 0.11 145);
+  --color-success-icon: oklch(52% 0.19 145);
 
   /* Error/Danger (Material Red) */
-  --color-error: oklch(55% 0.22 25);
-  --color-error-hover: oklch(48% 0.2 25);
-  --color-error-text: oklch(35% 0.18 25);
-  --color-error-border: oklch(85% 0.11 25);
-  --color-error-bg: oklch(95% 0.04 25);
-  --color-error-bg-hover: oklch(90% 0.07 25);
-  --color-error-icon: oklch(48% 0.2 25);
+  --color-error: oklch(55% 0.25 25);
+  --color-error-hover: oklch(48% 0.24 25);
+  --color-error-text: oklch(48% 0.24 25);
+  --color-error-border: oklch(70% 0.18 25);
+  --color-error-bg: oklch(97% 0.08 25);
+  --color-error-bg-hover: oklch(92% 0.11 25);
+  --color-error-icon: oklch(48% 0.24 25);
 
   /* Warning (Material Orange) */
-
-  --color-warning: oklch(70% 0.15 65);
-  --color-warning-hover: oklch(60% 0.14 60);
-  --color-warning-text: oklch(45% 0.13 55);
-  --color-warning-border: oklch(88% 0.1 70);
-  --color-warning-bg: oklch(96% 0.04 75);
-  --color-warning-bg-hover: oklch(92% 0.07 72);
-  --color-warning-icon: oklch(60% 0.14 60);
+  --color-warning: oklch(65% 0.18 65);
+  --color-warning-hover: oklch(58% 0.17 60);
+  --color-warning-text: oklch(58% 0.17 60);
+  --color-warning-border: oklch(72% 0.14 70);
+  --color-warning-bg: oklch(97% 0.08 75);
+  --color-warning-bg-hover: oklch(92% 0.11 72);
+  --color-warning-icon: oklch(58% 0.17 60);
 
   /* Info (Material Blue) */
-  --color-info: oklch(60% 0.18 250);
-  --color-info-hover: oklch(50% 0.17 250);
-  --color-info-text: oklch(35% 0.15 250);
-  --color-info-border: oklch(85% 0.1 250);
-  --color-info-bg: oklch(95% 0.03 250);
-  --color-info-bg-hover: oklch(90% 0.06 250);
-  --color-info-icon: oklch(50% 0.17 250);
+  --color-info: oklch(55% 0.22 250);
+  --color-info-hover: oklch(48% 0.24 250);
+  --color-info-text: oklch(48% 0.24 250);
+  --color-info-border: oklch(70% 0.18 250);
+  --color-info-bg: oklch(97% 0.08 250);
+  --color-info-bg-hover: oklch(92% 0.11 250);
+  --color-info-icon: oklch(48% 0.24 250);
 
   /* Spacing */
   --spacing: 0.25rem;
@@ -152,72 +151,72 @@
 /* Explicit dark theme via data attribute (overrides prefers-color-scheme) */
 [data-theme="dark"] {
   /* Background colors */
-  --color-background: oklch(13% 0.028 261.692);
-  --color-background-secondary: oklch(20.8% 0.042 265.755);
-  --color-background-tertiary: oklch(27.8% 0.033 256.848);
+  --color-background: oklch(12% 0.03 250);
+  --color-background-secondary: oklch(20% 0.038 250);
+  --color-background-tertiary: oklch(18% 0.042 250);
 
   /* Surface colors */
-  --color-surface: oklch(20.8% 0.042 265.755);
-  --color-surface-hover: oklch(27.8% 0.033 256.848);
-  --color-surface-active: oklch(37.3% 0.034 259.733);
-  --color-surface-muted: oklch(13% 0.028 261.692);
+  --color-surface: oklch(19% 0.045 250);
+  --color-surface-hover: oklch(25% 0.042 250);
+  --color-surface-active: oklch(30% 0.04 250);
+  --color-surface-muted: oklch(16% 0.04 250);
 
   /* Border colors */
-  --color-border: oklch(37.3% 0.034 259.733);
-  --color-border-secondary: oklch(44.6% 0.03 256.802);
-  --color-border-hover: oklch(55.1% 0.027 264.364);
+  --color-border: oklch(30% 0.04 250);
+  --color-border-secondary: oklch(40% 0.045 250);
+  --color-border-hover: oklch(65% 0.18 250);
 
   /* Text colors */
-  --color-text: oklch(96.7% 0.003 264.542);
-  --color-text-secondary: oklch(87.2% 0.01 258.338);
-  --color-text-muted: oklch(70.7% 0.022 261.325);
-  --color-text-subtle: oklch(55.1% 0.027 264.364);
-  --color-text-inverse: oklch(21% 0.034 264.665);
+  --color-text: oklch(95% 0.01 250);
+  --color-text-secondary: oklch(85% 0.02 250);
+  --color-text-muted: oklch(70% 0.03 250);
+  --color-text-subtle: oklch(60% 0.035 250);
+  --color-text-inverse: oklch(20% 0.05 250);
 
   /* Primary/Accent */
-  --color-primary: oklch(72% 0.16 250); /* Material Blue - same as info dark */
-  --color-primary-hover: oklch(78% 0.17 250);
-  --color-primary-active: oklch(78% 0.17 250);
+  --color-primary: oklch(70% 0.2 250); /* Vibrant Material Blue for dark mode */
+  --color-primary-hover: oklch(75% 0.21 250);
+  --color-primary-active: oklch(75% 0.21 250);
 
-  --color-accent: oklch(72% 0.16 250);
-  --color-accent-hover: oklch(78% 0.17 250);
-  --color-accent-muted: oklch(45% 0.13 250);
+  --color-accent: oklch(70% 0.2 250);
+  --color-accent-hover: oklch(75% 0.21 250);
+  --color-accent-muted: oklch(45% 0.15 250);
 
   /* Success (Material Green - Dark Mode) */
-  --color-success: oklch(75% 0.15 145);
-  --color-success-hover: oklch(80% 0.16 145);
-  --color-success-text: oklch(85% 0.14 145);
-  --color-success-border: oklch(45% 0.12 145);
-  --color-success-bg: oklch(25% 0.08 145);
-  --color-success-bg-hover: oklch(30% 0.1 145);
-  --color-success-icon: oklch(80% 0.16 145);
+  --color-success: oklch(68% 0.18 145);
+  --color-success-hover: oklch(73% 0.19 145);
+  --color-success-text: oklch(78% 0.17 145);
+  --color-success-border: oklch(45% 0.15 145);
+  --color-success-bg: oklch(20% 0.1 145);
+  --color-success-bg-hover: oklch(26% 0.12 145);
+  --color-success-icon: oklch(78% 0.17 145);
 
   /* Error (Material Red - Dark Mode) */
-  --color-error: oklch(70% 0.2 25);
-  --color-error-hover: oklch(75% 0.21 25);
-  --color-error-text: oklch(85% 0.18 25);
-  --color-error-border: oklch(45% 0.15 25);
-  --color-error-bg: oklch(25% 0.1 25);
-  --color-error-bg-hover: oklch(30% 0.12 25);
-  --color-error-icon: oklch(75% 0.21 25);
+  --color-error: oklch(68% 0.22 25);
+  --color-error-hover: oklch(73% 0.24 25);
+  --color-error-text: oklch(80% 0.21 25);
+  --color-error-border: oklch(45% 0.18 25);
+  --color-error-bg: oklch(20% 0.12 25);
+  --color-error-bg-hover: oklch(26% 0.14 25);
+  --color-error-icon: oklch(80% 0.21 25);
 
   /* Warning (Material Orange - Dark Mode) */
-  --color-warning: oklch(78% 0.14 65);
-  --color-warning-hover: oklch(82% 0.15 65);
-  --color-warning-text: oklch(88% 0.13 65);
-  --color-warning-border: oklch(50% 0.11 65);
-  --color-warning-bg: oklch(28% 0.08 65);
-  --color-warning-bg-hover: oklch(33% 0.1 65);
-  --color-warning-icon: oklch(82% 0.15 65);
+  --color-warning: oklch(72% 0.17 65);
+  --color-warning-hover: oklch(76% 0.18 65);
+  --color-warning-text: oklch(82% 0.16 65);
+  --color-warning-border: oklch(47% 0.14 65);
+  --color-warning-bg: oklch(20% 0.1 65);
+  --color-warning-bg-hover: oklch(28% 0.12 65);
+  --color-warning-icon: oklch(82% 0.16 65);
 
   /* Info (Material Blue - Dark Mode) */
-  --color-info: oklch(72% 0.16 250);
-  --color-info-hover: oklch(78% 0.17 250);
-  --color-info-text: oklch(85% 0.15 250);
-  --color-info-border: oklch(45% 0.13 250);
-  --color-info-bg: oklch(25% 0.09 250);
-  --color-info-bg-hover: oklch(30% 0.11 250);
-  --color-info-icon: oklch(78% 0.17 250);
+  --color-info: oklch(70% 0.2 250);
+  --color-info-hover: oklch(75% 0.21 250);
+  --color-info-text: oklch(80% 0.19 250);
+  --color-info-border: oklch(45% 0.16 250);
+  --color-info-bg: oklch(22% 0.11 250);
+  --color-info-bg-hover: oklch(26% 0.13 250);
+  --color-info-icon: oklch(80% 0.19 250);
 }
 
 /* Global Styles */

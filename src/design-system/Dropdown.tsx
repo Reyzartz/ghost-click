@@ -55,7 +55,7 @@ export const Dropdown = ({ items, trigger }: DropdownProps) => {
       </div>
 
       {isOpen && (
-        <div className="border-border bg-surface absolute top-full right-0 z-10 mt-1 min-w-30 rounded border shadow-lg">
+        <div className="bg-surface absolute top-full right-0 z-10 mt-1 min-w-30 rounded shadow-lg">
           {items.map((item, index) => {
             const IconComponent = item.icon;
             return (

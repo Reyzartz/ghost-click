@@ -14,7 +14,7 @@ import { MacroListState } from "../viewmodels/MacroListViewModel";
 import { SearchInput } from "@/components/SearchInput";
 import { MacroUtils } from "@/utils/MacroUtils";
 import { TabsManager } from "@/utils/TabsManager";
-import { Layout } from "@/components/Layout";
+import { Layout } from "@/design-system/Layout";
 import clsx from "clsx";
 
 export const MacroListView = ({ app }: { app: SidePanelApp }) => {

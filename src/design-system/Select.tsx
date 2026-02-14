@@ -18,7 +18,7 @@ interface SelectProps extends Omit<
 }
 
 const selectVariants = cva(
-  "appearance-none rounded border border-solid text-text-secondary transition-colors focus:outline-none disabled:cursor-not-allowed disabled:bg-surface-muted cursor-pointer",
+  "appearance-none rounded text-text-secondary focus:ring-1 transition-all focus:outline-none disabled:cursor-not-allowed border disabled:bg-surface-muted disabled:opacity-60 cursor-pointer",
   {
     variants: {
       size: {
@@ -27,8 +27,9 @@ const selectVariants = cva(
         lg: "text-base leading-4.5 px-6 py-3",
       },
       hasError: {
-        true: "border-error-border focus:border-error bg-error-bg",
-        false: "border-border-secondary bg-surface focus:border-border-focus",
+        true: "bg-error-bg  focus:ring-error border-error-border",
+        false:
+          "bg-surface focus:bg-surface-active focus:ring-primary border-border",
       },
       fullWidth: {
         true: "w-full",

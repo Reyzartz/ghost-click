@@ -5,7 +5,7 @@ import { ArrowDown, Square, Circle } from "lucide-react";
 import { EditStepItem } from "@/components/EditStepItem";
 import { MacroStep } from "@/models";
 import { RecordingProgressState } from "../viewmodels/RecordingProgressViewModel";
-import { Layout } from "@/components/Layout";
+import { Layout } from "@/design-system/Layout";
 
 export const RecordingProgressView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<RecordingProgressState>({

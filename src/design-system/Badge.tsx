@@ -3,15 +3,15 @@ import { cva } from "class-variance-authority";
 import { clsx } from "clsx";
 
 const badgeVariants = cva(
-  "inline-flex items-center px-1 py-0.5 rounded-sm text-[10px] font-medium border shrink-0",
+  "inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-surface-hover text-text-secondary border-border",
-        success: "bg-success-bg text-success-text border-success-border",
-        error: "bg-error-bg text-error-text border-error-border",
-        warning: "bg-warning-bg text-warning-text border-warning-border",
-        info: "bg-info-bg text-info-text border-info-border",
+        default: "bg-surface-hover text-text-secondary",
+        success: "bg-success-bg text-success-text",
+        error: "bg-error-bg text-error-text",
+        warning: "bg-warning-bg text-warning-text",
+        info: "bg-info-bg text-info-text",
       },
     },
     defaultVariants: {

@@ -6,7 +6,7 @@ import { SettingsItem } from "@/components/SettingsItem";
 import { SettingsSection } from "@/components/SettingsSection";
 import { SettingsActions } from "@/components/SettingsActions";
 import { RefreshCw, Clock, Target, Gauge, Palette } from "lucide-react";
-import { Layout } from "@/components/Layout";
+import { Layout } from "@/design-system/Layout";
 
 export const SettingsView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<SettingsState>({

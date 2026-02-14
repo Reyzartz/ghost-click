@@ -7,7 +7,7 @@ import { Play, Pause, Square, Edit, RotateCcw } from "lucide-react";
 import { ProgressBar } from "@/components/ProgressBar";
 import { StepListItem } from "@/components/StepListItem";
 import { DisplayFavicon } from "@/components/DisplayFavicon";
-import { Layout } from "@/components/Layout";
+import { Layout } from "@/design-system/Layout";
 
 export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<PlaybackProgressState>({

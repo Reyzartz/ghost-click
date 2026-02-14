@@ -36,12 +36,12 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           ref={ref}
           id={textareaId}
           className={clsx(
-            "bg-surface text-text-secondary resize-none rounded border border-solid px-3 py-2 text-sm transition-colors",
-            "focus:border-border-focus focus:outline-none",
-            "disabled:bg-surface-muted disabled:cursor-not-allowed",
+            "bg-surface text-text-secondary resize-none rounded border px-3 py-2 text-sm transition-all",
+            "focus:bg-surface-active ring-inset focus:ring-1 focus:outline-none",
+            "disabled:bg-surface-muted disabled:cursor-not-allowed disabled:opacity-60",
             error
-              ? "border-error-border focus:border-error"
-              : "border-border-secondary",
+              ? "bg-error-bg focus:ring-error border-error-border"
+              : "focus:ring-primary border-border",
             fullWidth && "w-full",
             className
           )}
