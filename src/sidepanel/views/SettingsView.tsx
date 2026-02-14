@@ -1,11 +1,18 @@
 import { useEffect, useState } from "react";
 import { SidePanelApp } from "../SidePanelApp";
 import { SettingsState } from "../viewmodels/SettingsViewModel";
-import { Text, Alert, Button, Input, Select } from "@/design-system";
+import { Text, Alert, Button, Input, Select, Toggle } from "@/design-system";
 import { SettingsItem } from "@/components/SettingsItem";
 import { SettingsSection } from "@/components/SettingsSection";
 import { SettingsActions } from "@/components/SettingsActions";
-import { RefreshCw, Clock, Target, Gauge, Palette } from "lucide-react";
+import {
+  RefreshCw,
+  Clock,
+  Target,
+  Gauge,
+  Palette,
+  CircleX,
+} from "lucide-react";
 import { Layout } from "@/design-system/Layout";
 
 export const SettingsView = ({ app }: { app: SidePanelApp }) => {
@@ -180,6 +187,22 @@ export const SettingsView = ({ app }: { app: SidePanelApp }) => {
                 step={50}
                 error={state.formErrors.minimumDelayMs}
                 fullWidth
+              />
+            </SettingsItem>
+
+            <SettingsItem
+              icon={CircleX}
+              label="Stop on Error"
+              description="Stop playback when a step fails"
+            >
+              <Toggle
+                checked={state.formSettings.stopOnError}
+                onChange={(e) =>
+                  app.settingsViewModel.updateFormField(
+                    "stopOnError",
+                    e.target.checked
+                  )
+                }
               />
             </SettingsItem>
           </SettingsSection>

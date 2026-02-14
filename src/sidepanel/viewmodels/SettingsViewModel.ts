@@ -9,6 +9,7 @@ export interface SettingsFormErrors {
   defaultSelectorType?: string;
   minimumDelayMs?: string;
   theme?: string;
+  stopOnError?: string;
 }
 
 export interface SettingsState {
@@ -70,7 +71,10 @@ export class SettingsViewModel extends BaseViewModel {
     }
   }
 
-  updateFormField(field: keyof Settings, value: number | string): void {
+  updateFormField(
+    field: keyof Settings,
+    value: number | string | boolean
+  ): void {
     if (!this.state.formSettings) return;
 
     const updatedFormSettings = {
@@ -111,6 +115,10 @@ export class SettingsViewModel extends BaseViewModel {
 
     if (!["system", "light", "dark"].includes(settings.theme)) {
       errors.theme = "Invalid theme";
+    }
+
+    if (typeof settings.stopOnError !== "boolean") {
+      errors.stopOnError = "Invalid value for stopOnError";
     }
 
     return errors;

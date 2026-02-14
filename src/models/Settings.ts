@@ -8,6 +8,7 @@ export interface Settings {
   defaultSelectorType: ElementSelectorType;
   minimumDelayMs: number;
   theme: Theme;
+  stopOnError: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -16,4 +17,5 @@ export const DEFAULT_SETTINGS: Settings = {
   defaultSelectorType: "xpath",
   minimumDelayMs: 200,
   theme: "system",
+  stopOnError: false,
 };

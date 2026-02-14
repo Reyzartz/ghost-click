@@ -24,7 +24,7 @@ export const SettingsItem = memo(
           </Text>
         </div>
 
-        <div className="w-28">{children}</div>
+        <div className="flex w-28 items-center justify-end">{children}</div>
       </Card>
     );
   }

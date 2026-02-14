@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "@/design-system";
 
 type Props = {
@@ -21,7 +20,7 @@ export const SettingsActions = ({
       <div className="flex gap-2">
         <Button
           type="button"
-          variant="ghost"
+          variant="secondary"
           onClick={onCancel}
           disabled={saving}
           fullWidth

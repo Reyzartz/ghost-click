@@ -321,17 +321,17 @@ export class EditMacroViewModel extends BaseViewModel {
 
   pausePlayback(): void {
     this.logger.info("Requesting pause playback");
-    this.emitter.emit("PAUSE_PLAYBACK", undefined, { currentTab: false });
+    this.emitter.emit("PAUSE_PLAYBACK");
   }
 
   resumePlayback(): void {
     this.logger.info("Requesting resume playback");
-    this.emitter.emit("RESUME_PLAYBACK", undefined, { currentTab: false });
+    this.emitter.emit("RESUME_PLAYBACK");
   }
 
   stopPlayback(): void {
     this.logger.info("Requesting stop playback");
-    this.emitter.emit("STOP_PLAYBACK", undefined, { currentTab: false });
+    this.emitter.emit("STOP_PLAYBACK");
   }
 
   deleteStep(stepId: string): void {

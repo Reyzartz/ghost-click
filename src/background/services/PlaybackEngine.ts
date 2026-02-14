@@ -102,12 +102,6 @@ export class PlaybackEngine {
               this.logger.warn("Unknown step type");
           }
         } catch (err) {
-          this.logger.error("Step execution failed, continuing", {
-            error: err,
-            stepId: step.id,
-            stepType: step.type,
-          });
-
           this.emitter.emit("PLAYBACK_ERROR", {
             macroId: macro.id,
             stepId: step.id,
