@@ -179,7 +179,7 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
         <Text
           variant="caption"
           color="muted"
-          className="bg-surface sticky top-0"
+          className="bg-background sticky top-0"
         >
           All Steps
         </Text>

@@ -11,6 +11,7 @@ import {
   LucideIcon,
 } from "lucide-react";
 import { Text, Icon, Card } from "@/design-system";
+import { useMemo } from "react";
 
 interface StepListItemProps {
   step: MacroStep;
@@ -35,18 +36,31 @@ export const StepListItem = ({
 }: StepListItemProps) => {
   const IconComponent = StepTypeToIcon[step.type];
 
-  const variant = isErrored
-    ? "errored"
-    : isCurrent
-      ? "current"
-      : isCompleted
-        ? "completed"
-        : "default";
+  const cardVariant = useMemo(() => {
+    if (isErrored) return "errored";
+    if (isCurrent) return "selected";
+    if (isCompleted) return "secondary";
+
+    return "default";
+  }, [isErrored, isCurrent, isCompleted]);
+
+  const textAndIconColor = useMemo(() => {
+    if (isCurrent && !isErrored) return "info";
+    if (isCompleted && isErrored) return "error";
+    if (isCompleted && !isErrored) return "success";
+  }, [isCurrent, isCompleted, isErrored]);
+
+  const iconType = useMemo(() => {
+    if (isCurrent) return Play;
+    if (isCompleted && isErrored) return AlertCircle;
+    if (isCompleted && !isErrored) return Check;
+    return null;
+  }, [isCurrent, isCompleted, isErrored]);
 
   return (
     <Card
       as="li"
-      variant={variant}
+      variant={cardVariant}
       size="sm"
       autoScroll={isCurrent}
       autoFocus={isCurrent}
@@ -58,19 +72,15 @@ export const StepListItem = ({
           isCompleted && !isErrored && "text-success-icon"
         )}
       >
-        <Icon icon={IconComponent} size="sm" />
-        <Text variant="small">{step.name}</Text>
-        {isCurrent && !isErrored && (
-          <Icon icon={Play} size="sm" color="success" className="ml-auto" />
-        )}
-        {isCompleted && !isErrored && (
-          <Icon icon={Check} size="sm" color="success" className="ml-auto" />
-        )}
-        {isErrored && (
+        <Icon icon={IconComponent} size="sm" color={textAndIconColor} />
+        <Text variant="small" color={textAndIconColor}>
+          {step.name}
+        </Text>
+        {iconType && (
           <Icon
-            icon={AlertCircle}
+            icon={iconType}
             size="sm"
-            color="error"
+            color={textAndIconColor}
             className="ml-auto"
           />
         )}

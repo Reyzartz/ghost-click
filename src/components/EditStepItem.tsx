@@ -107,11 +107,26 @@ export const EditStepItem = ({
   const cardVariant = useMemo(() => {
     if (isDeleted) return "deleted";
     if (isErrored) return "errored";
-    if (isCurrent) return "current";
-    if (isCompleted) return "completed";
+    if (isCurrent) return "selected";
+    if (isCompleted) return "success";
 
     return "default";
   }, [isDeleted, isErrored, isCurrent, isCompleted]);
+
+  const textColor = useMemo(() => {
+    if (isDeleted) return "muted";
+    if (isErrored) return "error";
+    if (isCurrent) return "info";
+    if (isCompleted) return "success";
+    return "default";
+  }, [isDeleted, isErrored, isCurrent, isCompleted]);
+
+  const iconType = useMemo(() => {
+    if (isCurrent) return Play;
+    if (isCompleted && isErrored) return AlertCircle;
+    if (isCompleted && !isErrored) return Check;
+    return null;
+  }, [isCurrent, isCompleted, isErrored]);
 
   return (
     <>
@@ -179,12 +194,13 @@ export const EditStepItem = ({
                   "mb-0.5 flex grow truncate",
                   isDeleted && "line-through"
                 )}
-                color={isDeleted ? "muted" : isErrored ? "error" : "default"}
+                color={textColor}
               >
                 <Icon
                   icon={IconComponent}
                   size="sm"
                   className="mt-0.5 mr-1.5"
+                  color={textColor}
                 />
                 {step.name}
               </Text>
@@ -202,9 +218,7 @@ export const EditStepItem = ({
             <StepMeta step={step} className="ml-5 pl-0.5" />
           </div>
 
-          {isErrored && <Icon icon={AlertCircle} size="sm" color="error" />}
-          {isCurrent && <Icon icon={Play} size="sm" color="success" />}
-          {isCompleted && <Icon icon={Check} size="sm" color="success" />}
+          {iconType && <Icon icon={iconType} size="sm" color={textColor} />}
         </div>
 
         {isDeleted ? (

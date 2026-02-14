@@ -23,7 +23,7 @@ const StepRetryInput = memo<StepRetryInputProps>(
           Retry Settings:
         </Text>
 
-        <Card className="flex flex-col gap-2" size="sm">
+        <Card className="flex flex-col gap-2" variant="secondary">
           <Input
             type="number"
             min={0}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { SidePanelApp } from "../SidePanelApp";
-import { Alert, Button, Text, Icon } from "@/design-system";
+import { Alert, Button, Text, Icon, Card } from "@/design-system";
 import { ArrowDown, Square, Circle } from "lucide-react";
 import { EditStepItem } from "@/components/EditStepItem";
 import { MacroStep } from "@/models";
@@ -76,7 +76,7 @@ export const RecordingProgressView = ({ app }: { app: SidePanelApp }) => {
         <Text variant="body" className="mb-2 font-medium">
           Recorded Steps ({state.steps.length})
         </Text>
-        <div className="border-border bg-surface-muted grow overflow-scroll rounded-lg border">
+        <Card variant="secondary" className="grow overflow-scroll">
           {state.steps.length === 0 ? (
             <div className="text-text-muted px-3 py-8 text-center">
               <Text>
@@ -125,7 +125,7 @@ export const RecordingProgressView = ({ app }: { app: SidePanelApp }) => {
               })}
             </div>
           )}
-        </div>
+        </Card>
       </div>
 
       {!state.isRecording && state.steps.length > 0 && (

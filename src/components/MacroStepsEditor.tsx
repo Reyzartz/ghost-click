@@ -38,7 +38,7 @@ export const MacroStepsEditor = ({
         Steps ({macro.steps.length})
       </Text>
 
-      <Card className="grow overflow-scroll" variant="selected">
+      <Card className="grow overflow-scroll" variant="secondary">
         {macro.steps.length === 0 ? (
           <Text className="px-3 py-4 text-center" color="muted">
             No steps added yet.

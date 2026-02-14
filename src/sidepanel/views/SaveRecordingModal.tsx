@@ -84,7 +84,7 @@ export const SaveRecordingModal = ({ app }: { app: SidePanelApp }) => {
 
       <ModalBody className="space-y-2">
         {state.macro && (
-          <Card>
+          <Card variant="secondary">
             <MacroMetadataRow
               label="Steps recorded"
               value={state.macro?.steps.length ?? 0}

@@ -76,10 +76,9 @@ const StepTargetInput = memo<StepTargetInputProps>(
 
         <Card
           className="relative flex flex-col gap-2"
-          size="sm"
-          variant={error ? "errored" : "selected"}
+          variant={error ? "errored" : "secondary"}
         >
-          <>
+          <div className="flex items-center gap-2 border-b pb-2">
             {!isInspecting ? (
               <Button
                 onClick={() => {
@@ -89,9 +88,7 @@ const StepTargetInput = memo<StepTargetInputProps>(
                 size="sm"
                 icon={Search}
                 title="Inspect element on page"
-              >
-                Inspect
-              </Button>
+              />
             ) : (
               <Button
                 onClick={() => {
@@ -101,11 +98,14 @@ const StepTargetInput = memo<StepTargetInputProps>(
                 size="sm"
                 icon={Square}
                 title="Stop inspection"
-              >
-                Stop Inspecting
-              </Button>
+              />
             )}
-          </>
+
+            <Text variant="xs" color="muted">
+              Use the inspector to select an element on the page, or fill in the
+              details below.
+            </Text>
+          </div>
 
           <Input
             type="text"
