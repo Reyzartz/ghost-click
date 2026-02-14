@@ -3,6 +3,9 @@ export type { ButtonVariant, ButtonSize } from "./Button";
 
 export { Input } from "./Input";
 
+export { Toggle } from "./Toggle";
+export type { ToggleSize } from "./Toggle";
+
 export { Textarea } from "./Textarea";
 
 export { Select } from "./Select";
