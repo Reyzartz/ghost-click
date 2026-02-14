@@ -79,6 +79,22 @@ export const SaveRecordingModal = ({ app }: { app: SidePanelApp }) => {
       </ModalHeader>
 
       <ModalBody className="space-y-2">
+        <Input
+          label="Macro Name"
+          type="text"
+          value={state.macroName}
+          onChange={(e) =>
+            app.saveRecordingViewModel.updateMacroName(e.target.value)
+          }
+          placeholder="Enter macro name"
+          autoFocus
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && state.macroName.trim()) {
+              handleSave();
+            }
+          }}
+        />
+
         {state.macro && (
           <Card variant="secondary">
             <MacroMetadataRow
@@ -95,21 +111,6 @@ export const SaveRecordingModal = ({ app }: { app: SidePanelApp }) => {
             />
           </Card>
         )}
-        <Input
-          label="Macro Name"
-          type="text"
-          value={state.macroName}
-          onChange={(e) =>
-            app.saveRecordingViewModel.updateMacroName(e.target.value)
-          }
-          placeholder="Enter macro name"
-          autoFocus
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && state.macroName.trim()) {
-              handleSave();
-            }
-          }}
-        />
       </ModalBody>
 
       <ModalFooter>

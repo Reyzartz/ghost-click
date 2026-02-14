@@ -20,19 +20,21 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const buttonVariants = cva(
-  "cursor-pointer rounded font-medium transition-all inline-flex items-center justify-center gap-2 whitespace-nowrap disabled:cursor-not-allowed disabled:opacity-60",
+  "cursor-pointer rounded font-medium transition-all inline-flex items-center justify-center gap-2 whitespace-nowrap disabled:cursor-not-allowed disabled:opacity-60 border",
   {
     variants: {
       variant: {
         primary:
-          "bg-primary text-text-inverse hover:bg-primary-hover active:scale-[0.98] disabled:bg-text-disabled",
+          "bg-primary text-text-inverse hover:bg-primary-hover active:scale-[0.98] disabled:bg-text-disabled border-primary disabled:border-primary",
         secondary:
-          "bg-surface text-text-secondary hover:bg-surface-hover active:bg-surface-active border",
+          "bg-surface text-text-secondary hover:bg-surface-hover active:bg-surface-active",
         danger:
-          "bg-error text-text-inverse hover:bg-error-hover active:scale-[0.98]",
-        ghost: "bg-transparent text-text-secondary hover:bg-surface-hover",
+          "bg-error text-text-inverse hover:bg-error-hover active:scale-[0.98] border-error disabled:border-error",
+        ghost:
+          "bg-transparent text-text-secondary hover:bg-surface-hover border-transparent",
+
         success:
-          "bg-success text-text-inverse hover:bg-success-hover active:scale-[0.98]",
+          "bg-success text-text-inverse hover:bg-success-hover active:scale-[0.98] border-success disabled:border-success",
       },
       size: {
         sm: "text-xs leading-3.5",
@@ -68,17 +70,17 @@ const buttonVariants = cva(
       {
         size: "sm",
         iconOnly: false,
-        className: "px-3 py-1.5",
+        className: "px-2.5 py-1.5",
       },
       {
         size: "md",
         iconOnly: false,
-        className: "px-4 py-2",
+        className: "px-3 py-2",
       },
       {
         size: "lg",
         iconOnly: false,
-        className: "px-6 py-3",
+        className: "px-4 py-3",
       },
     ],
     defaultVariants: {

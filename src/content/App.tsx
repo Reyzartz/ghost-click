@@ -6,7 +6,6 @@ import {
   StatusIndicatorState,
 } from "./viewmodels/StatusIndicatorViewModel";
 import { NotificationState } from "./viewmodels/NotificationViewModel";
-import { QuickActionsView } from "./views/QuickActionsView";
 
 const statusStyles: Record<AppStatus, string> = {
   idle: "",
@@ -73,8 +72,6 @@ function App({ app }: { app: ContentApp }) {
           </div>
         ))}
       </div>
-
-      <QuickActionsView app={app} />
     </>
   );
 }

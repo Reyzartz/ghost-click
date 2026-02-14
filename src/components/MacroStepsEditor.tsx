@@ -45,7 +45,11 @@ export const MacroStepsEditor = ({
           </Text>
         ) : (
           <div className="flex w-full flex-col items-center p-4">
-            <AddStepButton onAddStep={(step) => onAddStep(step, 0)} />
+            <AddStepButton
+              onAddStep={(step) => onAddStep(step, 0)}
+              disabled={isPlaying}
+            />
+
             <div
               className={clsx(
                 "text-text-disabled transition-[height] duration-200",
@@ -80,7 +84,10 @@ export const MacroStepsEditor = ({
                   />
 
                   <div className="text-text-disabled text-xs">|</div>
-                  <AddStepButton onAddStep={(s) => onAddStep(s, index + 1)} />
+                  <AddStepButton
+                    onAddStep={(s) => onAddStep(s, index + 1)}
+                    disabled={isPlaying}
+                  />
                   <div className="text-text-disabled group-last:hidden">
                     <ArrowDown size={16} />
                   </div>

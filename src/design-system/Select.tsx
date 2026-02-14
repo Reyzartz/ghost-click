@@ -1,4 +1,5 @@
 import { SelectHTMLAttributes, forwardRef } from "react";
+import { LucideIcon } from "lucide-react";
 import { cva } from "class-variance-authority";
 import { clsx } from "clsx";
 import { Text } from "./Text";
@@ -15,6 +16,7 @@ interface SelectProps extends Omit<
   error?: string;
   fullWidth?: boolean;
   size?: SelectSize;
+  icon?: LucideIcon;
 }
 
 const selectVariants = cva(
@@ -22,9 +24,9 @@ const selectVariants = cva(
   {
     variants: {
       size: {
-        sm: "text-xs leading-3.5 px-3 py-1.5",
-        md: "text-sm leading-4 px-4 py-2",
-        lg: "text-base leading-4.5 px-6 py-3",
+        sm: "text-xs leading-3.5 py-1.5",
+        md: "text-sm leading-4 py-2",
+        lg: "text-base leading-4.5 py-3",
       },
       hasError: {
         true: "bg-error-bg  focus:ring-error border-error-border",
@@ -35,14 +37,63 @@ const selectVariants = cva(
         true: "w-full",
         false: "",
       },
+      hasIcon: {
+        true: "",
+        false: "",
+      },
     },
+    compoundVariants: [
+      {
+        size: "sm",
+        hasIcon: false,
+        className: "pl-2.5 pr-8",
+      },
+      {
+        size: "md",
+        hasIcon: false,
+        className: "pl-3 pr-9",
+      },
+      {
+        size: "lg",
+        hasIcon: false,
+        className: "pl-4 pr-11",
+      },
+      {
+        size: "sm",
+        hasIcon: true,
+        className: "pl-8 pr-8",
+      },
+      {
+        size: "md",
+        hasIcon: true,
+        className: "pl-9 pr-9",
+      },
+      {
+        size: "lg",
+        hasIcon: true,
+        className: "pl-11 pr-11",
+      },
+    ],
     defaultVariants: {
       size: "md",
       hasError: false,
       fullWidth: true,
+      hasIcon: false,
     },
   }
 );
+
+const iconSizes: Record<SelectSize, "sm" | "md" | "lg"> = {
+  sm: "sm",
+  md: "sm",
+  lg: "md",
+};
+
+const iconLeftPositionClasses: Record<SelectSize, string> = {
+  sm: "left-2.5",
+  md: "left-3",
+  lg: "left-4",
+};
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   (
@@ -54,6 +105,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
       className,
       id,
       children,
+      icon: IconComponent,
       ...props
     },
     ref
@@ -69,6 +121,18 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         )}
 
         <div className="relative">
+          {IconComponent && (
+            <Icon
+              icon={IconComponent}
+              size={iconSizes[size]}
+              color="muted"
+              className={clsx(
+                "pointer-events-none absolute top-1/2 -translate-y-1/2",
+                iconLeftPositionClasses[size]
+              )}
+            />
+          )}
+
           <select
             ref={ref}
             id={selectId}
@@ -77,6 +141,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
                 size,
                 hasError: !!error,
                 fullWidth,
+                hasIcon: !!IconComponent,
               }),
               className
             )}

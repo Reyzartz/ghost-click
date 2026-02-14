@@ -1,5 +1,6 @@
 import { forwardRef } from "react";
 import { Input } from "@/design-system";
+import { Search } from "lucide-react";
 
 interface SearchInputProps {
   value: string;
@@ -20,6 +21,7 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
         onKeyDown={onKeyDown}
         fullWidth
         autoFocus
+        icon={Search}
       />
     );
   }

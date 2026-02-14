@@ -9,9 +9,11 @@ import {
   Input,
   Text,
   ModalFooter,
+  Card,
 } from "@/design-system";
 import { DuplicateMacroState } from "../viewmodels/DuplicateMacroViewModel";
 import { SaveIcon, EditIcon } from "lucide-react";
+import { MacroMetadataRow } from "@/components/MetaDataRow";
 
 export const DuplicateMacroModal = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<DuplicateMacroState>({
@@ -66,16 +68,7 @@ export const DuplicateMacroModal = ({ app }: { app: SidePanelApp }) => {
         </div>
       </ModalHeader>
 
-      <ModalBody className="space-y-4">
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <Text variant="small" color="muted">
-              Steps:
-            </Text>
-            <Text variant="small">{state.stepCount}</Text>
-          </div>
-        </div>
-
+      <ModalBody className="space-y-2">
         <Input
           label="Macro Name"
           type="text"
@@ -91,6 +84,10 @@ export const DuplicateMacroModal = ({ app }: { app: SidePanelApp }) => {
             }
           }}
         />
+
+        <Card variant="secondary">
+          <MacroMetadataRow label="Steps" value={state.stepCount} />
+        </Card>
       </ModalBody>
 
       <ModalFooter>

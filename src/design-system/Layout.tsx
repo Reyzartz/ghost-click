@@ -20,7 +20,7 @@ const Layout = memo(({ children, header }: PropsWithChildren<LayoutProps>) => {
 });
 
 interface HeaderProps {
-  title: string;
+  title?: string;
   onBack?: () => void;
   showBorder?: boolean;
   className?: string;
@@ -47,9 +47,9 @@ export const Header = ({
         <Button variant="ghost" size="sm" onClick={onBack} icon={ChevronLeft} />
       )}
 
-      <Text variant="h3">{title}</Text>
+      {title && <Text variant="h3">{title}</Text>}
 
-      <div className="flex flex-1 justify-end gap-2 overflow-hidden">
+      <div className="flex flex-1 items-center justify-end gap-1 overflow-hidden px-2">
         {children}
       </div>
     </div>

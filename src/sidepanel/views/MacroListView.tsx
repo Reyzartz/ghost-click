@@ -121,24 +121,8 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
   return (
     <Layout
       header={
-        <header className="flex items-start justify-between gap-4 px-4 pt-2.5">
-          <div className="grow overflow-hidden">
-            <Text variant="h2">Macros</Text>
-
-            <Text
-              variant="small"
-              color="muted"
-              className={clsx(
-                "truncate transition-[height] duration-200",
-                app.macroListViewModel.showSearchResults() ? "h-4" : "h-0"
-              )}
-            >
-              {state.filteredMacros.length} results for &quot;
-              {state.searchQuery}&quot;
-            </Text>
-          </div>
-
-          <div className="flex shrink-0 items-center gap-1.5">
+        <Layout.Header title="Macros" className="pl-4" showBorder={false}>
+          <>
             {state.isRecording ? (
               <Button
                 onClick={handleStopRecording}
@@ -174,8 +158,8 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
               icon={Settings}
               title="Settings"
             />
-          </div>
-        </header>
+          </>
+        </Layout.Header>
       }
     >
       {state.error && <Alert variant="error">{state.error}</Alert>}
