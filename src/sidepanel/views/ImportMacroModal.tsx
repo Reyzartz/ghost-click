@@ -7,13 +7,12 @@ import {
   ModalBody,
   Button,
   Input,
-  Text,
   Textarea,
   ModalFooter,
   Card,
 } from "@/design-system";
 import { ImportMacroState } from "../viewmodels/ImportMacroViewModel";
-import { EditIcon, SaveIcon } from "lucide-react";
+import { EditIcon, ImportIcon, SaveIcon } from "lucide-react";
 import { MacroMetadataRow } from "@/components/MetaDataRow";
 
 export const ImportMacroModal = ({ app }: { app: SidePanelApp }) => {
@@ -49,9 +48,7 @@ export const ImportMacroModal = ({ app }: { app: SidePanelApp }) => {
 
   return (
     <Modal isOpen={state.isOpen} onClose={handleDiscard} maxWidth="md">
-      <ModalHeader>
-        <Text variant="h2">Import Macro</Text>
-      </ModalHeader>
+      <ModalHeader title="Import Macro" icon={ImportIcon} />
 
       <ModalBody>
         <Input
@@ -93,7 +90,7 @@ export const ImportMacroModal = ({ app }: { app: SidePanelApp }) => {
           )}
         >
           {state.parsedMacro && (
-            <Card className="mt-2">
+            <Card className="mt-2" variant="secondary">
               <MacroMetadataRow
                 label="Steps"
                 value={state.parsedMacro.steps.length}

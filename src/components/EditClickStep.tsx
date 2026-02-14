@@ -12,8 +12,6 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Text,
-  Icon,
 } from "@/design-system";
 import { MacroUtils } from "@/utils/MacroUtils";
 import * as yup from "yup";
@@ -86,10 +84,7 @@ const EditClickStep = memo<EditClickStepProps>(
 
     return (
       <Modal isOpen={isOpen} onClose={handleCancel} maxWidth="md">
-        <ModalHeader className="flex items-center gap-2">
-          <Icon icon={MousePointerClickIcon} size="md" color="muted" />
-          <Text variant="h2">Edit Click Step</Text>
-        </ModalHeader>
+        <ModalHeader icon={MousePointerClickIcon} title="Edit Click Step" />
 
         <ModalBody className="space-y-2">
           <StepNameInput

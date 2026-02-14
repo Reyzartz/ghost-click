@@ -6,14 +6,12 @@ import { StepRetryInput } from "./StepRetryInput";
 import { StepTargetInput } from "./StepTargetInput";
 import { TextCursorInputIcon } from "lucide-react";
 import {
-  Text,
   Button,
   Input,
   Modal,
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Icon,
 } from "@/design-system";
 import { MacroUtils } from "@/utils/MacroUtils";
 import * as yup from "yup";
@@ -86,10 +84,7 @@ const EditInputStep = memo<EditInputStepProps>(
 
     return (
       <Modal isOpen={isOpen} onClose={handleCancel} maxWidth="md">
-        <ModalHeader className="flex items-center gap-2">
-          <Icon icon={TextCursorInputIcon} size="md" color="muted" />
-          <Text variant="h2">Edit Input Step</Text>
-        </ModalHeader>
+        <ModalHeader icon={TextCursorInputIcon} title="Edit Input Step" />
 
         <ModalBody className="space-y-2">
           <StepNameInput

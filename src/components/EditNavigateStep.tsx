@@ -4,14 +4,12 @@ import { StepDelayInput } from "./StepDelayInput";
 import { StepNameInput } from "./StepNameInput";
 import { GlobeIcon } from "lucide-react";
 import {
-  Text,
   Button,
   Input,
   Modal,
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Icon,
 } from "@/design-system";
 import { MacroUtils } from "@/utils/MacroUtils";
 import * as yup from "yup";
@@ -84,10 +82,7 @@ export const EditNavigateStep = memo<EditNavigateStepProps>(
 
     return (
       <Modal isOpen={isOpen} onClose={handleCancel} maxWidth="md">
-        <ModalHeader className="flex items-center gap-2">
-          <Icon icon={GlobeIcon} size="md" color="muted" />
-          <Text variant="h2">Edit Navigate Step</Text>
-        </ModalHeader>
+        <ModalHeader icon={GlobeIcon} title="Edit Navigate Step" />
 
         <ModalBody className="space-y-2">
           <StepNameInput

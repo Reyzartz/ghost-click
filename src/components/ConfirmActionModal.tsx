@@ -42,9 +42,7 @@ const ConfirmActionButton = memo<ConfirmActionModalProps>(
         <Button onClick={onClickHandler} {...props} />
 
         <Modal isOpen={open} maxWidth="sm">
-          <ModalHeader>
-            <Text variant="h2">{title}</Text>
-          </ModalHeader>
+          <ModalHeader title={title} />
           <ModalBody>
             <Text variant="body">{message}</Text>
           </ModalBody>

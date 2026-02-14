@@ -7,8 +7,8 @@ import {
   Square,
   ArrowUp,
   ArrowDown,
-  Upload,
   Settings,
+  ImportIcon,
 } from "lucide-react";
 import { MacroListState } from "../viewmodels/MacroListViewModel";
 import { SearchInput } from "@/components/SearchInput";
@@ -163,7 +163,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
               onClick={handleImport}
               variant="secondary"
               size="sm"
-              icon={Upload}
+              icon={ImportIcon}
               title="Import macro"
             />
 

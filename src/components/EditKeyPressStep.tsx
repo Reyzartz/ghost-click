@@ -7,14 +7,12 @@ import { KeyboardIcon } from "lucide-react";
 import { StepRetryInput } from "./StepRetryInput";
 import { StepTargetInput } from "./StepTargetInput";
 import {
-  Text,
   Button,
   Modal,
   ModalHeader,
   ModalBody,
   ModalFooter,
   Input,
-  Icon,
 } from "@/design-system";
 import { MacroUtils } from "@/utils/MacroUtils";
 import * as yup from "yup";
@@ -142,10 +140,7 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
 
     return (
       <Modal isOpen={isOpen} onClose={handleCancel} maxWidth="md">
-        <ModalHeader className="flex items-center gap-2">
-          <Icon icon={KeyboardIcon} size="md" color="muted" />
-          <Text variant="h2">Edit Key Press Step</Text>
-        </ModalHeader>
+        <ModalHeader icon={KeyboardIcon} title="Edit Key Press Step" />
 
         <ModalBody className="space-y-2">
           <StepNameInput
