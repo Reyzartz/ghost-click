@@ -2,6 +2,7 @@ import { Macro } from "@/models";
 import { memo } from "react";
 import { clsx } from "clsx";
 import { Text } from "@/design-system";
+import { useState } from "react";
 
 type DisplayFaviconSize = "small" | "medium" | "large";
 
@@ -17,22 +18,24 @@ const sizeMap: Record<DisplayFaviconSize, string> = {
   medium: "w-8 h-8 p-1",
   large: "w-12 h-12 p-2",
 };
-
 const DisplayFavicon = memo(
   ({ faviconUrl, name, size = "medium", className }: DisplayFaviconProps) => {
+    const [imgBroken, setImgBroken] = useState(false);
+
     return (
       <div
         className={clsx(
           sizeMap[size],
-          "bg-surface-hover flex shrink-0 items-center justify-center rounded",
+          "bg-background-secondary flex shrink-0 items-center justify-center rounded border",
           className
         )}
       >
-        {faviconUrl ? (
+        {faviconUrl && !imgBroken ? (
           <img
             src={faviconUrl}
             alt="Favicon"
             className="h-full w-full object-contain object-center"
+            onError={() => setImgBroken(true)}
           />
         ) : (
           <Text variant="small" color="muted" className="select-none">
