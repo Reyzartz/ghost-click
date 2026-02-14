@@ -51,10 +51,6 @@ export class RecorderService extends BaseService {
       this.handleSaveRecordingCancelled(data);
     });
 
-    this.emitter.on("RE_RECORD_REQUESTED", (data) => {
-      void this.handleReRecordRequested(data);
-    });
-
     // Listen for tab close to stop recording
     chrome.tabs.onRemoved.addListener((tabId) => {
       if (this.isRecording && this.recordingTabId === tabId) {
@@ -205,25 +201,5 @@ export class RecorderService extends BaseService {
   ): void {
     this.logger.info("Save recording cancelled", { sessionId: data.sessionId });
     // Recording is already cleared, nothing to do
-  }
-
-  private async handleReRecordRequested(data: {
-    sessionId: string;
-  }): Promise<void> {
-    this.logger.info("Re-record requested", { sessionId: data.sessionId });
-
-    const state = await this.recordingStateRepository.get();
-
-    if (!state || !state.macro) {
-      this.logger.error("No recording state found for re-record request");
-      return;
-    }
-
-    // Start a new recording session
-    this.emitter.emit("START_RECORDING", {
-      sessionId: data.sessionId,
-      domain: state.macro.domain,
-      tabId: this.recordingTabId ?? undefined,
-    });
   }
 }

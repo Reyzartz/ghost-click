@@ -126,23 +126,6 @@ export class SaveRecordingViewModel extends BaseViewModel {
     this.closeModal();
   }
 
-  reRecord(): void {
-    if (!this.state.macro) {
-      this.logger.warn("Cannot re-record: missing macro");
-      return;
-    }
-
-    this.logger.info("Re-recording requested", {
-      macroId: this.state.macro.id,
-    });
-
-    this.emitter.emit("RE_RECORD_REQUESTED", {
-      sessionId: this.state.macro.id,
-    });
-
-    this.closeModal();
-  }
-
   private closeModal(): void {
     this.setState({
       isOpen: false,

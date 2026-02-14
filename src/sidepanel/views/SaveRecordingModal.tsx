@@ -12,7 +12,7 @@ import {
   Card,
 } from "@/design-system";
 import { SaveRecordingState } from "../viewmodels/SaveRecordingViewModel";
-import { EditIcon, RotateCwIcon, SaveIcon } from "lucide-react";
+import { EditIcon, SaveIcon } from "lucide-react";
 import { MacroMetadataRow } from "@/components/MetaDataRow";
 
 export const SaveRecordingModal = ({ app }: { app: SidePanelApp }) => {
@@ -44,10 +44,6 @@ export const SaveRecordingModal = ({ app }: { app: SidePanelApp }) => {
     app.saveRecordingViewModel.cancelRecording();
   };
 
-  const handleReRecord = (): void => {
-    app.saveRecordingViewModel.reRecord();
-  };
-
   const formatDuration = (ms: number): string => {
     const seconds = Math.floor(ms / 1000);
     if (seconds < 60) return `${seconds}s`;
@@ -67,7 +63,7 @@ export const SaveRecordingModal = ({ app }: { app: SidePanelApp }) => {
         <div className="flex gap-2">
           <DisplayFavicon
             faviconUrl={state.macro?.faviconUrl ?? ""}
-            name={state.macro?.domain ?? ""}
+            name={state.macro?.name ?? ""}
             size="large"
           />
 
@@ -135,15 +131,6 @@ export const SaveRecordingModal = ({ app }: { app: SidePanelApp }) => {
           icon={EditIcon}
         >
           Edit
-        </Button>
-
-        <Button
-          onClick={handleReRecord}
-          variant="secondary"
-          fullWidth
-          icon={RotateCwIcon}
-        >
-          Re-record
         </Button>
       </ModalFooter>
     </Modal>

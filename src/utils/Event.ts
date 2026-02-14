@@ -20,7 +20,6 @@ export type EventType =
   | "SHOW_SAVE_RECORDING_MODAL"
   | "SAVE_RECORDING_CONFIRMED"
   | "SAVE_RECORDING_CANCELLED"
-  | "RE_RECORD_REQUESTED"
   | "OPEN_IMPORT_MACRO_MODAL"
   | "OPEN_DUPLICATE_MACRO_MODAL"
   | "EDIT_MACRO"
@@ -126,13 +125,6 @@ export interface SaveRecordingCancelledEvent extends BaseEvent {
   };
 }
 
-export interface ReRecordRequestedEvent extends BaseEvent {
-  name: "RE_RECORD_REQUESTED";
-  data: {
-    sessionId: string;
-  };
-}
-
 export interface OpenImportMacroModalEvent extends BaseEvent {
   name: "OPEN_IMPORT_MACRO_MODAL";
 }
@@ -205,7 +197,6 @@ export type AppEvents =
   | ShowSaveRecordingModalEvent
   | SaveRecordingConfirmedEvent
   | SaveRecordingCancelledEvent
-  | ReRecordRequestedEvent
   | OpenImportMacroModalEvent
   | OpenDuplicateMacroModalEvent
   | PlayMacroPreviewEvent
