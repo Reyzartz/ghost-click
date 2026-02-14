@@ -7,18 +7,15 @@ import { ActionExecutorService } from "./services/ActionExecutorService";
 import { ElementInspectorService } from "./services/ElementInspectorService";
 import { StatusIndicatorViewModel } from "./viewmodels/StatusIndicatorViewModel";
 import { NotificationViewModel } from "./viewmodels/NotificationViewModel";
-import { QuickActionsViewModel } from "./viewmodels/QuickActionsViewModel";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
-import { MacroRepository } from "@/repositories/MacroRepository";
 import { SettingsRepository } from "@/repositories/SettingsRepository";
 import { Storage } from "@/utils/Storage";
-import { ThemeService } from "@/services/ThemeService";
+import { ThemeService } from "@/sidepanel/services/ThemeService";
 
 export class ContentApp extends BaseApp {
   readonly statusIndicatorViewModel: StatusIndicatorViewModel;
   readonly notificationViewModel: NotificationViewModel;
-  readonly quickActionsViewModel: QuickActionsViewModel;
   private themeService?: ThemeService;
   private readonly settingsRepository: SettingsRepository;
   private readonly emitterInstance: Emitter;
@@ -30,7 +27,6 @@ export class ContentApp extends BaseApp {
     const storage = new Storage(chrome.storage.local);
     const recordingStateRepository = new RecordingStateRepository(storage);
     const playbackStateRepository = new PlaybackStateRepository(storage);
-    const macroRepository = new MacroRepository(emitter, storage);
     const settingsRepository = new SettingsRepository(storage);
 
     const statusIndicatorViewModel = new StatusIndicatorViewModel(
@@ -39,15 +35,7 @@ export class ContentApp extends BaseApp {
       playbackStateRepository
     );
     const notificationViewModel = new NotificationViewModel(emitter);
-    const quickActionsViewModel = new QuickActionsViewModel(
-      macroRepository,
-      emitter
-    );
-    const viewModels = [
-      statusIndicatorViewModel,
-      notificationViewModel,
-      quickActionsViewModel,
-    ];
+    const viewModels = [statusIndicatorViewModel, notificationViewModel];
 
     const services: Array<BaseService> = [
       new UserInputService(
@@ -65,7 +53,6 @@ export class ContentApp extends BaseApp {
     this.settingsRepository = settingsRepository;
     this.statusIndicatorViewModel = statusIndicatorViewModel;
     this.notificationViewModel = notificationViewModel;
-    this.quickActionsViewModel = quickActionsViewModel;
   }
 
   /**

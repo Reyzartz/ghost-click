@@ -16,7 +16,7 @@ import { SettingsViewModel } from "./viewmodels/SettingsViewModel";
 import { ViewService } from "./services/ViewService";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
 import { MacroShareService } from "@/sidepanel/services/MacroShareService";
-import { ThemeService } from "@/services/ThemeService";
+import { ThemeService } from "@/sidepanel/services/ThemeService";
 
 export class SidePanelApp extends BaseApp {
   readonly macroRepository: MacroRepository;
