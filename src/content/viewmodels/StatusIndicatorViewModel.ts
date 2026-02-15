@@ -3,7 +3,7 @@ import { Emitter } from "@/utils/Emitter";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
 
-export type AppStatus = "idle" | "recording" | "playing";
+export type AppStatus = "idle" | "recording" | "playing" | "paused";
 
 export interface StatusIndicatorState {
   status: AppStatus;
@@ -57,6 +57,20 @@ export class StatusIndicatorViewModel extends BaseViewModel {
     this.emitter.on("STOP_PLAYBACK", () => {
       this.updateStatus("idle");
     });
+
+    this.emitter.on("PAUSE_PLAYBACK", () => {
+      this.updateStatus("paused");
+    });
+
+    this.emitter.on("RESUME_PLAYBACK", () => {
+      this.updateStatus("playing");
+    });
+
+    setInterval(() => {
+      void this.checkActiveTabStatus();
+    }, 5000);
+
+    return Promise.resolve();
   }
 
   subscribe(listener: (state: StatusIndicatorState) => void): () => void {
@@ -79,5 +93,26 @@ export class StatusIndicatorViewModel extends BaseViewModel {
       to: status,
     });
     this.setState({ status });
+  }
+
+  private async checkActiveTabStatus(): Promise<void> {
+    const recordingState = await this.recordingStateRepository.get();
+    if (recordingState?.isRecording) {
+      this.updateStatus("recording");
+      return;
+    }
+
+    const playbackState = await this.playbackStateRepository.get();
+    if (playbackState?.isPaused) {
+      this.updateStatus("paused");
+      return;
+    }
+
+    if (playbackState?.isPlaying) {
+      this.updateStatus("playing");
+      return;
+    }
+
+    this.updateStatus("idle");
   }
 }

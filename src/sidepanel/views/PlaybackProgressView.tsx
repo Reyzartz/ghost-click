@@ -115,7 +115,7 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
 
               {state.isPaused ? (
                 <Button
-                  variant="success"
+                  variant="secondary"
                   size="sm"
                   onClick={handleResume}
                   icon={Play}

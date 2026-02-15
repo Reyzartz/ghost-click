@@ -32,7 +32,7 @@ export const EditMacroHeaderControls = ({
         <>
           {isPaused ? (
             <Button
-              variant="success"
+              variant="secondary"
               size="sm"
               onClick={onResume}
               icon={Play}

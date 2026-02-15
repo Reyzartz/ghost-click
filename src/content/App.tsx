@@ -1,23 +1,37 @@
 import { useState, useEffect } from "react";
-import { clsx } from "clsx";
+import { cva } from "class-variance-authority";
 import { ContentApp } from "./ContentApp";
-import {
-  AppStatus,
-  StatusIndicatorState,
-} from "./viewmodels/StatusIndicatorViewModel";
+import { StatusIndicatorState } from "./viewmodels/StatusIndicatorViewModel";
 import { NotificationState } from "./viewmodels/NotificationViewModel";
 
-const statusStyles: Record<AppStatus, string> = {
-  idle: "",
-  recording: "border-solid border-4 border-error",
-  playing: "border-solid border-4 border-success",
-};
+const statusContainer = cva(
+  "pointer-events-none fixed inset-0 box-border h-screen w-screen",
+  {
+    variants: {
+      status: {
+        idle: "",
+        recording: "border-solid border-4 border-error",
+        playing: "border-solid border-4 border-success",
+        paused: "border-solid border-4 border-info",
+      },
+    },
+    defaultVariants: { status: "idle" },
+  }
+);
 
-const notificationTypeStyles = {
-  success: "bg-success text-text-inverse",
-  error: "bg-error text-text-inverse",
-  info: "bg-info text-text-inverse",
-};
+const notificationContainer = cva(
+  "pointer-events-auto flex w-60 justify-center rounded px-4 py-2 text-sm font-medium shadow-lg",
+  {
+    variants: {
+      type: {
+        success: "bg-success text-text-inverse",
+        error: "bg-error text-text-inverse",
+        info: "bg-info text-text-inverse",
+      },
+    },
+    defaultVariants: { type: "info" },
+  }
+);
 
 function App({ app }: { app: ContentApp }) {
   const [statusState, setStatusState] = useState<StatusIndicatorState>({
@@ -44,13 +58,8 @@ function App({ app }: { app: ContentApp }) {
   return (
     <>
       <div
-        style={{
-          zIndex: 9999,
-        }}
-        className={clsx(
-          "pointer-events-none fixed inset-0 box-border h-screen w-screen",
-          statusStyles[statusState.status]
-        )}
+        style={{ zIndex: 9999 }}
+        className={statusContainer({ status: statusState.status })}
       />
 
       <div
@@ -63,10 +72,7 @@ function App({ app }: { app: ContentApp }) {
             style={{
               animation: "slideDown 0.3s ease-out",
             }}
-            className={clsx(
-              "pointer-events-auto flex w-60 justify-center rounded px-4 py-2 text-sm font-medium shadow-lg",
-              notificationTypeStyles[notification.type]
-            )}
+            className={notificationContainer({ type: notification.type })}
           >
             {notification.message}
           </div>
