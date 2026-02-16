@@ -40,7 +40,7 @@ export class SidepanelStateService extends BaseService {
       const tabId = tabs[0]?.id;
 
       if (!tabId) {
-        console.warn("No active tab found to toggle side panel");
+        this.logger.warn("No active tab found to toggle side panel");
         return;
       }
 

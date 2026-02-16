@@ -11,14 +11,35 @@ export class Logger {
   }
 
   info(message: string, ...args: unknown[]): void {
-    console.log(this.format("INFO", message), ...args);
+    this.log("INFO", message, ...args);
   }
 
   warn(message: string, ...args: unknown[]): void {
-    console.warn(this.format("WARN", message), ...args);
+    this.log("WARN", message, ...args);
   }
 
   error(message: string, ...args: unknown[]): void {
-    console.error(this.format("ERROR", message), ...args);
+    this.log("ERROR", message, ...args);
+  }
+
+  private log(
+    type: "INFO" | "WARN" | "ERROR",
+    message: string,
+    ...args: unknown[]
+  ): void {
+    if (process.env.NODE_ENV === "production") return;
+
+    const formattedMessage = this.format(type, message);
+    switch (type) {
+      case "INFO":
+        console.log(formattedMessage, ...args);
+        break;
+      case "WARN":
+        console.warn(formattedMessage, ...args);
+        break;
+      case "ERROR":
+        console.error(formattedMessage, ...args);
+        break;
+    }
   }
 }

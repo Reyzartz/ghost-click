@@ -6,8 +6,6 @@ import { ContentApp } from "./ContentApp";
 // This relies on @tailwindcss/vite to process the CSS before inlining
 import tailwindCss from "../styles/tailwind.css?inline";
 
-console.log("[CRXJS] Hello world from content script!");
-
 const contentApp = new ContentApp();
 void contentApp.init();
 

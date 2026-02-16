@@ -139,7 +139,7 @@ export class UserInputService extends BaseService {
 
     // TODO: Capture click on element in which the click handler is attached
     const target = event.target as HTMLElement;
-    console.log("Captured click on element:", target);
+    this.logger.info("Captured click on element", { element: target });
 
     const settings = await this.settingsRepository.get();
 
