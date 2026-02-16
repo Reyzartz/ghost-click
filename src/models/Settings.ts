@@ -9,6 +9,7 @@ export interface Settings {
   minimumDelayMs: number;
   theme: Theme;
   stopOnError: boolean;
+  refreshPageOnRecording: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -18,4 +19,5 @@ export const DEFAULT_SETTINGS: Settings = {
   minimumDelayMs: 200,
   theme: "system",
   stopOnError: false,
+  refreshPageOnRecording: true,
 };

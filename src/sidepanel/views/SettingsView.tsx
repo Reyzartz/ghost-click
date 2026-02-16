@@ -12,6 +12,7 @@ import {
   Gauge,
   Palette,
   CircleX,
+  RotateCw,
 } from "lucide-react";
 import { Layout } from "@/design-system/Layout";
 
@@ -99,97 +100,112 @@ export const SettingsView = ({ app }: { app: SidePanelApp }) => {
             </SettingsItem>
           </SettingsSection>
 
+          <SettingsSection title="Recording">
+            <SettingsItem
+              icon={RotateCw}
+              label="Refresh Page"
+              description="Reload page when starting recording"
+            >
+              <Toggle
+                checked={state.formSettings.refreshPageOnRecording}
+                onChange={(e) =>
+                  app.settingsViewModel.updateFormField(
+                    "refreshPageOnRecording",
+                    e.target.checked
+                  )
+                }
+              />
+            </SettingsItem>
+          </SettingsSection>
+
+          <SettingsItem
+            icon={RefreshCw}
+            label="Retry Count"
+            description="Number of attempts to find an element"
+          >
+            <Input
+              type="number"
+              value={state.formSettings.defaultRetryCount}
+              onChange={(e) =>
+                app.settingsViewModel.updateFormField(
+                  "defaultRetryCount",
+                  parseInt(e.target.value, 10)
+                )
+              }
+              min={0}
+              max={10}
+              error={state.formErrors.defaultRetryCount}
+              fullWidth
+            />
+          </SettingsItem>
+
+          <SettingsItem
+            icon={Clock}
+            label="Retry Interval"
+            description="Wait time between retry attempts"
+          >
+            <Input
+              type="number"
+              value={state.formSettings.defaultRetryIntervalMs}
+              onChange={(e) =>
+                app.settingsViewModel.updateFormField(
+                  "defaultRetryIntervalMs",
+                  parseInt(e.target.value, 10)
+                )
+              }
+              min={100}
+              max={10000}
+              step={100}
+              error={state.formErrors.defaultRetryIntervalMs}
+              fullWidth
+            />
+          </SettingsItem>
+
+          <SettingsItem
+            icon={Target}
+            label="Selector Type"
+            description="Method used to identify elements"
+          >
+            <Select
+              value={state.formSettings.defaultSelectorType}
+              onChange={(e) =>
+                app.settingsViewModel.updateFormField(
+                  "defaultSelectorType",
+                  e.target.value
+                )
+              }
+              error={state.formErrors.defaultSelectorType}
+              fullWidth
+            >
+              <option value="xpath">XPath</option>
+              <option value="id">ID</option>
+              <option value="className">Classname</option>
+            </Select>
+          </SettingsItem>
+
+          <SettingsItem
+            icon={Gauge}
+            label="Minimum Delay"
+            description="Minimum time between macro steps"
+          >
+            <Input
+              type="number"
+              value={state.formSettings.minimumDelayMs}
+              onChange={(e) =>
+                app.settingsViewModel.updateFormField(
+                  "minimumDelayMs",
+                  parseInt(e.target.value, 10)
+                )
+              }
+              min={0}
+              max={5000}
+              step={50}
+              error={state.formErrors.minimumDelayMs}
+              fullWidth
+            />
+          </SettingsItem>
+
           <SettingsSection title="Playback">
-            <SettingsItem
-              icon={RefreshCw}
-              label="Retry Count"
-              description="Number of attempts to find an element"
-            >
-              <Input
-                type="number"
-                value={state.formSettings.defaultRetryCount}
-                onChange={(e) =>
-                  app.settingsViewModel.updateFormField(
-                    "defaultRetryCount",
-                    parseInt(e.target.value, 10)
-                  )
-                }
-                min={0}
-                max={10}
-                error={state.formErrors.defaultRetryCount}
-                fullWidth
-              />
-            </SettingsItem>
-
-            {/* Default Retry Interval */}
-            <SettingsItem
-              icon={Clock}
-              label="Retry Interval"
-              description="Wait time between retry attempts"
-            >
-              <Input
-                type="number"
-                value={state.formSettings.defaultRetryIntervalMs}
-                onChange={(e) =>
-                  app.settingsViewModel.updateFormField(
-                    "defaultRetryIntervalMs",
-                    parseInt(e.target.value, 10)
-                  )
-                }
-                min={100}
-                max={10000}
-                step={100}
-                error={state.formErrors.defaultRetryIntervalMs}
-                fullWidth
-              />
-            </SettingsItem>
-
-            {/* Default Selector Type */}
-            <SettingsItem
-              icon={Target}
-              label="Selector Type"
-              description="Method used to identify elements"
-            >
-              <Select
-                value={state.formSettings.defaultSelectorType}
-                onChange={(e) =>
-                  app.settingsViewModel.updateFormField(
-                    "defaultSelectorType",
-                    e.target.value
-                  )
-                }
-                error={state.formErrors.defaultSelectorType}
-                fullWidth
-              >
-                <option value="xpath">XPath</option>
-                <option value="id">ID</option>
-                <option value="className">Classname</option>
-              </Select>
-            </SettingsItem>
-
-            {/* Minimum Delay */}
-            <SettingsItem
-              icon={Gauge}
-              label="Minimum Delay"
-              description="Minimum time between macro steps"
-            >
-              <Input
-                type="number"
-                value={state.formSettings.minimumDelayMs}
-                onChange={(e) =>
-                  app.settingsViewModel.updateFormField(
-                    "minimumDelayMs",
-                    parseInt(e.target.value, 10)
-                  )
-                }
-                min={0}
-                max={5000}
-                step={50}
-                error={state.formErrors.minimumDelayMs}
-                fullWidth
-              />
-            </SettingsItem>
-
             <SettingsItem
               icon={CircleX}
               label="Stop on Error"

@@ -55,7 +55,7 @@ export class RecorderService extends BaseService {
     chrome.tabs.onRemoved.addListener((tabId) => {
       if (this.isRecording && this.recordingTabId === tabId) {
         this.logger.info("Recording tab closed, stopping recording", { tabId });
-        void this.stopRecording();
+        this.emitter.emit("STOP_RECORDING");
       }
     });
 
@@ -78,11 +78,11 @@ export class RecorderService extends BaseService {
     }
   }
 
-  private startRecording(
+  private async startRecording(
     sessionId: string,
     domain: string,
     tabId?: number
-  ): void {
+  ): Promise<void> {
     if (this.isRecording) {
       this.logger.warn("Recording already in progress", {
         currentSessionId: this.currentSessionId,
@@ -105,6 +105,15 @@ export class RecorderService extends BaseService {
     });
 
     this.logger.info("Recording started", { sessionId, domain, tabId });
+
+    // Check if page should be refreshed before recording
+    const settings = await this.settingsRepository.get();
+    if (settings.refreshPageOnRecording && this.recordingTabId) {
+      this.logger.info("Refreshing page before recording", {
+        tabId: this.recordingTabId,
+      });
+      await chrome.tabs.reload(this.recordingTabId);
+    }
 
     void this.recordingStateRepository.save({
       isRecording: true,
