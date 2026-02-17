@@ -19,7 +19,7 @@ export const SettingsItem = memo(
           <Text variant="body" className="font-medium">
             {label}
           </Text>
-          <Text variant="small" color="muted" className="truncate">
+          <Text variant="small" color="muted">
             {description}
           </Text>
         </div>

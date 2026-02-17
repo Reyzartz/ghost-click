@@ -18,6 +18,6 @@ export const DEFAULT_SETTINGS: Settings = {
   defaultSelectorType: "xpath",
   minimumDelayMs: 200,
   theme: "system",
-  stopOnError: false,
+  stopOnError: true,
   refreshPageOnRecording: true,
 };
