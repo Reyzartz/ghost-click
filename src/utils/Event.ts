@@ -13,7 +13,6 @@ export type EventType =
   | "STOP_PLAYBACK"
   | "PAUSE_PLAYBACK"
   | "RESUME_PLAYBACK"
-  | "TOGGLE_QUICK_ACTIONS"
   | "START_ELEMENT_INSPECTION"
   | "STOP_ELEMENT_INSPECTION"
   | "ELEMENT_SELECTED"
@@ -98,10 +97,6 @@ export interface ExecuteActionEvent extends BaseEvent {
   data: {
     step: MacroStep;
   };
-}
-
-export interface ToggleQuickActionsEvent extends BaseEvent {
-  name: "TOGGLE_QUICK_ACTIONS";
 }
 
 export interface ShowSaveRecordingModalEvent extends BaseEvent {
@@ -193,7 +188,6 @@ export type AppEvents =
   | PlaybackCompletedEvent
   | PlaybackErrorEvent
   | ExecuteActionEvent
-  | ToggleQuickActionsEvent
   | ShowSaveRecordingModalEvent
   | SaveRecordingConfirmedEvent
   | SaveRecordingCancelledEvent

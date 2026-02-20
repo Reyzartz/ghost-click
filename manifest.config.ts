@@ -52,12 +52,5 @@ export default defineManifest({
         mac: "Alt+S",
       },
     },
-    "toggle-quick-actions": {
-      description: "Toggle Ghost Click quick actions",
-      suggested_key: {
-        default: "Alt+D",
-        mac: "Alt+D",
-      },
-    },
   },
 });
