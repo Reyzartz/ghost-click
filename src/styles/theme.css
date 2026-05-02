@@ -1,11 +1,23 @@
 @import "tailwindcss";
 
+/* LOADING FONTS */
+
+@font-face {
+  font-family: "Inter";
+  src: url("fonts/Inter-VariableFont_opsz_wght.ttf")
+    format("truetype-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* BASE THEME VARIABLES (Light Theme) */
 
 @theme {
   /* Typography - Font Families */
   --font-sans:
-    ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
     "Segoe UI Symbol", "Noto Color Emoji";
   --font-mono:
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
@@ -60,8 +72,8 @@
   /* Border colors */
   --color-border: oklch(88% 0.02 250);
   --color-border-secondary: oklch(85% 0.025 250);
-  --color-border-hover: oklch(60% 0.18 250);
-  --color-border-focus: oklch(60% 0.2 250);
+  --color-border-hover: oklch(60% 0.18 285);
+  --color-border-focus: oklch(62% 0.22 285);
 
   /* Text colors */
   --color-text: oklch(20% 0.05 250);
@@ -71,50 +83,50 @@
   --color-text-disabled: oklch(80% 0.02 250);
   --color-text-inverse: oklch(100% 0 0);
 
-  /* Primary/Accent colors */
-  --color-primary: oklch(55% 0.22 250); /* Vibrant Material Blue */
-  --color-primary-hover: oklch(48% 0.24 250); /* Deeper Blue on hover */
-  --color-primary-active: oklch(45% 0.24 250);
+  /* Primary/Accent colors — Phantom Violet (#8A6BFF) */
+  --color-primary: oklch(62% 0.22 285);
+  --color-primary-hover: oklch(55% 0.24 285);
+  --color-primary-active: oklch(50% 0.25 285);
 
-  --color-accent: oklch(55% 0.22 250); /* Vibrant Material Blue */
-  --color-accent-hover: oklch(48% 0.24 250); /* Deeper Blue on hover */
-  --color-accent-muted: oklch(85% 0.12 250); /* Lighter Blue */
+  --color-accent: oklch(62% 0.22 285);
+  --color-accent-hover: oklch(55% 0.24 285);
+  --color-accent-muted: oklch(95% 0.06 285);
 
-  /* Success (Material Green) */
-  --color-success: oklch(60% 0.2 145);
-  --color-success-hover: oklch(52% 0.19 145);
-  --color-success-text: oklch(52% 0.19 145);
-  --color-success-border: oklch(70% 0.15 145);
-  --color-success-bg: oklch(97% 0.08 145);
-  --color-success-bg-hover: oklch(92% 0.11 145);
-  --color-success-icon: oklch(52% 0.19 145);
+  /* Success (muted sage) */
+  --color-success: oklch(58% 0.11 155);
+  --color-success-hover: oklch(50% 0.12 155);
+  --color-success-text: oklch(42% 0.1 155);
+  --color-success-border: oklch(78% 0.06 155);
+  --color-success-bg: oklch(97% 0.025 155);
+  --color-success-bg-hover: oklch(93% 0.04 155);
+  --color-success-icon: oklch(50% 0.12 155);
 
-  /* Error/Danger (Material Red) */
-  --color-error: oklch(55% 0.25 25);
-  --color-error-hover: oklch(48% 0.24 25);
-  --color-error-text: oklch(48% 0.24 25);
-  --color-error-border: oklch(70% 0.18 25);
-  --color-error-bg: oklch(97% 0.08 25);
-  --color-error-bg-hover: oklch(92% 0.11 25);
-  --color-error-icon: oklch(48% 0.24 25);
+  /* Error/Danger (muted crimson) */
+  --color-error: oklch(56% 0.16 20);
+  --color-error-hover: oklch(49% 0.18 20);
+  --color-error-text: oklch(44% 0.16 20);
+  --color-error-border: oklch(78% 0.08 20);
+  --color-error-bg: oklch(97% 0.025 20);
+  --color-error-bg-hover: oklch(93% 0.04 20);
+  --color-error-icon: oklch(49% 0.18 20);
 
-  /* Warning (Material Orange) */
-  --color-warning: oklch(65% 0.18 65);
-  --color-warning-hover: oklch(58% 0.17 60);
-  --color-warning-text: oklch(58% 0.17 60);
-  --color-warning-border: oklch(72% 0.14 70);
-  --color-warning-bg: oklch(97% 0.08 75);
-  --color-warning-bg-hover: oklch(92% 0.11 72);
-  --color-warning-icon: oklch(58% 0.17 60);
+  /* Warning (muted amber) */
+  --color-warning: oklch(68% 0.12 75);
+  --color-warning-hover: oklch(60% 0.13 70);
+  --color-warning-text: oklch(46% 0.1 65);
+  --color-warning-border: oklch(82% 0.07 75);
+  --color-warning-bg: oklch(97% 0.03 80);
+  --color-warning-bg-hover: oklch(93% 0.05 78);
+  --color-warning-icon: oklch(60% 0.13 70);
 
-  /* Info (Material Blue) */
-  --color-info: oklch(55% 0.22 250);
-  --color-info-hover: oklch(48% 0.24 250);
-  --color-info-text: oklch(48% 0.24 250);
-  --color-info-border: oklch(70% 0.18 250);
-  --color-info-bg: oklch(97% 0.08 250);
-  --color-info-bg-hover: oklch(92% 0.11 250);
-  --color-info-icon: oklch(48% 0.24 250);
+  /* Info (muted cyan-blue — distinct from primary violet) */
+  --color-info: oklch(58% 0.1 230);
+  --color-info-hover: oklch(50% 0.12 230);
+  --color-info-text: oklch(42% 0.1 230);
+  --color-info-border: oklch(80% 0.05 230);
+  --color-info-bg: oklch(97% 0.025 230);
+  --color-info-bg-hover: oklch(93% 0.04 230);
+  --color-info-icon: oklch(50% 0.12 230);
 
   /* Spacing */
   --spacing: 0.25rem;
@@ -164,7 +176,7 @@
   /* Border colors */
   --color-border: oklch(30% 0.04 250);
   --color-border-secondary: oklch(40% 0.045 250);
-  --color-border-hover: oklch(65% 0.18 250);
+  --color-border-hover: oklch(65% 0.18 285);
 
   /* Text colors */
   --color-text: oklch(95% 0.01 250);
@@ -173,50 +185,50 @@
   --color-text-subtle: oklch(60% 0.035 250);
   --color-text-inverse: oklch(20% 0.05 250);
 
-  /* Primary/Accent */
-  --color-primary: oklch(70% 0.2 250); /* Vibrant Material Blue for dark mode */
-  --color-primary-hover: oklch(75% 0.21 250);
-  --color-primary-active: oklch(75% 0.21 250);
+  /* Primary/Accent — Phantom Violet (lightened for dark mode) */
+  --color-primary: oklch(72% 0.22 285);
+  --color-primary-hover: oklch(78% 0.22 285);
+  --color-primary-active: oklch(80% 0.22 285);
 
-  --color-accent: oklch(70% 0.2 250);
-  --color-accent-hover: oklch(75% 0.21 250);
-  --color-accent-muted: oklch(45% 0.15 250);
+  --color-accent: oklch(72% 0.22 285);
+  --color-accent-hover: oklch(78% 0.22 285);
+  --color-accent-muted: oklch(32% 0.14 285);
 
-  /* Success (Material Green - Dark Mode) */
-  --color-success: oklch(68% 0.18 145);
-  --color-success-hover: oklch(73% 0.19 145);
-  --color-success-text: oklch(78% 0.17 145);
-  --color-success-border: oklch(45% 0.15 145);
-  --color-success-bg: oklch(20% 0.1 145);
-  --color-success-bg-hover: oklch(26% 0.12 145);
-  --color-success-icon: oklch(78% 0.17 145);
+  /* Success (muted sage — Dark Mode) */
+  --color-success: oklch(70% 0.11 155);
+  --color-success-hover: oklch(75% 0.11 155);
+  --color-success-text: oklch(78% 0.1 155);
+  --color-success-border: oklch(40% 0.1 155);
+  --color-success-bg: oklch(22% 0.045 155);
+  --color-success-bg-hover: oklch(27% 0.055 155);
+  --color-success-icon: oklch(78% 0.1 155);
 
-  /* Error (Material Red - Dark Mode) */
-  --color-error: oklch(68% 0.22 25);
-  --color-error-hover: oklch(73% 0.24 25);
-  --color-error-text: oklch(80% 0.21 25);
-  --color-error-border: oklch(45% 0.18 25);
-  --color-error-bg: oklch(20% 0.12 25);
-  --color-error-bg-hover: oklch(26% 0.14 25);
-  --color-error-icon: oklch(80% 0.21 25);
+  /* Error (muted crimson — Dark Mode) */
+  --color-error: oklch(68% 0.15 20);
+  --color-error-hover: oklch(73% 0.15 20);
+  --color-error-text: oklch(80% 0.13 20);
+  --color-error-border: oklch(42% 0.13 20);
+  --color-error-bg: oklch(22% 0.06 20);
+  --color-error-bg-hover: oklch(27% 0.07 20);
+  --color-error-icon: oklch(80% 0.13 20);
 
-  /* Warning (Material Orange - Dark Mode) */
-  --color-warning: oklch(72% 0.17 65);
-  --color-warning-hover: oklch(76% 0.18 65);
-  --color-warning-text: oklch(82% 0.16 65);
-  --color-warning-border: oklch(47% 0.14 65);
-  --color-warning-bg: oklch(20% 0.1 65);
-  --color-warning-bg-hover: oklch(28% 0.12 65);
-  --color-warning-icon: oklch(82% 0.16 65);
+  /* Warning (muted amber — Dark Mode) */
+  --color-warning: oklch(74% 0.11 75);
+  --color-warning-hover: oklch(78% 0.11 75);
+  --color-warning-text: oklch(82% 0.1 75);
+  --color-warning-border: oklch(46% 0.1 75);
+  --color-warning-bg: oklch(22% 0.05 75);
+  --color-warning-bg-hover: oklch(27% 0.06 75);
+  --color-warning-icon: oklch(82% 0.1 75);
 
-  /* Info (Material Blue - Dark Mode) */
-  --color-info: oklch(70% 0.2 250);
-  --color-info-hover: oklch(75% 0.21 250);
-  --color-info-text: oklch(80% 0.19 250);
-  --color-info-border: oklch(45% 0.16 250);
-  --color-info-bg: oklch(22% 0.11 250);
-  --color-info-bg-hover: oklch(26% 0.13 250);
-  --color-info-icon: oklch(80% 0.19 250);
+  /* Info (muted cyan-blue — Dark Mode) */
+  --color-info: oklch(72% 0.1 230);
+  --color-info-hover: oklch(76% 0.1 230);
+  --color-info-text: oklch(80% 0.09 230);
+  --color-info-border: oklch(42% 0.09 230);
+  --color-info-bg: oklch(22% 0.045 230);
+  --color-info-bg-hover: oklch(27% 0.055 230);
+  --color-info-icon: oklch(80% 0.09 230);
 }
 
 /* Global Styles */
