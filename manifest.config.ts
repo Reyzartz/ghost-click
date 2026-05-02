@@ -7,11 +7,11 @@ export default defineManifest({
   version: pkg.version,
   description: "Ghost Click - Chrome Extension with Manifest V3",
   icons: {
-    48: "public/logo.png",
+    48: "public/icon-light-filled-48.png",
   },
   action: {
     default_icon: {
-      48: "public/logo.png",
+      48: "public/icon-light-filled-48.png",
     },
   },
   background: {

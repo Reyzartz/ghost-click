@@ -20,7 +20,7 @@ const Layout = memo(({ children, header }: PropsWithChildren<LayoutProps>) => {
 });
 
 interface HeaderProps {
-  title?: string;
+  title?: string | React.ReactNode;
   onBack?: () => void;
   showBorder?: boolean;
   className?: string;
@@ -38,8 +38,8 @@ export const Header = ({
   return (
     <div
       className={clsx(
-        "bg-surface flex items-center gap-1.5 px-2 py-1.5",
-        showBorder && "border-border border-b",
+        "bg-surface flex h-11 items-center gap-1.5 overflow-hidden px-2",
+        showBorder && "border-border h-11 border-b",
         className
       )}
     >
@@ -47,7 +47,11 @@ export const Header = ({
         <Button variant="ghost" size="sm" onClick={onBack} icon={ChevronLeft} />
       )}
 
-      {title && <Text variant="h3">{title}</Text>}
+      {title && typeof title === "string" ? (
+        <Text variant="h3">{title}</Text>
+      ) : (
+        title
+      )}
 
       <div className="flex flex-1 items-center justify-end gap-1 overflow-hidden px-2">
         {children}

@@ -16,6 +16,7 @@ import { MacroUtils } from "@/utils/MacroUtils";
 import { TabsManager } from "@/utils/TabsManager";
 import { Layout } from "@/design-system/Layout";
 import clsx from "clsx";
+import { GhostLogo } from "@/components/GhostLogo";
 
 export const MacroListView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<MacroListState>({
@@ -121,7 +122,10 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
   return (
     <Layout
       header={
-        <Layout.Header title="Macros" className="pl-4" showBorder={false}>
+        <Layout.Header
+          title={<GhostLogo height={40} width={84} />}
+          className="pl-4"
+        >
           <>
             {state.isRecording ? (
               <Button

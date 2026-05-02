@@ -19,6 +19,7 @@ export class ThemeService extends BaseService {
     this.logger.info("Initializing theme service");
 
     await this.applyThemeFromSettings();
+    await this.themeManager.setActionIconFromSystemTheme();
 
     this.emitter.on("SETTINGS_UPDATED", (settings) => {
       if (settings && typeof settings === "object" && "theme" in settings) {

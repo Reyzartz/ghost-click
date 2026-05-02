@@ -30,8 +30,10 @@ export class ThemeManager {
   private handleSystemThemeChange(e: MediaQueryListEvent): void {
     if (e.matches) {
       this.applyTheme("dark");
+      void this.setActionIconFromTheme("dark");
     } else {
       this.applyTheme("light");
+      void this.setActionIconFromTheme("light");
     }
   }
 
@@ -51,6 +53,28 @@ export class ThemeManager {
       "change",
       this.handleSystemThemeChange.bind(this)
     );
+  }
+
+  async setActionIconFromSystemTheme(): Promise<void> {
+    const theme = ThemeManager.getCurrentSystemTheme();
+
+    await this.setActionIconFromTheme(theme);
+  }
+
+  async setActionIconFromTheme(theme: Theme): Promise<void> {
+    const iconFileName =
+      theme === "dark"
+        ? "/icon-dark-filled-48.png"
+        : "/icon-light-filled-48.png";
+    const iconPath = chrome.runtime.getURL(iconFileName);
+
+    this.logger.info("Updating icon", { theme, iconPath });
+
+    try {
+      await chrome.action.setIcon({ path: { 48: iconPath } });
+    } catch (error) {
+      this.logger.error("Failed to update icon", error);
+    }
   }
 
   private cleanupSystemThemeListener(): void {
