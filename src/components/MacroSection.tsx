@@ -1,6 +1,7 @@
 import { Macro } from "@/models";
 import { MacroCard } from "./MacroCard";
 import { Text } from "@/design-system";
+import clsx from "clsx";
 
 interface MacroSectionProps {
   title: string;
@@ -15,6 +16,7 @@ interface MacroSectionProps {
   onPin: (macroId: string, value: boolean) => void;
   onRecord?: () => void;
   selectedIndex?: number;
+  className?: string;
 }
 
 export const MacroSection = ({
@@ -29,25 +31,22 @@ export const MacroSection = ({
   onDuplicate,
   onPin,
   selectedIndex,
+  className,
 }: MacroSectionProps) => {
   return (
-    <div className="h-full space-y-2">
+    <div className={clsx("space-y-2", className)}>
       {!loading && macros.length === 0 && emptyComponent}
 
       {!loading && macros.length > 0 && (
         <div className="flex items-end justify-between">
-          <Text variant="h5" className="tracking-wide uppercase">
+          <Text variant="h5" className="tracking-wide uppercase" color="muted">
             {title}
-          </Text>
-
-          <Text variant="small" color="muted">
-            {loading ? "Loading…" : `${macros.length} saved`}
           </Text>
         </div>
       )}
 
       {macros.length > 0 && (
-        <ul className="flex flex-col gap-1">
+        <ul className="flex flex-col gap-1.5">
           {macros.map((macro, index) => (
             <MacroCard
               key={macro.id}

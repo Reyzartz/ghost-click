@@ -1,12 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import { SidePanelApp } from "../SidePanelApp";
-import { Alert, Text, Button, Icon } from "@/design-system";
+import { Alert, Button, Icon, Kbd } from "@/design-system";
 import { MacroSection } from "@/components/MacroSection";
 import {
   Circle,
   Square,
-  ArrowUp,
-  ArrowDown,
   Settings,
   ImportIcon,
   CircleSmall,
@@ -17,7 +15,6 @@ import { SearchInput } from "@/components/SearchInput";
 import { MacroUtils } from "@/utils/MacroUtils";
 import { TabsManager } from "@/utils/TabsManager";
 import { Layout } from "@/design-system/Layout";
-import clsx from "clsx";
 import { GhostLogo } from "@/components/GhostLogo";
 import { EmptyState } from "@/components/EmptyState";
 
@@ -32,6 +29,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
     searchQuery: "",
     filteredMacros: [],
     selectedIndex: 0,
+    showSearchBar: false,
   });
 
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -42,25 +40,30 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
   }, [app]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (!state.searchQuery) return;
-
     switch (e.key) {
       case "ArrowUp":
         e.preventDefault();
+
         app.macroListViewModel.moveSelectionUp();
         break;
       case "ArrowDown":
         e.preventDefault();
+
         app.macroListViewModel.moveSelectionDown();
         break;
       case "Enter":
         e.preventDefault();
+
         app.macroListViewModel.selectCurrentMacro();
         break;
       case "Escape":
         e.preventDefault();
-        app.macroListViewModel.setSearchQuery("");
-        searchInputRef.current?.blur();
+
+        if (state.searchQuery) {
+          app.macroListViewModel.setSearchQuery("");
+        } else {
+          toggleSearchBar();
+        }
         break;
     }
   };
@@ -122,6 +125,18 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
     app.emitter.emit("STOP_RECORDING", {}, { currentTab: false });
   };
 
+  const toggleSearchBar = (): void => {
+    app.macroListViewModel.toggleSearchBar();
+
+    setTimeout(() => {
+      if (!state.showSearchBar) {
+        searchInputRef.current?.focus();
+      } else {
+        searchInputRef.current?.blur();
+      }
+    }, 350);
+  };
+
   return (
     <Layout
       header={
@@ -150,9 +165,19 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
               />
             )}
 
+            {state.allMacros.length > 0 && (
+              <Button
+                onClick={toggleSearchBar}
+                variant={state.showSearchBar ? "secondary" : "ghost"}
+                size="sm"
+                icon={Search}
+                title="Search macros"
+              />
+            )}
+
             <Button
               onClick={handleImport}
-              variant="secondary"
+              variant="ghost"
               size="sm"
               icon={ImportIcon}
               title="Import macro"
@@ -171,42 +196,32 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
     >
       {state.error && <Alert variant="error">{state.error}</Alert>}
 
-      {state.allMacros.length > 0 && (
-        <div className="flex flex-col gap-1">
-          <SearchInput
-            value={state.searchQuery}
-            onChange={(value) => app.macroListViewModel.setSearchQuery(value)}
-            placeholder="Search macros..."
-            onKeyDown={handleKeyDown}
-            ref={searchInputRef}
-          />
-
-          <Text
-            variant="small"
-            color="muted"
-            className={clsx(
-              "flex items-center gap-2 truncate transition-[height] duration-200",
-              app.macroListViewModel.showSearchResults() ? "h-4" : "h-0"
-            )}
-          >
-            Use <Icon icon={ArrowUp} size="xs" className="inline" />
-            <Icon icon={ArrowDown} size="xs" className="inline" /> to navigate,
-            Enter to play, Esc to clear
-          </Text>
-        </div>
-      )}
+      <SearchInput
+        visible={state.showSearchBar}
+        value={state.searchQuery}
+        onChange={(value) => app.macroListViewModel.setSearchQuery(value)}
+        placeholder="Search by name or domain..."
+        onKeyDown={handleKeyDown}
+        ref={searchInputRef}
+        resultCount={state.filteredMacros.length}
+      />
 
       <div className="flex flex-1 flex-col gap-2 overflow-scroll">
-        {app.macroListViewModel.showSearchResults() ? (
+        {state.searchQuery ? (
           <MacroSection
-            title="Search Results"
+            title={`Search Results (${state.filteredMacros.length})`}
             macros={state.filteredMacros}
             loading={state.loading}
             emptyComponent={
               <EmptyState
                 emptyIcon={<Icon icon={Search} size="sm" color="muted" />}
                 title={`No macros found for "${state.searchQuery}"`}
-                message={`Try a different name or domain, or press \`Esc\` to clear your search.`}
+                message={
+                  <>
+                    Try a different name or domain, or press{" "}
+                    <Kbd size="sm">Esc</Kbd> to clear your search.
+                  </>
+                }
               />
             }
             onPlay={handlePlay}
@@ -216,6 +231,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
             onDuplicate={handleDuplicate}
             onPin={handlePin}
             selectedIndex={state.selectedIndex}
+            className="flex-1"
           />
         ) : (
           <>
@@ -234,7 +250,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
             )}
 
             <MacroSection
-              title="All Macros"
+              title="Macros"
               macros={state.unpinnedMacros}
               loading={state.loading}
               emptyComponent={
@@ -260,6 +276,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
               onCopy={handleCopy}
               onDuplicate={handleDuplicate}
               onPin={handlePin}
+              className="flex-1"
             />
           </>
         )}

@@ -5,7 +5,7 @@ import { memo } from "react";
 interface IEmptyStateProps {
   emptyIcon?: React.ReactNode;
   title?: string;
-  message: string;
+  message: React.ReactNode;
   buttonProps?: ButtonProps;
 }
 

@@ -28,4 +28,7 @@ export { Divider } from "./Divider";
 export { InfoPanel } from "./InfoPanel";
 
 export { Icon } from "./Icon";
+
+export { Kbd } from "./Kbd";
+export type { KbdSize } from "./Kbd";
 export type { IconSize, IconColor } from "./Icon";

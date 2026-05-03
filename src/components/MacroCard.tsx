@@ -73,7 +73,6 @@ export const MacroCard = ({
     <Card
       as="li"
       variant={isSelected ? "selected" : "default"}
-      size="sm"
       onClick={onPlay}
       autoScroll={isSelected}
       className="group"

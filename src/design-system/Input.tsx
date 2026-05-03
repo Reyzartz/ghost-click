@@ -19,7 +19,7 @@ interface InputProps extends Omit<
 }
 
 const inputVariants = cva(
-  "rounded text-text-secondary transition-all focus:ring-1 border focus:outline-none disabled:cursor-not-allowed disabled:bg-surface-muted disabled:opacity-60  ring-inset",
+  "rounded text-text-secondary transition-all duration-200 focus:ring-1 border focus:outline-none disabled:cursor-not-allowed disabled:bg-surface-muted disabled:opacity-60  ring-inset",
   {
     variants: {
       size: {
@@ -113,7 +113,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className={clsx(fullWidth && "w-full")}>
         {label && (
-          <Text variant="small" color="muted" className="mb-1 block">
+          <Text variant="small" color="muted" className="group mb-1 block">
             {label}
           </Text>
         )}

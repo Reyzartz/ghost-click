@@ -12,7 +12,7 @@ const Layout = memo(({ children, header }: PropsWithChildren<LayoutProps>) => {
     <div className="flex h-screen flex-col overflow-hidden">
       {header && <header>{header}</header>}
 
-      <div className="flex h-full flex-1 flex-col gap-3 overflow-hidden p-4">
+      <div className="flex h-full flex-1 flex-col gap-3 overflow-hidden p-3">
         {children}
       </div>
     </div>

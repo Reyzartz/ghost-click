@@ -15,6 +15,7 @@ export interface MacroListState {
   searchQuery: string;
   filteredMacros: Macro[];
   selectedIndex: number;
+  showSearchBar: boolean;
 }
 
 export type MacroSortBy = "createdAt" | "updatedAt" | "lastPlayedAt";
@@ -31,6 +32,7 @@ export class MacroListViewModel extends BaseViewModel {
     searchQuery: "",
     filteredMacros: [],
     selectedIndex: 0,
+    showSearchBar: false,
   };
   private listeners: Array<(state: MacroListState) => void> = [];
 
@@ -125,17 +127,18 @@ export class MacroListViewModel extends BaseViewModel {
 
   setSearchQuery(query: string): void {
     this.logger.info("Setting search query", { query });
-    const filteredMacros = this.filterMacros(query);
+    const queryTrimmed = query.trim();
+    const filteredMacros = this.filterMacros(queryTrimmed);
 
     this.setState({
-      searchQuery: query,
+      searchQuery: queryTrimmed,
       filteredMacros,
       selectedIndex: 0,
     });
   }
 
   private filterMacros(query: string): Macro[] {
-    if (!query.trim()) {
+    if (!query) {
       return [];
     }
 
@@ -252,7 +255,7 @@ export class MacroListViewModel extends BaseViewModel {
     return res;
   }
 
-  showSearchResults(): boolean {
-    return this.state.searchQuery.trim() !== "";
+  toggleSearchBar(): void {
+    this.setState({ showSearchBar: !this.state.showSearchBar });
   }
 }
