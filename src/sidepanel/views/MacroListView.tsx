@@ -9,6 +9,8 @@ import {
   ArrowDown,
   Settings,
   ImportIcon,
+  CircleSmall,
+  Search,
 } from "lucide-react";
 import { MacroListState } from "../viewmodels/MacroListViewModel";
 import { SearchInput } from "@/components/SearchInput";
@@ -17,6 +19,7 @@ import { TabsManager } from "@/utils/TabsManager";
 import { Layout } from "@/design-system/Layout";
 import clsx from "clsx";
 import { GhostLogo } from "@/components/GhostLogo";
+import { EmptyState } from "@/components/EmptyState";
 
 export const MacroListView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<MacroListState>({
@@ -168,28 +171,30 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
     >
       {state.error && <Alert variant="error">{state.error}</Alert>}
 
-      <div className="flex flex-col gap-1">
-        <SearchInput
-          value={state.searchQuery}
-          onChange={(value) => app.macroListViewModel.setSearchQuery(value)}
-          placeholder="Search macros..."
-          onKeyDown={handleKeyDown}
-          ref={searchInputRef}
-        />
+      {state.allMacros.length > 0 && (
+        <div className="flex flex-col gap-1">
+          <SearchInput
+            value={state.searchQuery}
+            onChange={(value) => app.macroListViewModel.setSearchQuery(value)}
+            placeholder="Search macros..."
+            onKeyDown={handleKeyDown}
+            ref={searchInputRef}
+          />
 
-        <Text
-          variant="small"
-          color="muted"
-          className={clsx(
-            "flex items-center gap-2 truncate transition-[height] duration-200",
-            app.macroListViewModel.showSearchResults() ? "h-4" : "h-0"
-          )}
-        >
-          Use <Icon icon={ArrowUp} size="xs" className="inline" />
-          <Icon icon={ArrowDown} size="xs" className="inline" /> to navigate,
-          Enter to play, Esc to clear
-        </Text>
-      </div>
+          <Text
+            variant="small"
+            color="muted"
+            className={clsx(
+              "flex items-center gap-2 truncate transition-[height] duration-200",
+              app.macroListViewModel.showSearchResults() ? "h-4" : "h-0"
+            )}
+          >
+            Use <Icon icon={ArrowUp} size="xs" className="inline" />
+            <Icon icon={ArrowDown} size="xs" className="inline" /> to navigate,
+            Enter to play, Esc to clear
+          </Text>
+        </div>
+      )}
 
       <div className="flex flex-1 flex-col gap-2 overflow-scroll">
         {app.macroListViewModel.showSearchResults() ? (
@@ -197,7 +202,13 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
             title="Search Results"
             macros={state.filteredMacros}
             loading={state.loading}
-            emptyMessage={`No macros found for "${state.searchQuery}"`}
+            emptyComponent={
+              <EmptyState
+                emptyIcon={<Icon icon={Search} size="sm" color="muted" />}
+                title={`No macros found for "${state.searchQuery}"`}
+                message={`Try a different name or domain, or press \`Esc\` to clear your search.`}
+              />
+            }
             onPlay={handlePlay}
             onEdit={handleEdit}
             onDelete={handleDelete}
@@ -213,7 +224,6 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
                 title="Pinned Macros"
                 macros={state.pinnedMacros}
                 loading={state.loading}
-                emptyMessage="No macros saved yet."
                 onPlay={handlePlay}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
@@ -227,7 +237,23 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
               title="All Macros"
               macros={state.unpinnedMacros}
               loading={state.loading}
-              emptyMessage="No macros saved yet."
+              emptyComponent={
+                <EmptyState
+                  title="No Macros Yet"
+                  emptyIcon={
+                    <Icon icon={CircleSmall} size="sm" filled color="muted" />
+                  }
+                  message="Click the record button above to capture your first macro on this tab."
+                  buttonProps={{
+                    icon: CircleSmall,
+                    children: "Start Recording",
+                    iconFilled: true,
+                    onClick: () => {
+                      void handleStartRecording();
+                    },
+                  }}
+                />
+              }
               onPlay={handlePlay}
               onEdit={handleEdit}
               onDelete={handleDelete}
