@@ -34,7 +34,7 @@ export const MacroSection = ({
   className,
 }: MacroSectionProps) => {
   return (
-    <div className={clsx("space-y-2", className)}>
+    <div className={clsx("space-y-1", className)}>
       {!loading && macros.length === 0 && emptyComponent}
 
       {!loading && macros.length > 0 && (

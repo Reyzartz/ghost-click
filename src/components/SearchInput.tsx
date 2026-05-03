@@ -27,8 +27,8 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
     return (
       <div
         className={clsx(
-          "transition-[max-height, opacity] flex flex-col gap-1.5 overflow-hidden duration-300 ease-in-out",
-          visible ? "max-h-15 opacity-100" : "-mt-3 max-h-0 opacity-0"
+          "flex flex-col gap-1.5 overflow-hidden transition-[max-height,opacity] duration-300 ease-in-out",
+          visible ? "max-h-15 opacity-100" : "max-h-0 opacity-0"
         )}
       >
         <Input

@@ -34,7 +34,7 @@ const cardVariants = cva("rounded transition-colors list-none border", {
     },
     size: {
       sm: "px-2 py-1.5",
-      md: "px-3 py-2",
+      md: "px-3 py-2.5",
       lg: "p-4",
     },
     hover: {

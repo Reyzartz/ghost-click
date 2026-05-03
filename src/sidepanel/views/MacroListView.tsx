@@ -2,14 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { SidePanelApp } from "../SidePanelApp";
 import { Alert, Button, Icon, Kbd } from "@/design-system";
 import { MacroSection } from "@/components/MacroSection";
-import {
-  Circle,
-  Square,
-  Settings,
-  ImportIcon,
-  CircleSmall,
-  Search,
-} from "lucide-react";
+import { Settings, CircleSmall, Search, DownloadIcon } from "lucide-react";
 import { MacroListState } from "../viewmodels/MacroListViewModel";
 import { SearchInput } from "@/components/SearchInput";
 import { MacroUtils } from "@/utils/MacroUtils";
@@ -17,6 +10,7 @@ import { TabsManager } from "@/utils/TabsManager";
 import { Layout } from "@/design-system/Layout";
 import { GhostLogo } from "@/components/GhostLogo";
 import { EmptyState } from "@/components/EmptyState";
+import { RecordButtonCard } from "@/components/RecordButtonCard";
 
 export const MacroListView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<MacroListState>({
@@ -121,10 +115,6 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
     });
   };
 
-  const handleStopRecording = (): void => {
-    app.emitter.emit("STOP_RECORDING", {}, { currentTab: false });
-  };
-
   const toggleSearchBar = (): void => {
     app.macroListViewModel.toggleSearchBar();
 
@@ -144,67 +134,52 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
           title={<GhostLogo height={40} width={84} />}
           className="pl-4"
         >
-          <>
-            {state.isRecording ? (
-              <Button
-                onClick={handleStopRecording}
-                variant="danger"
-                size="sm"
-                icon={Square}
-                title="Stop recording"
-              />
-            ) : (
-              <Button
-                onClick={() => {
-                  void handleStartRecording();
-                }}
-                variant="primary"
-                size="sm"
-                icon={Circle}
-                title="Start recording"
-              />
-            )}
-
-            {state.allMacros.length > 0 && (
-              <Button
-                onClick={toggleSearchBar}
-                variant={state.showSearchBar ? "secondary" : "ghost"}
-                size="sm"
-                icon={Search}
-                title="Search macros"
-              />
-            )}
-
+          {state.allMacros.length > 0 && (
             <Button
-              onClick={handleImport}
-              variant="ghost"
+              onClick={toggleSearchBar}
+              variant={state.showSearchBar ? "secondary" : "ghost"}
               size="sm"
-              icon={ImportIcon}
-              title="Import macro"
+              icon={Search}
+              title="Search macros"
             />
+          )}
 
-            <Button
-              onClick={handleOpenSettings}
-              variant="ghost"
-              size="sm"
-              icon={Settings}
-              title="Settings"
-            />
-          </>
+          <Button
+            onClick={handleImport}
+            variant="ghost"
+            size="sm"
+            icon={DownloadIcon}
+            title="Import macro"
+          />
+
+          <Button
+            onClick={handleOpenSettings}
+            variant="ghost"
+            size="sm"
+            icon={Settings}
+            title="Settings"
+          />
         </Layout.Header>
       }
     >
       {state.error && <Alert variant="error">{state.error}</Alert>}
 
-      <SearchInput
-        visible={state.showSearchBar}
-        value={state.searchQuery}
-        onChange={(value) => app.macroListViewModel.setSearchQuery(value)}
-        placeholder="Search by name or domain..."
-        onKeyDown={handleKeyDown}
-        ref={searchInputRef}
-        resultCount={state.filteredMacros.length}
-      />
+      <div>
+        <RecordButtonCard
+          visible={!state.showSearchBar}
+          onClick={handleStartRecording}
+        />
+
+        <SearchInput
+          visible={state.showSearchBar}
+          value={state.searchQuery}
+          onChange={(value) => app.macroListViewModel.setSearchQuery(value)}
+          placeholder="Search by name or domain..."
+          onKeyDown={handleKeyDown}
+          ref={searchInputRef}
+          resultCount={state.filteredMacros.length}
+        />
+      </div>
 
       <div className="flex flex-1 flex-col gap-2 overflow-scroll">
         {state.searchQuery ? (
@@ -264,9 +239,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
                     icon: CircleSmall,
                     children: "Start Recording",
                     iconFilled: true,
-                    onClick: () => {
-                      void handleStartRecording();
-                    },
+                    onClick: handleStartRecording,
                   }}
                 />
               }
