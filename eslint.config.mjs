@@ -46,6 +46,7 @@ export default [
           varsIgnorePattern: "^_",
         },
       ],
+      "@typescript-eslint/no-misused-promises": "off",
     },
   },
 ];

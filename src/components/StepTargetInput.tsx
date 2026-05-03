@@ -81,9 +81,7 @@ const StepTargetInput = memo<StepTargetInputProps>(
           <div className="flex items-center gap-2 border-b pb-2">
             {!isInspecting ? (
               <Button
-                onClick={() => {
-                  void startInspection();
-                }}
+                onClick={startInspection}
                 variant="secondary"
                 size="sm"
                 icon={Search}
@@ -91,9 +89,7 @@ const StepTargetInput = memo<StepTargetInputProps>(
               />
             ) : (
               <Button
-                onClick={() => {
-                  void stopInspection();
-                }}
+                onClick={stopInspection}
                 variant="danger"
                 size="sm"
                 icon={Square}
