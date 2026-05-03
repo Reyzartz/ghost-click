@@ -24,8 +24,8 @@ const inputVariants = cva(
     variants: {
       size: {
         sm: "text-xs leading-3.5 py-1.5",
-        md: "text-sm leading-4 py-2",
-        lg: "text-base leading-4.5 py-3",
+        md: "text-sm leading-4 py-2.5",
+        lg: "text-base leading-4.5 py-3.5",
       },
       hasError: {
         true: "bg-error-bg  focus:ring-error border-error-border",
@@ -50,12 +50,12 @@ const inputVariants = cva(
       {
         size: "md",
         hasIcon: false,
-        className: "px-3",
+        className: "px-3.5",
       },
       {
         size: "lg",
         hasIcon: false,
-        className: "px-4",
+        className: "px-4.5",
       },
       {
         size: "sm",
@@ -65,12 +65,12 @@ const inputVariants = cva(
       {
         size: "md",
         hasIcon: true,
-        className: "pl-9 pr-3",
+        className: "pl-9 pr-3.5",
       },
       {
         size: "lg",
         hasIcon: true,
-        className: "pl-11 pr-4",
+        className: "pl-11 pr-4.5",
       },
     ],
     defaultVariants: {

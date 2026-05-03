@@ -47,7 +47,13 @@ export const Icon = ({
   size = "md",
   color = "default",
   className,
-}: IconProps) => {
+  filled = false,
+}: IconProps & { filled?: boolean }) => {
   const classes = clsx(iconVariants({ size, color }), className);
-  return <LucideIconComponent className={classes} />;
+  return (
+    <LucideIconComponent
+      className={classes}
+      fill={filled ? "currentColor" : "none"}
+    />
+  );
 };

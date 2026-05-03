@@ -16,11 +16,12 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: ButtonSize;
   fullWidth?: boolean;
   icon?: LucideIcon;
+  iconFilled?: boolean;
   iconPosition?: "left" | "right";
 }
 
 const buttonVariants = cva(
-  "cursor-pointer rounded font-medium transition-all inline-flex items-center justify-center gap-2 whitespace-nowrap disabled:cursor-not-allowed disabled:opacity-60 border",
+  "cursor-pointer rounded font-medium transition-all inline-flex items-center justify-center gap-1.5 whitespace-nowrap disabled:cursor-not-allowed disabled:opacity-60 border",
   {
     variants: {
       variant: {
@@ -60,12 +61,12 @@ const buttonVariants = cva(
       {
         size: "md",
         iconOnly: true,
-        className: "p-2",
+        className: "p-2.5",
       },
       {
         size: "lg",
         iconOnly: true,
-        className: "p-3",
+        className: "p-3.5",
       },
       {
         size: "sm",
@@ -75,12 +76,12 @@ const buttonVariants = cva(
       {
         size: "md",
         iconOnly: false,
-        className: "px-3 py-2",
+        className: "px-3 py-2.5",
       },
       {
         size: "lg",
         iconOnly: false,
-        className: "px-4 py-3",
+        className: "px-4 py-3.5",
       },
     ],
     defaultVariants: {
@@ -105,6 +106,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       size = "md",
       fullWidth = false,
       icon: IconComponent,
+      iconFilled = false,
       iconPosition = "left",
       className,
       disabled,
@@ -126,11 +128,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button ref={ref} className={classes} disabled={disabled} {...props}>
         {IconComponent && iconPosition === "left" && (
-          <IconComponent size={iconSizes[size]} />
+          <IconComponent
+            size={iconSizes[size]}
+            fill={iconFilled ? "currentColor" : "none"}
+          />
         )}
         {children}
         {IconComponent && iconPosition === "right" && (
-          <IconComponent size={iconSizes[size]} />
+          <IconComponent
+            size={iconSizes[size]}
+            fill={iconFilled ? "currentColor" : "none"}
+          />
         )}
       </button>
     );
