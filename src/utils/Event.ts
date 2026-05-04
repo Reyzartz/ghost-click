@@ -24,7 +24,11 @@ export type EventType =
   | "EDIT_MACRO"
   | "CREATE_MACRO"
   | "OPEN_SIDE_PANEL"
-  | "SETTINGS_UPDATED";
+  | "SETTINGS_UPDATED"
+  | "TAB_UPDATED"
+  | "TAB_REMOVED"
+  | "TAB_ACTIVATED"
+  | "TAB_CREATED";
 
 export interface BaseEvent {
   name: EventType;
@@ -176,6 +180,37 @@ export interface SettingsUpdatedEvent extends BaseEvent {
   data: Settings;
 }
 
+export interface TabUpdatedEvent extends BaseEvent {
+  name: "TAB_UPDATED";
+  data: {
+    tabId: number;
+    changeInfo: chrome.tabs.OnUpdatedInfo;
+    tab: chrome.tabs.Tab;
+  };
+}
+
+export interface TabRemovedEvent extends BaseEvent {
+  name: "TAB_REMOVED";
+  data: {
+    tabId: number;
+    removeInfo: chrome.tabs.OnRemovedInfo;
+  };
+}
+
+export interface TabActivatedEvent extends BaseEvent {
+  name: "TAB_ACTIVATED";
+  data: {
+    activeInfo: chrome.tabs.OnActivatedInfo;
+  };
+}
+
+export interface TabCreatedEvent extends BaseEvent {
+  name: "TAB_CREATED";
+  data: {
+    tab: chrome.tabs.Tab;
+  };
+}
+
 export type AppEvents =
   | StartRecordingEvent
   | StopRecordingEvent
@@ -200,4 +235,8 @@ export type AppEvents =
   | StopElementInspectionEvent
   | ElementSelectedEvent
   | OpenSidePanel
-  | SettingsUpdatedEvent;
+  | SettingsUpdatedEvent
+  | TabUpdatedEvent
+  | TabRemovedEvent
+  | TabActivatedEvent
+  | TabCreatedEvent;

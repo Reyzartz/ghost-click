@@ -10,6 +10,7 @@ import { RecordingStateRepository } from "@/repositories/RecordingStateRepositor
 import { SettingsRepository } from "@/repositories/SettingsRepository";
 import { Storage } from "@/utils/Storage";
 import { SidepanelStateService } from "@/utils/SidepanelStateService";
+import { TabEventService } from "./services/TabEventService";
 
 export class BackgroundApp extends BaseApp {
   constructor() {
@@ -24,6 +25,7 @@ export class BackgroundApp extends BaseApp {
 
     const services: Array<BaseService> = [
       sidepanelStateService,
+      new TabEventService(emitter),
       new ShortcutService(emitter, sidepanelStateService),
       new RecorderService(
         emitter,
