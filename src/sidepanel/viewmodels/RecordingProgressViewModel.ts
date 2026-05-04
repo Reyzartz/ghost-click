@@ -8,6 +8,7 @@ export interface RecordingProgressState {
   isRecording: boolean;
   sessionId: string | null;
   steps: MacroStep[];
+  elapsed: number;
   error?: string | null;
 }
 
@@ -17,9 +18,11 @@ export class RecordingProgressViewModel extends BaseViewModel {
     isRecording: false,
     sessionId: null,
     steps: [],
+    elapsed: 0,
     error: null,
   };
   private listeners: Array<(state: RecordingProgressState) => void> = [];
+  private elapsedTimer: ReturnType<typeof setInterval> | null = null;
 
   constructor(
     private readonly recordingStateRepository: RecordingStateRepository,
@@ -54,28 +57,43 @@ export class RecordingProgressViewModel extends BaseViewModel {
     // Listen for recording stop
     this.emitter.on("STOP_RECORDING", () => {
       this.logger.info("Recording stopped");
-      this.setState({
-        isRecording: false,
-      });
+      this.stopElapsedTimer();
+      this.setState({ isRecording: false });
     });
 
     // Listen for save recording cancelled
     this.emitter.on("SAVE_RECORDING_CANCELLED", () => {
       this.logger.info("Recording cancelled, clearing state");
+      this.stopElapsedTimer();
       this.setState({
         isRecording: false,
         sessionId: null,
         steps: [],
+        elapsed: 0,
+      });
+    });
+
+    // Listen for recording cancelled by user (discard)
+    this.emitter.on("CANCEL_RECORDING", () => {
+      this.logger.info("Recording discarded, clearing state");
+      this.stopElapsedTimer();
+      this.setState({
+        isRecording: false,
+        sessionId: null,
+        steps: [],
+        elapsed: 0,
       });
     });
 
     // Listen for save recording confirmed
     this.emitter.on("SAVE_RECORDING_CONFIRMED", () => {
       this.logger.info("Recording saved, clearing state");
+      this.stopElapsedTimer();
       this.setState({
         isRecording: false,
         sessionId: null,
         steps: [],
+        elapsed: 0,
       });
     });
   }
@@ -98,9 +116,27 @@ export class RecordingProgressViewModel extends BaseViewModel {
       return;
     }
 
-    this.setState({
-      steps: recordingState.macro.steps,
-    });
+    const steps = recordingState.macro.steps;
+    this.setState({ steps });
+    this.syncElapsedTimer(steps);
+  }
+
+  private syncElapsedTimer(steps: MacroStep[]): void {
+    if (this.elapsedTimer !== null || steps.length === 0) return;
+
+    const startTimestamp = steps[0].timestamp;
+    this.elapsedTimer = setInterval(() => {
+      this.setState({
+        elapsed: Math.floor((Date.now() - startTimestamp) / 1000),
+      });
+    }, 1000);
+  }
+
+  private stopElapsedTimer(): void {
+    if (this.elapsedTimer !== null) {
+      clearInterval(this.elapsedTimer);
+      this.elapsedTimer = null;
+    }
   }
 
   async loadRecordingState(): Promise<void> {
@@ -113,12 +149,14 @@ export class RecordingProgressViewModel extends BaseViewModel {
           sessionId: recordingState.sessionId,
           stepsCount: recordingState.macro.steps.length,
         });
+        const steps = recordingState.macro.steps;
         this.setState({
           isRecording: true,
           sessionId: recordingState.sessionId,
-          steps: recordingState.macro.steps,
+          steps,
           loading: false,
         });
+        this.syncElapsedTimer(steps);
       } else {
         this.setState({
           loading: false,

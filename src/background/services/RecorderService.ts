@@ -51,6 +51,10 @@ export class RecorderService extends BaseService {
       this.handleSaveRecordingCancelled(data);
     });
 
+    this.emitter.on("CANCEL_RECORDING", () => {
+      void this.cancelRecording();
+    });
+
     // Listen for tab close to stop recording
     chrome.tabs.onRemoved.addListener((tabId) => {
       if (this.isRecording && this.recordingTabId === tabId) {
@@ -210,5 +214,16 @@ export class RecorderService extends BaseService {
   ): void {
     this.logger.info("Save recording cancelled", { sessionId: data.sessionId });
     // Recording is already cleared, nothing to do
+  }
+
+  private async cancelRecording(): Promise<void> {
+    this.logger.info("Recording cancelled, discarding", {
+      sessionId: this.currentSessionId,
+    });
+    this.isRecording = false;
+    this.currentSessionId = null;
+    this.recordingTabId = null;
+    this.currentMacro = null;
+    await this.recordingStateRepository.clear();
   }
 }

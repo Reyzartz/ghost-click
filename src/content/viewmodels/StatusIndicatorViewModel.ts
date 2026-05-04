@@ -46,6 +46,10 @@ export class StatusIndicatorViewModel extends BaseViewModel {
       this.updateStatus("idle");
     });
 
+    this.emitter.on("CANCEL_RECORDING", () => {
+      this.updateStatus("idle");
+    });
+
     this.emitter.on("PLAY_MACRO", () => {
       this.updateStatus("playing");
     });

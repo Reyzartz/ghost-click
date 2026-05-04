@@ -18,10 +18,7 @@ const RecordButtonCard = memo<RecordButtonCardProps>(
           visible ? "max-h-15 opacity-100" : "max-h-0 opacity-0"
         )}
       >
-        <Card
-          size="md"
-          className="rounded-lg pr-2.5 pl-2.5 duration-300 ease-in-out"
-        >
+        <Card size="md" className="rounded-lg pr-2.5 pl-2.5">
           <Button
             onClick={onClick}
             variant="primary"
