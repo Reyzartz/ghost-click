@@ -47,7 +47,7 @@ export class UserInputService extends BaseService {
     }
   }
 
-  private async startCapture(sessionId: string): Promise<void> {
+  private startCapture(sessionId: string): void {
     if (this.isRecording) {
       this.logger.warn("Already capturing user input");
       return;
@@ -56,20 +56,6 @@ export class UserInputService extends BaseService {
     this.isRecording = true;
     this.currentSessionId = sessionId;
     this.logger.info("Started capturing user input", { sessionId });
-
-    // Get settings for creating the navigate step
-    const settings = await this.settingsRepository.get();
-
-    // Emit NAVIGATE event for the current page URL as the first step
-    const navigateStep = MacroUtils.createNavigateStep(settings, {
-      name: MacroUtils.getStepName(window.location.href, "NAVIGATE"),
-      url: window.location.href,
-    });
-
-    this.emitter.emit("USER_ACTION", {
-      sessionId,
-      step: navigateStep,
-    });
 
     this.addClickHandlers();
   }

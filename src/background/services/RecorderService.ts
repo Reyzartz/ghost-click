@@ -26,10 +26,10 @@ export class RecorderService extends BaseService {
     super("RecorderService", emitter);
   }
 
-  init(): Promise<void> {
+  async init(): Promise<void> {
     this.logger.info("RecorderService initialized");
 
-    void this.setInitialRecordingState();
+    await this.setInitialRecordingState();
 
     this.emitter.on("START_RECORDING", (data) => {
       void this.startRecording(data.sessionId, data.domain, data.tabId);
@@ -55,15 +55,12 @@ export class RecorderService extends BaseService {
       void this.cancelRecording();
     });
 
-    // Listen for tab close to stop recording
-    chrome.tabs.onRemoved.addListener((tabId) => {
+    this.emitter.on("TAB_REMOVED", ({ tabId }) => {
       if (this.isRecording && this.recordingTabId === tabId) {
         this.logger.info("Recording tab closed, stopping recording", { tabId });
         this.emitter.emit("STOP_RECORDING");
       }
     });
-
-    return Promise.resolve();
   }
 
   private async setInitialRecordingState(): Promise<void> {
@@ -110,14 +107,8 @@ export class RecorderService extends BaseService {
 
     this.logger.info("Recording started", { sessionId, domain, tabId });
 
-    // Check if page should be refreshed before recording
-    const settings = await this.settingsRepository.get();
-    if (settings.refreshPageOnRecording && this.recordingTabId) {
-      this.logger.info("Refreshing page before recording", {
-        tabId: this.recordingTabId,
-      });
-      await chrome.tabs.reload(this.recordingTabId);
-    }
+    await this.refreshRecordingTab();
+    await this.addNavigateStepIfNeeded();
 
     void this.recordingStateRepository.save({
       isRecording: true,
@@ -125,6 +116,47 @@ export class RecorderService extends BaseService {
       tabId: this.recordingTabId,
       macro: this.currentMacro,
     });
+  }
+
+  private async addNavigateStepIfNeeded(): Promise<void> {
+    if (!this.currentMacro || !this.recordingTabId) return;
+
+    const settings = await this.settingsRepository.get();
+
+    if (!settings.refreshPageOnRecording) return;
+
+    const tab = await chrome.tabs.get(this.recordingTabId);
+
+    if (tab.url) {
+      const navigateStep = MacroUtils.createNavigateStep(settings, {
+        name: MacroUtils.getStepName(tab.url, "NAVIGATE"),
+        url: tab.url,
+      });
+
+      this.emitter.emit("USER_ACTION", {
+        sessionId: this.currentSessionId!,
+        step: navigateStep,
+      });
+    }
+  }
+
+  private async refreshRecordingTab(): Promise<void> {
+    const settings = await this.settingsRepository.get();
+
+    if (settings.refreshPageOnRecording && this.recordingTabId) {
+      try {
+        await chrome.tabs.reload(this.recordingTabId);
+
+        this.logger.info("Refreshed recording tab to about:blank", {
+          tabId: this.recordingTabId,
+        });
+      } catch (err) {
+        this.logger.error("Failed to refresh recording tab", {
+          tabId: this.recordingTabId,
+          error: err,
+        });
+      }
+    }
   }
 
   private async stopRecording(): Promise<void> {
@@ -135,10 +167,7 @@ export class RecorderService extends BaseService {
 
     if (!this.currentSessionId || !this.currentMacro) {
       this.logger.warn("Missing session id or macro while stopping recording");
-      this.isRecording = false;
-      this.currentMacro = null;
-      this.recordingTabId = null;
-      await this.recordingStateRepository.clear();
+      await this.resetRecordingState();
       return;
     }
 
@@ -147,13 +176,7 @@ export class RecorderService extends BaseService {
     // Create a copy of the macro with processed steps for the save modal
     const macroToSave: Macro = this.currentMacro;
 
-    this.isRecording = false;
-    this.currentSessionId = null;
-    this.recordingTabId = null;
-    this.currentMacro = null;
-
-    // Clear recording state from repository
-    await this.recordingStateRepository.clear();
+    await this.resetRecordingState();
 
     // Emit event to show save recording modal in content script
     this.emitter.emit("SHOW_SAVE_RECORDING_MODAL", {
@@ -220,6 +243,11 @@ export class RecorderService extends BaseService {
     this.logger.info("Recording cancelled, discarding", {
       sessionId: this.currentSessionId,
     });
+    await this.resetRecordingState();
+  }
+
+  private async resetRecordingState(): Promise<void> {
+    this.logger.info("Resetting recording state");
     this.isRecording = false;
     this.currentSessionId = null;
     this.recordingTabId = null;

@@ -149,6 +149,7 @@ export class RecordingProgressViewModel extends BaseViewModel {
           sessionId: recordingState.sessionId,
           stepsCount: recordingState.macro.steps.length,
         });
+
         const steps = recordingState.macro.steps;
         this.setState({
           isRecording: true,

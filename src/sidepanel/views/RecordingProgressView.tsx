@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { SidePanelApp } from "../SidePanelApp";
 import { Alert, Button, Text, Icon, Card } from "@/design-system";
 import { Layout } from "@/design-system/Layout";
-import { Square, X, Circle } from "lucide-react";
+import { Square, X, CircleSmall } from "lucide-react";
 import { ConfirmActionButton } from "@/components/ConfirmActionModal";
 import { EditStepItem } from "@/components/EditStepItem";
 import { MacroStep } from "@/models";
@@ -56,7 +56,7 @@ export const RecordingProgressView = ({ app }: { app: SidePanelApp }) => {
             <div className="flex items-center gap-2">
               {state.isRecording && (
                 <Icon
-                  icon={Circle}
+                  icon={CircleSmall}
                   size="sm"
                   color="error"
                   className="fill-error animate-pulse"
