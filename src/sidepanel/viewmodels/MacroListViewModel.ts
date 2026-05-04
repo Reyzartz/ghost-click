@@ -4,6 +4,7 @@ import { RecordingStateRepository } from "@/repositories/RecordingStateRepositor
 import { MacroShareService } from "@/sidepanel/services/MacroShareService";
 import { BaseViewModel } from "@/utils/BaseViewModel";
 import { Emitter } from "@/utils/Emitter";
+import { TabsManager } from "@/utils/TabsManager";
 
 export interface MacroListState {
   loading: boolean;
@@ -11,6 +12,7 @@ export interface MacroListState {
   unpinnedMacros: Macro[];
   allMacros: Macro[];
   isRecording: boolean;
+  canRecord: boolean;
   error?: string | null;
   searchQuery: string;
   filteredMacros: Macro[];
@@ -28,6 +30,7 @@ export class MacroListViewModel extends BaseViewModel {
     unpinnedMacros: [],
     allMacros: [],
     isRecording: false,
+    canRecord: false,
     error: null,
     searchQuery: "",
     filteredMacros: [],
@@ -51,6 +54,23 @@ export class MacroListViewModel extends BaseViewModel {
 
     this.setState({
       isRecording: await this.recordingStateRepository.isRecording(),
+      canRecord: await this.canRecordOnCurrentTab(),
+    });
+
+    this.emitter.on("TAB_UPDATED", () => {
+      void this.canRecordOnCurrentTab().then((canRecord) => {
+        this.logger.info("Tab updated; canRecordOnCurrentTab =", { canRecord });
+        this.setState({ canRecord });
+      });
+    });
+
+    this.emitter.on("TAB_ACTIVATED", () => {
+      void this.canRecordOnCurrentTab().then((canRecord) => {
+        this.logger.info("Tab activated; canRecordOnCurrentTab =", {
+          canRecord,
+        });
+        this.setState({ canRecord });
+      });
     });
 
     this.emitter.on("SAVED_MACRO", () => {
@@ -257,5 +277,23 @@ export class MacroListViewModel extends BaseViewModel {
 
   toggleSearchBar(): void {
     this.setState({ showSearchBar: !this.state.showSearchBar });
+  }
+
+  async canRecordOnCurrentTab(): Promise<boolean> {
+    const tab = await TabsManager.getActiveTab();
+    if (!tab?.url) return false;
+
+    const allowedPrefixes = [
+      "http://",
+      "https://",
+      "file://",
+      "ftp://",
+      "chrome-extension://",
+      "moz-extension://",
+      "edge-extension://",
+      "safari-extension://",
+    ];
+
+    return allowedPrefixes.some((prefix) => tab.url!.startsWith(prefix));
   }
 }

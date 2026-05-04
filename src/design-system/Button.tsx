@@ -26,7 +26,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "bg-primary text-text-inverse hover:bg-primary-hover active:scale-[0.98] disabled:bg-text-disabled border-primary disabled:border-primary",
+          "bg-primary text-text-inverse hover:bg-primary-hover active:scale-[0.98] disabled:bg-primary border-primary disabled:border-primary",
         secondary:
           "bg-surface text-text-secondary hover:bg-surface-hover active:bg-surface-active",
         danger:

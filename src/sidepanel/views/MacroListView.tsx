@@ -24,6 +24,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
     filteredMacros: [],
     selectedIndex: 0,
     showSearchBar: false,
+    canRecord: false,
   });
 
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -100,6 +101,11 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
   };
 
   const handleStartRecording = async () => {
+    if (!state.canRecord) {
+      app.logger.error("Recording is not allowed on the current tab");
+      return;
+    }
+
     const activeTab = await TabsManager.getActiveTab();
     if (!activeTab || !activeTab.id || !activeTab.url) {
       app.logger.error("No active tab found for recording");
@@ -166,6 +172,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
 
       <div>
         <RecordButtonCard
+          disabled={!state.canRecord}
           visible={!state.showSearchBar}
           onClick={handleStartRecording}
         />
