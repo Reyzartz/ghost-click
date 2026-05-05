@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { SidePanelApp } from "../SidePanelApp";
 import { PlaybackProgressState } from "../viewmodels/PlaybackProgressViewModel";
 import { ErrorDetailsPanel } from "@/components/ErrorDetailsPanel";
-import { Alert, Button, Text } from "@/design-system";
-import { Play, Pause, Square, Edit, RotateCcw } from "lucide-react";
+import { Alert, Button, Card, Text } from "@/design-system";
+import { Play, Pause, Edit, RotateCcw, CopyPlus, Trash2 } from "lucide-react";
 import { ProgressBar } from "@/components/ProgressBar";
 import { StepListItem } from "@/components/StepListItem";
-import { DisplayFavicon } from "@/components/DisplayFavicon";
 import { Layout } from "@/design-system/Layout";
+import { ConfirmActionButton } from "@/components/ConfirmActionModal";
 
 export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<PlaybackProgressState>({
@@ -42,10 +42,11 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
           Math.round((normalizedStepIndex / state.totalSteps) * 100)
         )
       : 0;
+
   const displayStepNumber = state.totalSteps
     ? Math.min(state.currentStepIndex + 1, state.totalSteps)
     : 0;
-  const isComplete = Boolean(state.macro && !state.isPlaying && !state.error);
+
   const erroredStepIds = state.erroredStepIds ?? [];
 
   const handleReplay = (): void => {
@@ -54,109 +55,111 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
     app.emitter.emit("PLAY_MACRO", { macroId: state.macro.id });
   };
 
-  const handleGoBack = (): void => {
-    app.playbackProgressViewModel.clearErrors();
+  const handleGoBack = async (): Promise<void> => {
     if (state.isPlaying) {
-      app.emitter.emit("STOP_PLAYBACK", undefined, {
-        currentTab: false,
-      });
+      await handleStop();
     }
+
+    app.playbackProgressViewModel.clearErrors();
     app.viewService.navigateToView("macroList");
   };
 
-  const handleStop = (): void => {
-    app.emitter.emit("STOP_PLAYBACK", undefined, {
-      currentTab: false,
+  const handleStop = (): Promise<void> => {
+    return new Promise<void>((resolve) => {
+      app.emitter.emit("STOP_PLAYBACK", undefined, { currentTab: false });
+      setTimeout(() => {
+        resolve();
+      }, 300);
     });
   };
 
   const handlePause = (): void => {
-    app.emitter.emit("PAUSE_PLAYBACK", undefined, {
-      currentTab: false,
-    });
+    app.emitter.emit("PAUSE_PLAYBACK", undefined, { currentTab: false });
   };
 
   const handleResume = (): void => {
-    app.emitter.emit("RESUME_PLAYBACK", undefined, {
-      currentTab: false,
-    });
+    app.emitter.emit("RESUME_PLAYBACK", undefined, { currentTab: false });
   };
 
-  const handleEditMacro = (): void => {
+  const handleEditMacro = async (): Promise<void> => {
     if (!state.macro) return;
+    await handleStop();
+
     app.playbackProgressViewModel.clearErrors();
     void app.editMacroViewModel.loadMacro(state.macro.id);
     app.viewService.navigateToView("editMacro");
   };
 
+  const handleDuplicate = async (): Promise<void> => {
+    if (!state.macro) return;
+    await handleStop();
+
+    app.macroListViewModel.duplicateMacro(state.macro.id);
+  };
+
+  const handleDelete = async (): Promise<void> => {
+    if (!state.macro) return;
+    await handleStop();
+
+    await app.macroListViewModel.deleteMacro(state.macro.id);
+    app.viewService.navigateToView("macroList");
+  };
+
   return (
     <Layout
-      header={<Layout.Header title="Playback Progress" onBack={handleGoBack} />}
-    >
-      <div className="flex justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <DisplayFavicon
-            faviconUrl={state.macro.faviconUrl}
-            name={state.macro.name}
+      header={
+        <Layout.Header title={state.macro.name} onBack={handleGoBack}>
+          <Button
+            variant="ghost"
+            size="sm"
+            icon={Edit}
+            onClick={handleEditMacro}
+            title="Edit macro"
           />
-          <Text variant="h3">{state.macro?.name}</Text>
-        </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            icon={CopyPlus}
+            onClick={handleDuplicate}
+            title="Duplicate macro"
+          />
+          <ConfirmActionButton
+            variant="danger"
+            size="sm"
+            icon={Trash2}
+            onClick={handlePause}
+            onCancel={handleResume}
+            onConfirm={handleDelete}
+            title="Delete macro"
+            message="Are you sure you want to delete this macro? This action cannot be undone."
+            confirmText="Delete"
+          />
+        </Layout.Header>
+      }
+    >
+      {/* Progress + Controls */}
+      <Card className="flex flex-col gap-3 rounded-lg pr-2.5 pl-2.5">
+        <Button
+          variant={state.isPlaying && !state.isPaused ? "secondary" : "primary"}
+          onClick={
+            state.isPlaying
+              ? state.isPaused
+                ? handleResume
+                : handlePause
+              : handleReplay
+          }
+          icon={state.isPlaying ? (state.isPaused ? Play : Pause) : RotateCcw}
+          fullWidth
+        >
+          {state.isPlaying ? (state.isPaused ? "Play" : "Pause") : "Replay"}
+        </Button>
 
-        <div className="flex shrink-0 items-center gap-2">
-          {state.isPlaying ? (
-            <>
-              <Button
-                variant="danger"
-                size="sm"
-                onClick={handleStop}
-                icon={Square}
-                title="Stop Playback"
-              />
-
-              {state.isPaused ? (
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={handleResume}
-                  icon={Play}
-                  title="Resume Playback"
-                />
-              ) : (
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={handlePause}
-                  icon={Pause}
-                  title="Pause Playback"
-                />
-              )}
-            </>
-          ) : (
-            <>
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={handleReplay}
-                icon={RotateCcw}
-                title="Replay Playback"
-              />
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={handleEditMacro}
-                icon={Edit}
-                title="Edit Macro"
-              />
-            </>
-          )}
-        </div>
-      </div>
-
-      <ProgressBar
-        current={displayStepNumber}
-        total={state.totalSteps}
-        percentage={progress}
-      />
+        <ProgressBar
+          current={displayStepNumber}
+          total={state.totalSteps}
+          percentage={progress}
+        />
+      </Card>
 
       {state.error && state.errorDetails.length > 0 && (
         <ErrorDetailsPanel
@@ -169,22 +172,13 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
         <Alert variant="error">{state.error}</Alert>
       )}
 
-      {isComplete && (
-        <Alert variant="success">
-          Playback finished. Review the steps or replay.
-        </Alert>
-      )}
-
-      <div className="max-h-full grow space-y-2 overflow-y-auto">
-        <Text
-          variant="caption"
-          color="muted"
-          className="bg-background sticky top-0"
-        >
-          All Steps
-        </Text>
-        <ul className="space-y-1">
-          {state.macro?.steps.map((step, index) => (
+      {/* Steps list */}
+      <div className="grow overflow-y-auto">
+        <ul className="flex flex-col gap-1.5">
+          <Text variant="caption" color="muted">
+            Steps
+          </Text>
+          {state.macro.steps.map((step, index) => (
             <StepListItem
               key={step.id}
               step={step}
@@ -192,6 +186,7 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
               isCurrent={index === state.currentStepIndex}
               isCompleted={index < state.currentStepIndex}
               isErrored={erroredStepIds.includes(step.id)}
+              isPaused={state.isPaused}
             />
           ))}
         </ul>

@@ -93,7 +93,7 @@ export const RecordingProgressView = ({ app }: { app: SidePanelApp }) => {
           </Button>
 
           <ConfirmActionButton
-            onClick={handleDiscard}
+            onConfirm={handleDiscard}
             variant="ghost"
             size="md"
             icon={X}

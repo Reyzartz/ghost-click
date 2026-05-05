@@ -48,12 +48,14 @@ export const Header = ({
       )}
 
       {title && typeof title === "string" ? (
-        <Text variant="h3">{title}</Text>
+        <Text variant="h3" className="truncate overflow-hidden">
+          {title}
+        </Text>
       ) : (
         title
       )}
 
-      <div className="flex flex-1 items-center justify-end gap-1 overflow-hidden px-2">
+      <div className="flex shrink-0 grow items-center justify-end gap-1 overflow-hidden pr-2">
         {children}
       </div>
     </div>

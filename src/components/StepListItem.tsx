@@ -1,7 +1,6 @@
 import { MacroStep } from "@/models";
 import { clsx } from "clsx";
 import {
-  Play,
   Check,
   AlertCircle,
   MousePointerClickIcon,
@@ -9,6 +8,8 @@ import {
   KeyboardIcon,
   GlobeIcon,
   LucideIcon,
+  PauseIcon,
+  LoaderCircleIcon,
 } from "lucide-react";
 import { Text, Icon, Card } from "@/design-system";
 import { useMemo } from "react";
@@ -19,6 +20,7 @@ interface StepListItemProps {
   isCurrent: boolean;
   isCompleted: boolean;
   isErrored: boolean;
+  isPaused: boolean;
 }
 
 const StepTypeToIcon: Record<MacroStep["type"], LucideIcon> = {
@@ -33,6 +35,7 @@ export const StepListItem = ({
   isCurrent,
   isCompleted,
   isErrored,
+  isPaused,
 }: StepListItemProps) => {
   const IconComponent = StepTypeToIcon[step.type];
 
@@ -51,17 +54,17 @@ export const StepListItem = ({
   }, [isCurrent, isCompleted, isErrored]);
 
   const iconType = useMemo(() => {
-    if (isCurrent) return Play;
+    if (isCurrent && isPaused) return PauseIcon;
+    if (isCurrent) return LoaderCircleIcon;
     if (isCompleted && isErrored) return AlertCircle;
     if (isCompleted && !isErrored) return Check;
     return null;
-  }, [isCurrent, isCompleted, isErrored]);
+  }, [isCurrent, isCompleted, isErrored, isPaused]);
 
   return (
     <Card
       as="li"
       variant={cardVariant}
-      size="sm"
       autoScroll={isCurrent}
       autoFocus={isCurrent}
     >
@@ -73,7 +76,12 @@ export const StepListItem = ({
         )}
       >
         <Icon icon={IconComponent} size="sm" color={textAndIconColor} />
-        <Text variant="small" color={textAndIconColor}>
+        <Text
+          variant="small"
+          color={textAndIconColor}
+          className="truncate"
+          title={step.name}
+        >
           {step.name}
         </Text>
         {iconType && (
@@ -81,7 +89,10 @@ export const StepListItem = ({
             icon={iconType}
             size="sm"
             color={textAndIconColor}
-            className="ml-auto"
+            className={clsx(
+              "ml-auto",
+              isCurrent && !isPaused && "animate-spin"
+            )}
           />
         )}
       </div>

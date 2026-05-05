@@ -22,7 +22,7 @@ import { Text, Button, Badge, Icon, Card } from "@/design-system";
 import { cva } from "class-variance-authority";
 
 const stepContentVariants = cva(
-  "mx-auto flex w-full max-w-max items-start gap-2 transition-all duration-200 delay-200",
+  "mx-auto flex w-full items-start gap-2 transition-all duration-200 delay-200",
   {
     variants: {
       isDeleted: {
