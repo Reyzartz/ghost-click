@@ -73,7 +73,7 @@ export const EditMacroHeaderControls = ({
               icon={Trash2}
               message="Are you sure you want to delete this macro? This action cannot be undone."
               confirmText="Delete"
-              onClick={onDelete}
+              onConfirm={onDelete}
               title={"Delete Macro"}
             />
           )}

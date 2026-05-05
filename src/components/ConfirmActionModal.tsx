@@ -14,6 +14,9 @@ interface ConfirmActionModalProps extends ButtonProps {
   message: string;
   confirmText?: string;
   cancelText?: string;
+  onClick?: () => void;
+  onConfirm: () => void;
+  onCancel?: () => void;
 }
 
 const ConfirmActionButton = memo<ConfirmActionModalProps>(
@@ -23,17 +26,24 @@ const ConfirmActionButton = memo<ConfirmActionModalProps>(
     confirmText = "Confirm",
     cancelText = "Cancel",
     onClick,
+    onCancel,
+    onConfirm,
     ...props
   }) => {
     const [open, setOpen] = useState(false);
 
     const onClickHandler = (): void => {
-      if (onClick) {
-        setOpen(true);
-      }
+      onClick?.();
+      setOpen(true);
     };
 
     const onCloseHandler = (): void => {
+      setOpen(false);
+      onCancel?.();
+    };
+
+    const onConfirmHandler = (): void => {
+      onConfirm();
       setOpen(false);
     };
 
@@ -51,7 +61,7 @@ const ConfirmActionButton = memo<ConfirmActionModalProps>(
               {cancelText}
             </Button>
             <Button
-              onClick={onClick}
+              onClick={onConfirmHandler}
               variant={props.variant === "danger" ? "danger" : "primary"}
               fullWidth
             >

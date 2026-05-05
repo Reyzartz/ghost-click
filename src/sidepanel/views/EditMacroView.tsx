@@ -166,7 +166,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
             <ConfirmActionButton
               variant="danger"
               fullWidth
-              onClick={handleCancel}
+              onConfirm={handleCancel}
               title={state.isCreating ? "Discard Macro" : "Discard Changes"}
               message={
                 state.isCreating
