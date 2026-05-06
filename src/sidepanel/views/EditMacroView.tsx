@@ -41,7 +41,11 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
     app.viewService.navigateToView("macroList");
   };
 
-  const handleBack = (): void => {
+  const handleBack = async (): Promise<void> => {
+    if (state.isPlaying) {
+      await app.editMacroViewModel.stopPlayback();
+    }
+
     app.viewService.navigateToView("macroList");
     app.editMacroViewModel.reset();
   };
@@ -80,8 +84,8 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
     app.editMacroViewModel.resumePlayback();
   };
 
-  const handleStop = (): void => {
-    app.editMacroViewModel.stopPlayback();
+  const handleStop = async (): Promise<void> => {
+    await app.editMacroViewModel.stopPlayback();
   };
 
   return (

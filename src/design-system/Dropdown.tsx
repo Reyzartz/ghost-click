@@ -61,7 +61,7 @@ export const Dropdown = ({ items, trigger }: DropdownProps) => {
             return (
               <button
                 key={index}
-                className="hover:bg-surface-hover flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm first:rounded-t last:rounded-b"
+                className="hover:bg-surface-hover flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm whitespace-pre first:rounded-t last:rounded-b"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleItemClick(item.onClick);

@@ -151,7 +151,7 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
           icon={state.isPlaying ? (state.isPaused ? Play : Pause) : RotateCcw}
           fullWidth
         >
-          {state.isPlaying ? (state.isPaused ? "Play" : "Pause") : "Replay"}
+          {state.isPlaying ? (state.isPaused ? "Resume" : "Pause") : "Replay"}
         </Button>
 
         <ProgressBar
@@ -187,6 +187,7 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
               isCompleted={index < state.currentStepIndex}
               isErrored={erroredStepIds.includes(step.id)}
               isPaused={state.isPaused}
+              isPlaying={state.isPlaying}
             />
           ))}
         </ul>

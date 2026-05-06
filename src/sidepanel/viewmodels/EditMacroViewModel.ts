@@ -329,9 +329,16 @@ export class EditMacroViewModel extends BaseViewModel {
     this.emitter.emit("RESUME_PLAYBACK");
   }
 
-  stopPlayback(): void {
+  stopPlayback(): Promise<void> {
     this.logger.info("Requesting stop playback");
     this.emitter.emit("STOP_PLAYBACK");
+
+    // Add a small delay to allow background processes to update state before we reset the view state
+    return new Promise<void>((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 300);
+    });
   }
 
   deleteStep(stepId: string): void {

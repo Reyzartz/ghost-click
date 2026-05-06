@@ -138,7 +138,7 @@ export const StepItemCard = forwardRef<HTMLLIElement, StepItemCardProps>(
         )}
 
         {dropdownItems.length > 0 && !isPlaying && (
-          <div className="-mr-1 hidden group-hover/step:inline-flex">
+          <div className="-mr-1 hidden group-hover/step:inline-flex focus-within:inline-flex">
             <Dropdown
               items={dropdownItems}
               trigger={

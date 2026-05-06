@@ -141,14 +141,6 @@ export const RecordingProgressView = ({ app }: { app: SidePanelApp }) => {
                 index={index}
                 handleUpdateStep={handleUpdateStep}
                 handleDeleteStep={handleDeleteStep}
-                isDeleted={false}
-                isNew={false}
-                isEditDisabled={false}
-                handleUndoDelete={() => {}}
-                isCurrent={false}
-                isCompleted={false}
-                isErrored={false}
-                isDeletable={false}
               />
             </div>
           );
