@@ -20,6 +20,7 @@ interface CardProps extends HTMLAttributes<HTMLElement> {
   clickable?: boolean;
   as?: ElementType;
   autoScroll?: boolean;
+  disabled?: boolean;
 }
 
 const cardVariants = cva("rounded transition-colors list-none border", {
@@ -45,6 +46,10 @@ const cardVariants = cva("rounded transition-colors list-none border", {
       true: "cursor-pointer",
       false: "",
     },
+    disabled: {
+      true: "",
+      false: "",
+    },
   },
   compoundVariants: [
     {
@@ -56,6 +61,16 @@ const cardVariants = cva("rounded transition-colors list-none border", {
       hover: true,
       variant: "selected",
       className: "hover:bg-surface-active",
+    },
+    {
+      hover: true,
+      variant: "secondary",
+      className: "hover:bg-background-secondary-hover",
+    },
+    {
+      disabled: true,
+      clickable: true,
+      className: "cursor-not-allowed",
     },
   ],
   defaultVariants: {
@@ -76,6 +91,7 @@ export const Card = forwardRef<HTMLElement, CardProps>(
       clickable = false,
       as: Component = "div",
       autoScroll = false,
+      disabled = false,
       onClick,
       className,
       ...props
@@ -88,6 +104,7 @@ export const Card = forwardRef<HTMLElement, CardProps>(
         size,
         hover: hover || !!onClick,
         clickable: clickable || !!onClick,
+        disabled,
       }),
       className
     );
@@ -112,7 +129,7 @@ export const Card = forwardRef<HTMLElement, CardProps>(
           }
         }}
         className={classes}
-        onClick={onClick}
+        onClick={disabled ? undefined : onClick}
         {...props}
       >
         {children}
