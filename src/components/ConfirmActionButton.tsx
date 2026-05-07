@@ -9,7 +9,7 @@ import {
 import { ButtonProps } from "@/design-system/Button";
 import { memo, useState } from "react";
 
-interface ConfirmActionModalProps extends ButtonProps {
+export interface ConfirmActionButtonProps extends ButtonProps {
   title: string;
   message: string;
   confirmText?: string;
@@ -17,9 +17,10 @@ interface ConfirmActionModalProps extends ButtonProps {
   onClick?: () => void;
   onConfirm: () => void;
   onCancel?: () => void;
+  isDestructiveAction?: boolean;
 }
 
-const ConfirmActionButton = memo<ConfirmActionModalProps>(
+const ConfirmActionButton = memo<ConfirmActionButtonProps>(
   ({
     title,
     message,
@@ -28,6 +29,7 @@ const ConfirmActionButton = memo<ConfirmActionModalProps>(
     onClick,
     onCancel,
     onConfirm,
+    isDestructiveAction,
     ...props
   }) => {
     const [open, setOpen] = useState(false);
@@ -53,17 +55,21 @@ const ConfirmActionButton = memo<ConfirmActionModalProps>(
 
         <Modal isOpen={open} maxWidth="sm">
           <ModalHeader title={title} />
+
           <ModalBody>
-            <Text variant="body">{message}</Text>
+            <Text variant="body" color="muted">
+              {message}
+            </Text>
           </ModalBody>
-          <ModalFooter className="flex gap-2">
-            <Button onClick={onCloseHandler} variant="secondary" fullWidth>
+
+          <ModalFooter className="flex-end flex gap-2">
+            <Button onClick={onCloseHandler} color="secondary" variant="text">
               {cancelText}
             </Button>
+
             <Button
               onClick={onConfirmHandler}
-              variant={props.variant === "danger" ? "danger" : "primary"}
-              fullWidth
+              color={isDestructiveAction ? "danger" : "primary"}
             >
               {confirmText}
             </Button>

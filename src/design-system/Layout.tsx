@@ -2,6 +2,10 @@ import { memo, PropsWithChildren } from "react";
 import { Button, Text } from "@/design-system";
 import clsx from "clsx";
 import { ChevronLeft } from "lucide-react";
+import {
+  ConfirmActionButton,
+  ConfirmActionButtonProps,
+} from "@/components/ConfirmActionButton";
 
 interface LayoutProps {
   header?: React.ReactNode;
@@ -22,6 +26,10 @@ const Layout = memo(({ children, header }: PropsWithChildren<LayoutProps>) => {
 interface HeaderProps {
   title?: string | React.ReactNode;
   onBack?: () => void;
+  confirmAction?: Pick<
+    ConfirmActionButtonProps,
+    "title" | "message" | "confirmText" | "onConfirm" | "isDestructiveAction"
+  >;
   showBorder?: boolean;
   className?: string;
 }
@@ -33,6 +41,7 @@ export const Header = ({
   onBack,
   showBorder = true,
   className = "",
+  confirmAction,
   children,
 }: PropsWithChildren<HeaderProps>) => {
   return (
@@ -44,7 +53,24 @@ export const Header = ({
       )}
     >
       {onBack && (
-        <Button variant="ghost" size="sm" onClick={onBack} icon={ChevronLeft} />
+        <Button
+          variant="ghost"
+          color="secondary"
+          size="sm"
+          onClick={onBack}
+          icon={ChevronLeft}
+        />
+      )}
+
+      {confirmAction && (
+        <ConfirmActionButton
+          variant="ghost"
+          color="secondary"
+          size="sm"
+          onClick={onBack}
+          icon={ChevronLeft}
+          {...confirmAction}
+        />
       )}
 
       {title && typeof title === "string" ? (
