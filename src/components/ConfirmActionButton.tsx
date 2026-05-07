@@ -56,7 +56,7 @@ const ConfirmActionButton = memo<ConfirmActionButtonProps>(
         <Modal isOpen={open} maxWidth="sm">
           <ModalHeader title={title} />
 
-          <ModalBody>
+          <ModalBody borderless>
             <Text variant="body" color="muted">
               {message}
             </Text>

@@ -77,7 +77,7 @@ export const ImportMacroModal = ({ app }: { app: SidePanelApp }) => {
           className="grow font-mono text-xs"
           containerClassName={clsx(
             "flex flex-col transition-all duration-200",
-            state.parsedMacro ? "h-45.5" : "h-62"
+            state.parsedMacro ? "h-44" : "h-62"
           )}
           autoFocus
           error={state.error}
@@ -86,7 +86,7 @@ export const ImportMacroModal = ({ app }: { app: SidePanelApp }) => {
         <div
           className={clsx(
             "overflow-hidden transition-[opacity,height] duration-200",
-            state.parsedMacro ? "h-16.5 opacity-100" : "h-0 opacity-0"
+            state.parsedMacro ? "h-18 opacity-100" : "h-0 opacity-0"
           )}
         >
           {state.parsedMacro && (
@@ -104,33 +104,23 @@ export const ImportMacroModal = ({ app }: { app: SidePanelApp }) => {
         </div>
       </ModalBody>
 
-      <ModalFooter>
-        {state.parsedMacro ? (
-          <>
-            <Button
-              onClick={() => void handleSave()}
-              disabled={!state.macroName.trim()}
-              variant="primary"
-              fullWidth
-              icon={SaveIcon}
-            >
-              Save
-            </Button>
-            <Button
-              onClick={() => void handleCreateAndEdit()}
-              disabled={!state.macroName.trim()}
-              variant="secondary"
-              fullWidth
-              icon={EditIcon}
-            >
-              Edit
-            </Button>
-          </>
-        ) : (
-          <Button onClick={handleDiscard} variant="danger" fullWidth>
-            Cancel
-          </Button>
-        )}
+      <ModalFooter visible={state.parsedMacro !== null}>
+        <Button
+          onClick={() => void handleCreateAndEdit()}
+          disabled={!state.macroName.trim()}
+          variant="text"
+          color="secondary"
+          icon={EditIcon}
+        >
+          Edit
+        </Button>
+        <Button
+          onClick={() => void handleSave()}
+          disabled={!state.macroName.trim()}
+          icon={SaveIcon}
+        >
+          Save
+        </Button>
       </ModalFooter>
     </Modal>
   );

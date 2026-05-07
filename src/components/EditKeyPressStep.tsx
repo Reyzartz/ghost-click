@@ -201,9 +201,7 @@ const EditKeyPressStep = memo<EditKeyPressStepProps>(
         </ModalBody>
 
         <ModalFooter className="flex justify-end gap-2">
-          <Button onClick={handleSave} variant="primary" fullWidth>
-            Save
-          </Button>
+          <Button onClick={handleSave}>Save</Button>
         </ModalFooter>
       </Modal>
     );

@@ -57,7 +57,7 @@ export const SaveRecordingModal = ({ app }: { app: SidePanelApp }) => {
       isOpen={state.isOpen}
       onClose={handleCancel}
       maxWidth="md"
-      zIndex={2147483646}
+      zIndex={1000}
     >
       <ModalHeader>
         <div className="flex gap-2">
@@ -78,7 +78,7 @@ export const SaveRecordingModal = ({ app }: { app: SidePanelApp }) => {
         </div>
       </ModalHeader>
 
-      <ModalBody className="space-y-2">
+      <ModalBody className="space-y-2" borderless>
         <Input
           label="Macro Name"
           type="text"
@@ -115,23 +115,21 @@ export const SaveRecordingModal = ({ app }: { app: SidePanelApp }) => {
 
       <ModalFooter>
         <Button
-          onClick={handleSave}
-          variant="primary"
-          fullWidth
-          disabled={!state.macroName.trim()}
-          icon={SaveIcon}
-        >
-          Save
-        </Button>
-
-        <Button
           onClick={handleSaveAndEdit}
-          variant="secondary"
-          fullWidth
+          variant="text"
+          color="secondary"
           disabled={!state.macroName.trim()}
           icon={EditIcon}
         >
           Edit
+        </Button>
+
+        <Button
+          onClick={handleSave}
+          disabled={!state.macroName.trim()}
+          icon={SaveIcon}
+        >
+          Save
         </Button>
       </ModalFooter>
     </Modal>

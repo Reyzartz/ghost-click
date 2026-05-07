@@ -14,10 +14,10 @@ interface ModalProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const maxWidthStyles = {
-  sm: "max-w-sm",
-  md: "max-w-md",
-  lg: "max-w-lg",
-  xl: "max-w-xl",
+  sm: "max-w-xs",
+  md: "max-w-sm",
+  lg: "max-w-md",
+  xl: "max-w-lg",
 };
 
 export const Modal = ({
@@ -50,8 +50,13 @@ export const Modal = ({
           <Button
             icon={X}
             onClick={onClose}
-            className="absolute top-2 right-2"
+            className={clsx(
+              "absolute",
+              maxWidth === "sm" ? "top-2 right-2" : "top-1.5 right-1.5"
+            )}
             variant="ghost"
+            size={maxWidth === "sm" ? "sm" : "md"}
+            color="secondary"
           />
         )}
         {children}
@@ -74,7 +79,7 @@ export const ModalHeader = ({
   ...props
 }: ModalHeaderProps) => {
   return (
-    <div className={clsx("p-3 pb-0", className)} {...props}>
+    <div className={clsx("p-3", className)} {...props}>
       <div className="flex items-center gap-2 empty:hidden">
         {icon && <Icon icon={icon} />}
         {title && <Text variant="h3">{title}</Text>}
@@ -87,17 +92,20 @@ export const ModalHeader = ({
 
 interface ModalBodyProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
+  borderless?: boolean;
 }
 
 export const ModalBody = ({
   children,
   className,
+  borderless = false,
   ...props
 }: ModalBodyProps) => {
   return (
     <div
       className={clsx(
-        "scrollbar my-3 max-h-120 overflow-scroll px-3",
+        "scrollbar max-h-120 overflow-scroll px-3 py-3",
+        borderless ? "pt-0" : "border-y",
         className
       )}
       {...props}
@@ -109,15 +117,24 @@ export const ModalBody = ({
 
 interface ModalFooterProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
+  visible?: boolean;
 }
 
 export const ModalFooter = ({
   children,
   className,
+  visible = true,
   ...props
 }: ModalFooterProps) => {
   return (
-    <div className={clsx("flex gap-2 p-3 pt-0", className)} {...props}>
+    <div
+      className={clsx(
+        "bg-background-secondary flex justify-end gap-2 overflow-hidden px-2 transition-[max-height,opacity,padding] duration-200",
+        className,
+        visible ? "max-h-14 py-2 opacity-100" : "max-h-0 py-0 opacity-0"
+      )}
+      {...props}
+    >
       {children}
     </div>
   );

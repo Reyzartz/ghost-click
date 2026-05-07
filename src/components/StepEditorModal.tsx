@@ -104,32 +104,36 @@ export const StepEditorModal = ({
     <Modal isOpen={isOpen && !selectedType} onClose={handleClose} maxWidth="sm">
       <ModalHeader title="Select step type" />
 
-      <ModalBody>
+      <ModalBody borderless>
         <div className="grid grid-cols-2 gap-2">
           <Button
             onClick={() => setSelectedType("CLICK")}
-            variant="secondary"
+            variant="outlined"
+            color="secondary"
             icon={MousePointerClickIcon}
           >
             Click
           </Button>
           <Button
             onClick={() => setSelectedType("INPUT")}
-            variant="secondary"
+            variant="outlined"
+            color="secondary"
             icon={TextCursorInputIcon}
           >
             Input
           </Button>
           <Button
             onClick={() => setSelectedType("KEYPRESS")}
-            variant="secondary"
+            variant="outlined"
+            color="secondary"
             icon={KeyboardIcon}
           >
             Key Press
           </Button>
           <Button
             onClick={() => setSelectedType("NAVIGATE")}
-            variant="secondary"
+            variant="outlined"
+            color="secondary"
             icon={GlobeIcon}
           >
             Navigate
