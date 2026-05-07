@@ -82,7 +82,8 @@ const StepTargetInput = memo<StepTargetInputProps>(
             {!isInspecting ? (
               <Button
                 onClick={startInspection}
-                variant="secondary"
+                variant="outlined"
+                color="secondary"
                 size="sm"
                 icon={Search}
                 title="Inspect element on page"
@@ -90,7 +91,8 @@ const StepTargetInput = memo<StepTargetInputProps>(
             ) : (
               <Button
                 onClick={stopInspection}
-                variant="danger"
+                variant="outlined"
+                color="danger"
                 size="sm"
                 icon={Square}
                 title="Stop inspection"

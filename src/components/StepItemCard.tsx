@@ -129,6 +129,7 @@ export const StepItemCard = forwardRef<HTMLLIElement, StepItemCardProps>(
               onUndoDelete(step.id);
             }}
             variant="ghost"
+            color="secondary"
             size="sm"
             icon={Undo2}
             className="absolute top-0 right-0"
@@ -146,6 +147,7 @@ export const StepItemCard = forwardRef<HTMLLIElement, StepItemCardProps>(
                   icon={MoreVertical}
                   size="sm"
                   variant="ghost"
+                  color="secondary"
                   title="Step options"
                 />
               }

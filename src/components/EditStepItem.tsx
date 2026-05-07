@@ -2,7 +2,7 @@ import { MacroStep } from "@/models";
 import { useCallback, useState, useRef, useEffect, useMemo } from "react";
 import { StepEditorModal } from "./StepEditorModal";
 import { StepItemCard } from "./StepItemCard";
-import { Pencil, ArrowUp, ArrowDown, Trash2 } from "lucide-react";
+import { ArrowUp, ArrowDown, Trash2, EditIcon } from "lucide-react";
 
 interface EditStepItemProps {
   step: MacroStep;
@@ -72,7 +72,11 @@ export const EditStepItem = ({
 
     const items = [];
     if (!isEditDisabled) {
-      items.push({ label: "Edit step", icon: Pencil, onClick: onEditHandler });
+      items.push({
+        label: "Edit step",
+        icon: EditIcon,
+        onClick: onEditHandler,
+      });
     }
     if (onAddAbove) {
       items.push({

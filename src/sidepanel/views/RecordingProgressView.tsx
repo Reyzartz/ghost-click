@@ -3,7 +3,7 @@ import { SidePanelApp } from "../SidePanelApp";
 import { Alert, Button, Text, Icon, Card } from "@/design-system";
 import { Layout } from "@/design-system/Layout";
 import { Square, X, CircleSmall } from "lucide-react";
-import { ConfirmActionButton } from "@/components/ConfirmActionModal";
+import { ConfirmActionButton } from "@/components/ConfirmActionButton";
 import { EditStepItem } from "@/components/EditStepItem";
 import { MacroStep } from "@/models";
 import { RecordingProgressState } from "../viewmodels/RecordingProgressViewModel";
@@ -84,7 +84,7 @@ export const RecordingProgressView = ({ app }: { app: SidePanelApp }) => {
         <Card className="flex gap-2 rounded-lg pr-2.5 pl-2.5">
           <Button
             onClick={handleStopRecording}
-            variant="danger"
+            color="danger"
             size="md"
             icon={Square}
             fullWidth
@@ -95,12 +95,14 @@ export const RecordingProgressView = ({ app }: { app: SidePanelApp }) => {
           <ConfirmActionButton
             onConfirm={handleDiscard}
             variant="ghost"
+            color="secondary"
             size="md"
             icon={X}
             className="shrink-0"
             title="Discard Recording"
             message="Are you sure you want to discard this recording? All recorded steps will be lost."
             confirmText="Discard"
+            isDestructiveAction
             cancelText="Keep Recording"
           />
         </Card>

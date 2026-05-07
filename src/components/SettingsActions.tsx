@@ -20,7 +20,8 @@ export const SettingsActions = ({
       <div className="flex gap-2">
         <Button
           type="button"
-          variant="secondary"
+          variant="outlined"
+          color="secondary"
           onClick={onCancel}
           disabled={saving}
           fullWidth
@@ -29,7 +30,6 @@ export const SettingsActions = ({
         </Button>
         <Button
           type="submit"
-          variant="primary"
           disabled={saving || !!hasValidationErrors}
           fullWidth
         >

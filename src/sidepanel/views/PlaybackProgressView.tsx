@@ -7,7 +7,7 @@ import { Play, Pause, Edit, RotateCcw, CopyPlus, Trash2 } from "lucide-react";
 import { ProgressBar } from "@/components/ProgressBar";
 import { StepListItem } from "@/components/StepListItem";
 import { Layout } from "@/design-system/Layout";
-import { ConfirmActionButton } from "@/components/ConfirmActionModal";
+import { ConfirmActionButton } from "@/components/ConfirmActionButton";
 
 export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<PlaybackProgressState>({
@@ -111,6 +111,7 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
         <Layout.Header title={state.macro.name} onBack={handleGoBack}>
           <Button
             variant="ghost"
+            color="secondary"
             size="sm"
             icon={Edit}
             onClick={handleEditMacro}
@@ -118,13 +119,16 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
           />
           <Button
             variant="ghost"
+            color="secondary"
             size="sm"
             icon={CopyPlus}
             onClick={handleDuplicate}
             title="Duplicate macro"
           />
+
           <ConfirmActionButton
-            variant="danger"
+            color="danger"
+            variant="ghost"
             size="sm"
             icon={Trash2}
             onClick={handlePause}
@@ -133,6 +137,7 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
             title="Delete macro"
             message="Are you sure you want to delete this macro? This action cannot be undone."
             confirmText="Delete"
+            isDestructiveAction
           />
         </Layout.Header>
       }
@@ -140,7 +145,8 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
       {/* Progress + Controls */}
       <Card className="flex flex-col gap-3 rounded-lg pr-2.5 pl-2.5">
         <Button
-          variant={state.isPlaying && !state.isPaused ? "secondary" : "primary"}
+          variant={state.isPlaying && !state.isPaused ? "outlined" : "filled"}
+          color={state.isPlaying && !state.isPaused ? "secondary" : "primary"}
           onClick={
             state.isPlaying
               ? state.isPaused

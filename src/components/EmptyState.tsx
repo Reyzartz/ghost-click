@@ -27,9 +27,7 @@ const EmptyState = memo(
         {message}
       </Text>
 
-      {buttonProps && (
-        <Button variant="primary" className="mt-3" {...buttonProps} />
-      )}
+      {buttonProps && <Button className="mt-3" {...buttonProps} />}
     </div>
   )
 );

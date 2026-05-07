@@ -225,10 +225,12 @@ export const SettingsView = ({ app }: { app: SidePanelApp }) => {
 
           <Button
             type="button"
-            variant="danger"
+            color="danger"
+            variant="ghost"
             onClick={handleReset}
             disabled={state.saving}
             fullWidth
+            className="mt-auto"
           >
             Reset to Defaults
           </Button>

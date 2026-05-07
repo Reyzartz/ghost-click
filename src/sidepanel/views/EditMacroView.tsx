@@ -3,11 +3,11 @@ import { SidePanelApp } from "../SidePanelApp";
 import { Alert, Button, Input, Text } from "@/design-system";
 import { MacroStep } from "@/models";
 import { DisplayFavicon } from "@/components/DisplayFavicon";
-import { ConfirmActionButton } from "@/components/ConfirmActionModal";
 import { EditMacroHeaderControls } from "@/components/EditMacroHeaderControls";
 import { MacroStepsEditor } from "@/components/MacroStepsEditor";
 import { EditMacroState } from "../viewmodels/EditMacroViewModel";
 import { Layout } from "@/design-system/Layout";
+import clsx from "clsx";
 
 export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
   const [state, setState] = useState<EditMacroState>({
@@ -30,9 +30,10 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
     return () => unsubscribe();
   }, [app]);
 
-  const handleCancel = (): void => {
+  const handleCancel = async (): Promise<void> => {
     app.viewService.navigateToView("macroList");
     app.editMacroViewModel.reset();
+    await handleBack();
   };
 
   const handleSave = async (): Promise<void> => {
@@ -93,12 +94,40 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
       header={
         <Layout.Header
           title={state.isCreating ? "Create Macro" : "Edit Macro"}
-          onBack={handleBack}
-        />
+          confirmAction={{
+            onConfirm: handleCancel,
+            title: state.isCreating ? "Discard Macro" : "Discard Changes",
+            message: state.isCreating
+              ? "Are you sure you want to discard this macro?"
+              : "Are you sure you want to discard your changes?",
+            isDestructiveAction: true,
+            confirmText: "Discard",
+          }}
+        >
+          <div
+            className={clsx(
+              "flex shrink-0 items-center justify-end gap-2",
+              state.isPlaying ? "-translate-y-full" : "translate-y-0",
+              "transition-transform duration-300 ease-in-out"
+            )}
+          >
+            <Button
+              onClick={() => void handleSave()}
+              disabled={state.loading || !state.macro?.name.trim()}
+              size="sm"
+            >
+              {state.loading
+                ? "Saving..."
+                : state.isCreating
+                  ? "Create"
+                  : "Update"}
+            </Button>
+          </div>
+        </Layout.Header>
       }
     >
       {state.macro && (
-        <div className="flex justify-between gap-2">
+        <div className="flex justify-between gap-4">
           <div className="flex items-center gap-2">
             <DisplayFavicon
               faviconUrl={state.macro.faviconUrl}
@@ -149,7 +178,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
               app.editMacroViewModel.updateMacroName(e.target.value)
             }
             placeholder="Enter macro name"
-            disabled={state.loading}
+            disabled={state.loading || state.isPlaying}
           />
 
           <MacroStepsEditor
@@ -165,35 +194,6 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
             onDeleteStep={handleDeleteStep}
             onUndoDelete={handleUndoDelete}
           />
-
-          <div className="flex shrink-0 gap-2">
-            <ConfirmActionButton
-              variant="danger"
-              fullWidth
-              onConfirm={handleCancel}
-              title={state.isCreating ? "Discard Macro" : "Discard Changes"}
-              message={
-                state.isCreating
-                  ? "Are you sure you want to discard this macro?"
-                  : "Are you sure you want to discard your changes?"
-              }
-              confirmText="Discard"
-            >
-              {state.isCreating ? "Discard Macro" : "Discard Changes"}
-            </ConfirmActionButton>
-
-            <Button
-              onClick={() => void handleSave()}
-              disabled={state.loading || !state.macro?.name.trim()}
-              fullWidth
-            >
-              {state.loading
-                ? "Saving..."
-                : state.isCreating
-                  ? "Create Macro"
-                  : "Save Changes"}
-            </Button>
-          </div>
         </div>
       ) : (
         <Text className="py-8 text-center">No macro selected</Text>

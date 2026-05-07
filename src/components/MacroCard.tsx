@@ -104,6 +104,7 @@ export const MacroCard = ({
             <Button
               icon={MoreVertical}
               variant="ghost"
+              color="secondary"
               size="sm"
               className="-mr-1 opacity-0 group-hover:opacity-100"
             />

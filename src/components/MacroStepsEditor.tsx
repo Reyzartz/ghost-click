@@ -4,6 +4,7 @@ import { EditStepItem } from "@/components/EditStepItem";
 import { Text, Button } from "@/design-system";
 import { Plus } from "lucide-react";
 import { Macro, MacroStep } from "@/models";
+import clsx from "clsx";
 
 interface MacroStepsEditorProps {
   macro: Macro;
@@ -56,7 +57,8 @@ export const MacroStepsEditor = ({
               No steps added yet.
             </Text>
             <Button
-              variant="secondary"
+              variant="outlined"
+              color="secondary"
               size="sm"
               icon={Plus}
               onClick={() => setAddModalPosition(0)}
@@ -71,7 +73,10 @@ export const MacroStepsEditor = ({
               return (
                 <div
                   key={step.id}
-                  className="group flex w-full flex-col items-center"
+                  className={clsx(
+                    "group flex w-full flex-col items-center",
+                    isPlaying && "z-10"
+                  )}
                 >
                   <EditStepItem
                     step={step}
@@ -94,8 +99,13 @@ export const MacroStepsEditor = ({
             })}
 
             <Button
-              variant="secondary"
-              className="border-dashed"
+              variant="outlined"
+              color="secondary"
+              className={clsx(
+                "border-dashed",
+                isPlaying ? "-translate-y-12" : "translate-y-0",
+                "transition-transform duration-300 ease-in-out"
+              )}
               onClick={() => setAddModalPosition(macro.steps.length)}
               fullWidth
               disabled={isPlaying}

@@ -1,5 +1,5 @@
 import { Button } from "@/design-system";
-import { ConfirmActionButton } from "@/components/ConfirmActionModal";
+import { ConfirmActionButton } from "@/components/ConfirmActionButton";
 import { Play, Pause, Square, Trash2 } from "lucide-react";
 import { Macro } from "@/models";
 
@@ -27,12 +27,13 @@ export const EditMacroHeaderControls = ({
   onDelete,
 }: EditMacroHeaderControlsProps) => {
   return (
-    <div className="flex shrink-0 items-center gap-2">
+    <div className="flex shrink-0 items-start gap-1">
       {isPlaying ? (
         <>
           {isPaused ? (
             <Button
-              variant="secondary"
+              variant="outlined"
+              color="secondary"
               size="sm"
               onClick={onResume}
               icon={Play}
@@ -40,7 +41,8 @@ export const EditMacroHeaderControls = ({
             />
           ) : (
             <Button
-              variant="secondary"
+              variant="outlined"
+              color="primary"
               size="sm"
               onClick={onPause}
               icon={Pause}
@@ -48,7 +50,8 @@ export const EditMacroHeaderControls = ({
             />
           )}
           <Button
-            variant="danger"
+            color="danger"
+            variant="ghost"
             size="sm"
             onClick={onStop}
             icon={Square}
@@ -59,20 +62,23 @@ export const EditMacroHeaderControls = ({
         <>
           <Button
             onClick={onPlayPreview}
-            variant="primary"
             size="sm"
             icon={Play}
             disabled={!macro?.name.trim() || (macro?.steps?.length ?? 0) === 0}
             title={"Test Run Macro"}
+            variant="ghost"
+            color="primary"
           />
 
           {!isCreating && onDelete && (
             <ConfirmActionButton
-              variant="danger"
+              color="danger"
+              variant="ghost"
               size="sm"
               icon={Trash2}
               message="Are you sure you want to delete this macro? This action cannot be undone."
               confirmText="Delete"
+              isDestructiveAction
               onConfirm={onDelete}
               title={"Delete Macro"}
             />

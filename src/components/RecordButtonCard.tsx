@@ -21,7 +21,6 @@ const RecordButtonCard = memo<RecordButtonCardProps>(
         <Card size="md" className="rounded-lg pr-2.5 pl-2.5">
           <Button
             onClick={onClick}
-            variant="primary"
             icon={CircleSmall}
             iconFilled
             fullWidth

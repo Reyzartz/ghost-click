@@ -143,7 +143,8 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
           {state.allMacros.length > 0 && (
             <Button
               onClick={toggleSearchBar}
-              variant={state.showSearchBar ? "secondary" : "ghost"}
+              variant={state.showSearchBar ? "outlined" : "ghost"}
+              color="secondary"
               size="sm"
               icon={Search}
               title="Search macros"
@@ -153,6 +154,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
           <Button
             onClick={handleImport}
             variant="ghost"
+            color="secondary"
             size="sm"
             icon={DownloadIcon}
             title="Import macro"
@@ -161,6 +163,7 @@ export const MacroListView = ({ app }: { app: SidePanelApp }) => {
           <Button
             onClick={handleOpenSettings}
             variant="ghost"
+            color="secondary"
             size="sm"
             icon={Settings}
             title="Settings"
