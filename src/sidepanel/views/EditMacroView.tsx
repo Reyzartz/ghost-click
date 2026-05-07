@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { SidePanelApp } from "../SidePanelApp";
-import { Alert, Button, Input, Text } from "@/design-system";
+import { Alert, Button, Card, Input, Text } from "@/design-system";
 import { MacroStep } from "@/models";
 import { DisplayFavicon } from "@/components/DisplayFavicon";
 import { EditMacroHeaderControls } from "@/components/EditMacroHeaderControls";
@@ -126,31 +126,6 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
         </Layout.Header>
       }
     >
-      {state.macro && (
-        <div className="flex justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <DisplayFavicon
-              faviconUrl={state.macro.faviconUrl}
-              name={state.macro.name}
-            />
-
-            <Text variant="h3">{state.macro?.name}</Text>
-          </div>
-
-          <EditMacroHeaderControls
-            macro={state.macro}
-            isPlaying={state.isPlaying}
-            isPaused={state.isPaused}
-            isCreating={state.isCreating}
-            onPlayPreview={handlePlayPreview}
-            onPause={handlePause}
-            onResume={handleResume}
-            onStop={handleStop}
-            onDelete={() => void handleDelete()}
-          />
-        </div>
-      )}
-
       {state.error && <Alert variant="error">{state.error}</Alert>}
 
       {state.macro &&
@@ -197,6 +172,38 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
         </div>
       ) : (
         <Text className="py-8 text-center">No macro selected</Text>
+      )}
+
+      {state.macro && (
+        <Card
+          variant="secondary"
+          className="flex items-center justify-between gap-4"
+          size="sm"
+        >
+          <div className="flex flex-1 items-center gap-2 overflow-hidden">
+            <DisplayFavicon
+              faviconUrl={state.macro.faviconUrl}
+              name={state.macro.name}
+              size="small"
+            />
+
+            <Text variant="h4" className="flex-1 truncate">
+              {state.macro?.name}
+            </Text>
+          </div>
+
+          <EditMacroHeaderControls
+            macro={state.macro}
+            isPlaying={state.isPlaying}
+            isPaused={state.isPaused}
+            isCreating={state.isCreating}
+            onPlayPreview={handlePlayPreview}
+            onPause={handlePause}
+            onResume={handleResume}
+            onStop={handleStop}
+            onDelete={() => void handleDelete()}
+          />
+        </Card>
       )}
     </Layout>
   );

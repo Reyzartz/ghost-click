@@ -1,5 +1,4 @@
 import { Macro } from "@/models";
-import { clsx } from "clsx";
 import { Dropdown, DropdownItem } from "../design-system/Dropdown";
 import { DisplayFavicon } from "./DisplayFavicon";
 import { Text, Button, Card } from "@/design-system";
@@ -79,14 +78,7 @@ export const MacroCard = ({
     >
       <div className="flex items-center justify-between gap-4">
         <div className="flex grow items-start gap-3 overflow-hidden">
-          <DisplayFavicon
-            name={macro.name}
-            faviconUrl={macro.faviconUrl}
-            className={clsx(
-              "mt-0.5 transition-colors",
-              isSelected ? "bg-surface" : "group-hover:bg-surface"
-            )}
-          />
+          <DisplayFavicon name={macro.name} faviconUrl={macro.faviconUrl} />
 
           <div className="grow overflow-hidden">
             <Text className="line-clamp-1 font-medium">{macro.name}</Text>

@@ -14,33 +14,35 @@ interface DisplayFaviconProps {
 }
 
 const sizeMap: Record<DisplayFaviconSize, string> = {
-  small: "w-4 h-4 p-px",
-  medium: "w-8 h-8 p-0.5",
-  large: "w-12 h-12 p-1",
+  small: "w-5 h-5 p-px",
+  medium: "w-9 h-9 p-1",
+  large: "w-13 h-13 p-1.5",
 };
 const DisplayFavicon = memo(
   ({ faviconUrl, name, size = "medium", className }: DisplayFaviconProps) => {
     const [imgBroken, setImgBroken] = useState(false);
 
+    const showFallback = !faviconUrl || imgBroken;
+
     return (
       <div
         className={clsx(
           sizeMap[size],
-          "bg-background-secondary flex shrink-0 items-center justify-center rounded border",
+          "bg-surface-active flex shrink-0 items-center justify-center rounded",
           className
         )}
       >
-        {faviconUrl && !imgBroken ? (
-          <img
-            src={faviconUrl}
-            alt="Favicon"
-            className="h-full w-full object-contain object-center"
-            onError={() => setImgBroken(true)}
-          />
-        ) : (
+        {showFallback ? (
           <Text variant="small" color="muted" className="select-none">
             {name.charAt(0).toUpperCase()}
           </Text>
+        ) : (
+          <img
+            src={faviconUrl}
+            alt="Favicon"
+            className="h-full w-full rounded-sm object-contain object-center"
+            onError={() => setImgBroken(true)}
+          />
         )}
       </div>
     );
