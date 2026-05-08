@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { usePopper } from "react-popper";
 import { Text } from "./Text";
 import { Icon } from "./Icon";
 import { LucideIcon } from "lucide-react";
@@ -17,26 +18,31 @@ interface DropdownProps {
 
 export const Dropdown = ({ items, trigger }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [referenceEl, setReferenceEl] = useState<HTMLDivElement | null>(null);
+  const [popperEl, setPopperEl] = useState<HTMLDivElement | null>(null);
+
+  const { styles, attributes } = usePopper(referenceEl, popperEl, {
+    placement: "bottom-end",
+    modifiers: [{ name: "offset", options: { offset: [0, 4] } }],
+  });
 
   useEffect(() => {
+    if (!isOpen) return;
+
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        referenceEl &&
+        !referenceEl.contains(event.target as Node) &&
+        popperEl &&
+        !popperEl.contains(event.target as Node)
       ) {
         setIsOpen(false);
       }
     };
 
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen, referenceEl, popperEl]);
 
   const handleItemClick = (onClick: () => void) => {
     onClick();
@@ -44,8 +50,10 @@ export const Dropdown = ({ items, trigger }: DropdownProps) => {
   };
 
   return (
-    <div className="relative shrink-0" ref={dropdownRef}>
+    <>
       <div
+        ref={setReferenceEl}
+        className="shrink-0"
         onClick={(e) => {
           e.stopPropagation();
           setIsOpen(!isOpen);
@@ -54,8 +62,13 @@ export const Dropdown = ({ items, trigger }: DropdownProps) => {
         {trigger}
       </div>
 
-      {isOpen && (
-        <div className="bg-surface absolute top-full right-0 z-10 mt-1 min-w-30 rounded shadow-lg">
+      <div
+        ref={setPopperEl}
+        style={styles.popper}
+        {...attributes.popper}
+        className={isOpen ? "z-50" : "pointer-events-none invisible"}
+      >
+        <div className="bg-surface min-w-30 rounded shadow-lg">
           {items.map((item, index) => {
             const IconComponent = item.icon;
             return (
@@ -84,7 +97,7 @@ export const Dropdown = ({ items, trigger }: DropdownProps) => {
             );
           })}
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 };

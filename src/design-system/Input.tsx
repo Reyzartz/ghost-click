@@ -4,6 +4,7 @@ import { cva } from "class-variance-authority";
 import { clsx } from "clsx";
 import { Text } from "./Text";
 import { Icon } from "./Icon";
+import { InfoPopover } from "@/design-system/InfoPopover";
 
 export type InputSize = "sm" | "md" | "lg";
 
@@ -12,6 +13,7 @@ interface InputProps extends Omit<
   "size"
 > {
   label?: string;
+  info?: string;
   error?: string;
   fullWidth?: boolean;
   size?: InputSize;
@@ -19,7 +21,7 @@ interface InputProps extends Omit<
 }
 
 const inputVariants = cva(
-  "rounded text-text-secondary transition-all duration-200 focus:ring-1 border focus:outline-none disabled:cursor-not-allowed disabled:bg-surface-muted disabled:opacity-60  ring-inset",
+  "rounded text-text-secondary transition-all duration-200 border focus:outline-none disabled:cursor-not-allowed disabled:bg-surface-muted disabled:opacity-60  ring-inset",
   {
     variants: {
       size: {
@@ -30,7 +32,7 @@ const inputVariants = cva(
       hasError: {
         true: "bg-error-bg  focus:ring-error border-error-border",
         false:
-          "bg-surface focus:bg-surface-active  focus:ring-primary border-border",
+          "bg-surface focus:bg-surface-active  focus:border-primary border-border",
       },
       fullWidth: {
         true: "w-full",
@@ -98,6 +100,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
       label,
+      info,
       error,
       fullWidth = true,
       size = "md",
@@ -112,10 +115,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div className={clsx(fullWidth && "w-full")}>
-        {label && (
-          <Text variant="small" color="muted" className="group mb-1 block">
-            {label}
-          </Text>
+        {(label || info) && (
+          <div className="mb-1 flex items-center gap-1">
+            {label && (
+              <Text variant="small" color="muted">
+                {label}
+              </Text>
+            )}
+            {info && <InfoPopover content={info} />}
+          </div>
         )}
 
         <div className="relative">

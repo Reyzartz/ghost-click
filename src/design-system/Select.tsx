@@ -1,4 +1,5 @@
 import { SelectHTMLAttributes, forwardRef } from "react";
+import { InfoPopover } from "@/design-system/InfoPopover";
 import { LucideIcon } from "lucide-react";
 import { cva } from "class-variance-authority";
 import { clsx } from "clsx";
@@ -13,6 +14,7 @@ interface SelectProps extends Omit<
   "size"
 > {
   label?: string;
+  info?: string;
   error?: string;
   fullWidth?: boolean;
   size?: SelectSize;
@@ -20,7 +22,7 @@ interface SelectProps extends Omit<
 }
 
 const selectVariants = cva(
-  "appearance-none rounded text-text-secondary focus:ring-1 transition-all focus:outline-none disabled:cursor-not-allowed border disabled:bg-surface-muted disabled:opacity-60 cursor-pointer",
+  "appearance-none rounded text-text-secondary transition-all focus:outline-none disabled:cursor-not-allowed border disabled:bg-surface-muted disabled:opacity-60 cursor-pointer",
   {
     variants: {
       size: {
@@ -31,7 +33,7 @@ const selectVariants = cva(
       hasError: {
         true: "bg-error-bg  focus:ring-error border-error-border",
         false:
-          "bg-surface focus:bg-surface-active focus:ring-primary border-border",
+          "bg-surface focus:bg-surface-active focus:border-primary border-border",
       },
       fullWidth: {
         true: "w-full",
@@ -99,6 +101,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   (
     {
       label,
+      info,
       error,
       fullWidth = true,
       size = "md",
@@ -114,10 +117,15 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
     return (
       <div className={clsx("relative", fullWidth && "w-full")}>
-        {label && (
-          <Text variant="small" color="muted" className="mb-1 block">
-            {label}
-          </Text>
+        {(label || info) && (
+          <div className="mb-1 flex items-center gap-1">
+            {label && (
+              <Text variant="small" color="muted">
+                {label}
+              </Text>
+            )}
+            {info && <InfoPopover content={info} />}
+          </div>
         )}
 
         <div className="relative">
