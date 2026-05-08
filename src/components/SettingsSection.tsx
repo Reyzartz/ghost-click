@@ -9,8 +9,8 @@ interface SettingsSectionProps {
 export const SettingsSection = memo(
   ({ title, children }: SettingsSectionProps) => {
     return (
-      <div className="mb-4">
-        <Text variant="h4" className="mb-2">
+      <div>
+        <Text variant="caption" color="muted" className="mb-2">
           {title}
         </Text>
         <div className="space-y-2">{children}</div>
