@@ -152,9 +152,9 @@ const buttonVariants = cva(
       { size: "sm", iconOnly: true, className: "p-1.5" },
       { size: "md", iconOnly: true, className: "p-2.5" },
       { size: "lg", iconOnly: true, className: "p-3.5" },
-      { size: "sm", iconOnly: false, className: "min-w-18 px-2.5 py-1.5" },
-      { size: "md", iconOnly: false, className: "min-w-20 px-3 py-2.5" },
-      { size: "lg", iconOnly: false, className: "min-w-22 px-4 py-3.5" },
+      { size: "sm", iconOnly: false, className: "px-2.5 py-1.5" },
+      { size: "md", iconOnly: false, className: "px-3 py-2.5" },
+      { size: "lg", iconOnly: false, className: "px-4 py-3.5" },
     ],
     defaultVariants: {
       variant: "filled",

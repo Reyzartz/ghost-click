@@ -49,15 +49,18 @@ export const Dropdown = ({ items, trigger }: DropdownProps) => {
     setIsOpen(false);
   };
 
+  const handletriggerClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    console.log("trigger clicked, toggling dropdown", isOpen);
+    setIsOpen(!isOpen);
+  };
+
   return (
     <>
       <div
         ref={setReferenceEl}
         className="shrink-0"
-        onClick={(e) => {
-          e.stopPropagation();
-          setIsOpen(!isOpen);
-        }}
+        onClick={handletriggerClick}
       >
         {trigger}
       </div>

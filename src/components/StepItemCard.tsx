@@ -139,20 +139,19 @@ export const StepItemCard = forwardRef<HTMLLIElement, StepItemCardProps>(
         )}
 
         {dropdownItems.length > 0 && !isPlaying && (
-          <div className="-mr-1 hidden group-hover/step:inline-flex focus-within:inline-flex">
-            <Dropdown
-              items={dropdownItems}
-              trigger={
-                <Button
-                  icon={MoreVertical}
-                  size="sm"
-                  variant="ghost"
-                  color="secondary"
-                  title="Step options"
-                />
-              }
-            />
-          </div>
+          <Dropdown
+            items={dropdownItems}
+            trigger={
+              <Button
+                icon={MoreVertical}
+                size="sm"
+                variant="ghost"
+                color="secondary"
+                title="Step options"
+                className="-mr-1 opacity-0 group-hover/step:opacity-100 focus-within:opacity-100"
+              />
+            }
+          />
         )}
       </Card>
     );
