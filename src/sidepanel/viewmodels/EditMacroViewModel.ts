@@ -429,6 +429,19 @@ export class EditMacroViewModel extends BaseViewModel {
     }
   }
 
+  updateSteps(steps: MacroStep[]): void {
+    if (!this.state.macro) return;
+
+    const updatedMacro = { ...this.state.macro, steps };
+
+    this.setState({
+      macro: updatedMacro,
+      deletedStepIds: new Set(),
+      newStepIds: new Set(),
+      error: null,
+    });
+  }
+
   reset(): void {
     this.setState({
       loading: false,

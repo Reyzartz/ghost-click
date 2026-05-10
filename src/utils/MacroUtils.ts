@@ -85,6 +85,94 @@ class MacroUtils {
     url: yup.string().required("URL is required").url("Must be a valid URL"),
   });
 
+  static readonly stepsSchema = yup
+    .array()
+    .of(
+      yup.lazy((value: unknown): yup.AnyObjectSchema => {
+        const type = (value as { type?: string })?.type;
+        switch (type) {
+          case "CLICK":
+            return MacroUtils.clickStepSchema as yup.AnyObjectSchema;
+          case "INPUT":
+            return MacroUtils.inputStepSchema as yup.AnyObjectSchema;
+          case "KEYPRESS":
+            return MacroUtils.keyPressStepSchema as yup.AnyObjectSchema;
+          case "NAVIGATE":
+            return MacroUtils.navigateStepSchema as yup.AnyObjectSchema;
+          default:
+            return yup.object({
+              type: yup
+                .string()
+                .oneOf(
+                  ["CLICK", "INPUT", "KEYPRESS", "NAVIGATE"],
+                  `Unknown step type: "${String(type)}"`
+                )
+                .required("Step type is required"),
+            });
+        }
+      })
+    )
+    .test("unique-step-ids", "Step IDs must be unique", function (steps) {
+      if (!steps) return true;
+      const seen = new Set<string>();
+      const dups = new Set<string>();
+      for (const step of steps) {
+        const id = (step as { id?: string })?.id;
+        if (id) {
+          if (seen.has(id)) dups.add(id);
+          seen.add(id);
+        }
+      }
+      if (dups.size === 0) return true;
+      return this.createError({
+        message: `Duplicate step ID${dups.size > 1 ? "s" : ""}: ${[...dups].join(", ")}`,
+      });
+    })
+    .required();
+
+  static readonly macroSchema = yup.object({
+    id: yup.string().required("id is required"),
+    name: yup
+      .string()
+      .required("name is required")
+      .min(1, "name cannot be empty")
+      .max(100, "name is too long"),
+    domain: yup.string().required("domain is required"),
+    faviconUrl: yup.string().nullable().defined(),
+    steps: yup
+      .array()
+      .of(
+        yup.lazy((value: unknown): yup.AnyObjectSchema => {
+          const type = (value as { type?: string })?.type;
+          switch (type) {
+            case "CLICK":
+              return MacroUtils.clickStepSchema as yup.AnyObjectSchema;
+            case "INPUT":
+              return MacroUtils.inputStepSchema as yup.AnyObjectSchema;
+            case "KEYPRESS":
+              return MacroUtils.keyPressStepSchema as yup.AnyObjectSchema;
+            case "NAVIGATE":
+              return MacroUtils.navigateStepSchema as yup.AnyObjectSchema;
+            default:
+              return yup.object({
+                type: yup
+                  .string()
+                  .oneOf(
+                    ["CLICK", "INPUT", "KEYPRESS", "NAVIGATE"],
+                    `Unknown step type: "${String(type)}"`
+                  )
+                  .required("Step type is required"),
+              });
+          }
+        })
+      )
+      .required("steps is required"),
+    createdAt: yup.number().required("createdAt is required"),
+    updatedAt: yup.number().required("updatedAt is required"),
+    lastPlayedAt: yup.number().nullable().defined(),
+    pinned: yup.boolean().required("pinned is required"),
+  });
+
   static extractDomainFromURL(url: string): string {
     try {
       const urlObj = new URL(url);

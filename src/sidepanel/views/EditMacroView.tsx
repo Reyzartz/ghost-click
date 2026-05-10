@@ -89,6 +89,10 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
     await app.editMacroViewModel.stopPlayback();
   };
 
+  const handleUpdateSteps = (steps: MacroStep[]): void => {
+    app.editMacroViewModel.updateSteps(steps);
+  };
+
   return (
     <Layout
       header={
@@ -104,25 +108,22 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
             confirmText: "Discard",
           }}
         >
-          <div
+          <Button
             className={clsx(
               "flex shrink-0 items-center justify-end gap-2",
               state.isPlaying ? "-translate-y-full" : "translate-y-0",
               "transition-transform duration-300 ease-in-out"
             )}
+            onClick={() => void handleSave()}
+            disabled={state.loading || !state.macro?.name.trim()}
+            size="sm"
           >
-            <Button
-              onClick={() => void handleSave()}
-              disabled={state.loading || !state.macro?.name.trim()}
-              size="sm"
-            >
-              {state.loading
-                ? "Saving..."
-                : state.isCreating
-                  ? "Create"
-                  : "Update"}
-            </Button>
-          </div>
+            {state.loading
+              ? "Saving..."
+              : state.isCreating
+                ? "Create"
+                : "Update"}
+          </Button>
         </Layout.Header>
       }
     >
@@ -165,6 +166,7 @@ export const EditMacroView = ({ app }: { app: SidePanelApp }) => {
             completedStepIds={state.completedStepIds}
             erroredStepIds={state.erroredStepIds}
             onUpdateStep={handleUpdateStep}
+            onUpdateSteps={handleUpdateSteps}
             onAddStep={handleAddStep}
             onDeleteStep={handleDeleteStep}
             onUndoDelete={handleUndoDelete}

@@ -2,9 +2,10 @@ import { useState } from "react";
 import { StepEditorModal } from "@/components/StepEditorModal";
 import { EditStepItem } from "@/components/EditStepItem";
 import { Text, Button } from "@/design-system";
-import { Plus } from "lucide-react";
+import { Code2, Plus } from "lucide-react";
 import { Macro, MacroStep } from "@/models";
 import clsx from "clsx";
+import { JsonStepsEditorModal } from "@/sidepanel/views/JsonEditorModal";
 
 interface MacroStepsEditorProps {
   macro: Macro;
@@ -18,6 +19,7 @@ interface MacroStepsEditorProps {
   onAddStep: (step: MacroStep, position: number) => void;
   onDeleteStep: (stepId: string) => void;
   onUndoDelete: (stepId: string) => void;
+  onUpdateSteps: (steps: MacroStep[]) => void;
 }
 
 export const MacroStepsEditor = ({
@@ -32,14 +34,46 @@ export const MacroStepsEditor = ({
   onAddStep,
   onDeleteStep,
   onUndoDelete,
+  onUpdateSteps,
 }: MacroStepsEditorProps) => {
   const [addModalPosition, setAddModalPosition] = useState<number | null>(null);
+  const [isJsonEditorOpen, setIsJsonEditorOpen] = useState(false);
+  const [jsonEditorKey, setJsonEditorKey] = useState(0);
+
+  const handleOpenJsonEditor = (): void => {
+    setJsonEditorKey((k) => k + 1);
+    setIsJsonEditorOpen(true);
+  };
+
+  const editableSteps = macro.steps.filter(
+    (step) => !deletedStepIds.has(step.id)
+  );
 
   return (
     <div className="flex grow flex-col overflow-hidden">
-      <Text variant="small" className="mb-1" color="muted">
-        Steps ({macro.steps.length})
-      </Text>
+      <div className="flex items-center justify-between">
+        <Text variant="small" className="mb-1" color="muted">
+          Steps ({macro.steps.length})
+        </Text>
+
+        <Button
+          onClick={handleOpenJsonEditor}
+          size="sm"
+          icon={Code2}
+          variant="text"
+          color="secondary"
+        >
+          Edit as JSON
+        </Button>
+      </div>
+
+      <JsonStepsEditorModal
+        key={jsonEditorKey}
+        isOpen={isJsonEditorOpen}
+        steps={editableSteps}
+        onApply={onUpdateSteps}
+        onClose={() => setIsJsonEditorOpen(false)}
+      />
 
       <StepEditorModal
         isOpen={addModalPosition !== null}
@@ -57,9 +91,6 @@ export const MacroStepsEditor = ({
               No steps added yet.
             </Text>
             <Button
-              variant="outlined"
-              color="secondary"
-              size="sm"
               icon={Plus}
               onClick={() => setAddModalPosition(0)}
               disabled={isPlaying}

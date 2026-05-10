@@ -104,10 +104,11 @@ export const ModalBody = ({
   return (
     <div
       className={clsx(
-        "scrollbar max-h-120 overflow-scroll px-3 py-3",
+        "scrollbar overflow-scroll px-3 py-3",
         borderless ? "pt-0" : "border-y",
         className
       )}
+      style={{ maxHeight: "70vh" }}
       {...props}
     >
       {children}
