@@ -1,10 +1,11 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App.tsx";
 import { ContentApp } from "./ContentApp";
 // Inline the compiled Tailwind CSS via Vite so it can be injected into the shadow root
 // This relies on @tailwindcss/vite to process the CSS before inlining
 import tailwindCss from "../styles/tailwind.css?inline";
+import StatusApp from "./StatusApp.tsx";
+import NotificationApp from "./NotificationApp.tsx";
 
 const contentApp = new ContentApp();
 void contentApp.init();
@@ -43,7 +44,8 @@ contentApp.setThemeTarget(mount);
 
 createRoot(mount).render(
   <StrictMode>
-    <App app={contentApp} />
+    <StatusApp app={contentApp} />
+    <NotificationApp app={contentApp} />
   </StrictMode>
 );
 
