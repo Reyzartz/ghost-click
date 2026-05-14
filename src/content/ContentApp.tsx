@@ -1,3 +1,5 @@
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 import { Emitter } from "@/utils/Emitter";
 import { BaseApp } from "@/utils/BaseApp";
 import { Logger } from "@/utils/Logger";
@@ -12,6 +14,9 @@ import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository"
 import { SettingsRepository } from "@/repositories/SettingsRepository";
 import { Storage } from "@/utils/Storage";
 import { ThemeService } from "@/sidepanel/services/ThemeService";
+import tailwindCss from "../styles/tailwind.css?inline";
+import StatusApp from "./StatusApp";
+import NotificationApp from "./NotificationApp";
 
 export class ContentApp extends BaseApp {
   readonly statusIndicatorViewModel: StatusIndicatorViewModel;
@@ -19,6 +24,7 @@ export class ContentApp extends BaseApp {
   private themeService?: ThemeService;
   private readonly settingsRepository: SettingsRepository;
   private readonly emitterInstance: Emitter;
+  private reactRoot: ReturnType<typeof createRoot> | null = null;
 
   constructor() {
     const emitter = new Emitter("content");
@@ -55,20 +61,49 @@ export class ContentApp extends BaseApp {
     this.notificationViewModel = notificationViewModel;
   }
 
-  /**
-   * Set the theme target element (called from main.tsx with shadow DOM mount point)
-   */
-  setThemeTarget(targetElement: HTMLElement): void {
+  mount(): void {
+    if (this.reactRoot) return;
+
+    const host = document.createElement("div");
+    host.id = "ghost-click-shadow-host";
+    document.body.appendChild(host);
+
+    const shadowRoot = host.attachShadow({ mode: "open" });
+
+    const styleEl = document.createElement("style");
+    styleEl.textContent = tailwindCss;
+    shadowRoot.appendChild(styleEl);
+
+    const mountEl = document.createElement("div");
+    mountEl.id = "ghost-click-mount";
+    shadowRoot.appendChild(mountEl);
+
     this.themeService = new ThemeService(
       this.settingsRepository,
       this.emitterInstance,
-      targetElement
+      mountEl
     );
     void this.themeService.init();
+
+    this.reactRoot = createRoot(mountEl);
+    this.reactRoot.render(
+      <StrictMode>
+        <StatusApp app={this} />
+        <NotificationApp app={this} />
+      </StrictMode>
+    );
+  }
+
+  unmount(): void {
+    this.reactRoot?.unmount();
+    this.reactRoot = null;
+    document.getElementById("ghost-click-shadow-host")?.remove();
   }
 
   async init(): Promise<void> {
     this.logger.info("ContentApp initialized");
+
+    this.mount();
 
     await super.init();
   }

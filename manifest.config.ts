@@ -24,7 +24,7 @@ export default defineManifest({
     {
       js: ["src/content/index.ts"],
       matches: ["<all_urls>"],
-      run_at: "document_idle",
+      run_at: "document_start",
     },
   ],
   side_panel: {

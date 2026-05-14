@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { cva } from "class-variance-authority";
-import { ContentApp } from "./ContentApp";
 import { NotificationState } from "./viewmodels/NotificationViewModel";
+
+interface NotificationAppDeps {
+  notificationViewModel: {
+    subscribe: (listener: (state: NotificationState) => void) => () => void;
+  };
+}
 
 const notificationContainer = cva(
   "pointer-events-auto flex w-60 justify-center rounded px-4 py-2 text-sm font-medium shadow-lg",
@@ -17,7 +22,7 @@ const notificationContainer = cva(
   }
 );
 
-function NotificationApp({ app }: { app: ContentApp }) {
+function NotificationApp({ app }: { app: NotificationAppDeps }) {
   const [notificationState, setNotificationState] = useState<NotificationState>(
     { notifications: [] }
   );
@@ -36,7 +41,7 @@ function NotificationApp({ app }: { app: ContentApp }) {
       {notificationState.notifications.map((notification) => (
         <div
           key={notification.id}
-          style={{ animation: "slideDown 0.3s ease-out" }}
+          style={{ animation: "slide-down 0.3s ease-out" }}
           className={notificationContainer({ type: notification.type })}
         >
           {notification.message}

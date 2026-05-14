@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import { cva } from "class-variance-authority";
-import { ContentApp } from "./ContentApp";
+import { StatusIndicatorState } from "./viewmodels/StatusIndicatorViewModel";
+
+interface StatusAppDeps {
+  statusIndicatorViewModel: {
+    subscribe: (listener: (state: StatusIndicatorState) => void) => () => void;
+  };
+}
 
 const statusContainer = cva(
   "pointer-events-none fixed inset-0 box-border h-screen w-screen rounded-none",
@@ -20,8 +26,10 @@ const statusContainer = cva(
   }
 );
 
-function StatusApp({ app }: { app: ContentApp }) {
-  const [statusState, setStatusState] = useState({ status: "idle" as const });
+function StatusApp({ app }: { app: StatusAppDeps }) {
+  const [statusState, setStatusState] = useState<StatusIndicatorState>({
+    status: "idle",
+  });
 
   useEffect(() => {
     const unsubscribe = app.statusIndicatorViewModel.subscribe(setStatusState);

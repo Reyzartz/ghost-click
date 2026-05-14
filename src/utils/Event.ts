@@ -25,6 +25,8 @@ export type EventType =
   | "EDIT_MACRO"
   | "CREATE_MACRO"
   | "OPEN_SIDE_PANEL"
+  | "SIDEPANEL_OPENED"
+  | "SIDEPANEL_CLOSED"
   | "SETTINGS_UPDATED"
   | "TAB_UPDATED"
   | "TAB_REMOVED"
@@ -180,6 +182,14 @@ export interface OpenSidePanel extends BaseEvent {
   name: "OPEN_SIDE_PANEL";
 }
 
+export interface SidepanelOpenedEvent extends BaseEvent {
+  name: "SIDEPANEL_OPENED";
+}
+
+export interface SidepanelClosedEvent extends BaseEvent {
+  name: "SIDEPANEL_CLOSED";
+}
+
 export interface SettingsUpdatedEvent extends BaseEvent {
   name: "SETTINGS_UPDATED";
   data: Settings;
@@ -241,6 +251,8 @@ export type AppEvents =
   | StopElementInspectionEvent
   | ElementSelectedEvent
   | OpenSidePanel
+  | SidepanelOpenedEvent
+  | SidepanelClosedEvent
   | SettingsUpdatedEvent
   | TabUpdatedEvent
   | TabRemovedEvent
