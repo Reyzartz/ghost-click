@@ -18,6 +18,7 @@ const textVariants = cva("", {
     color: {
       default: "text-text",
       info: "text-info-text",
+      inverse: "text-text-inverse",
       muted: "text-text-muted",
       success: "text-success-text",
       error: "text-error-text",
@@ -46,6 +47,7 @@ export type TextColor =
   | "success"
   | "error"
   | "warning"
+  | "inverse"
   | "info";
 
 interface TextProps extends HTMLAttributes<HTMLElement> {

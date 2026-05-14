@@ -1,10 +1,20 @@
 import { BaseViewModel } from "@/utils/BaseViewModel";
 import { Emitter } from "@/utils/Emitter";
 
+export type NotificationIcon =
+  | "circle-dot"
+  | "save"
+  | "play"
+  | "square"
+  | "check-circle"
+  | "x-circle"
+  | "info";
+
 export interface Notification {
   id: string;
   message: string;
   type: "success" | "error" | "info";
+  icon: NotificationIcon;
 }
 
 export interface NotificationState {
@@ -23,27 +33,42 @@ export class NotificationViewModel extends BaseViewModel {
     this.logger.info("Initializing notification view model");
 
     this.emitter.on("START_RECORDING", () => {
-      this.showNotification("Recording started", "info");
+      /**
+       * Recording state is not an error, this is just to show a red popup
+       * */
+      this.showNotification("Recording started", "error", "circle-dot");
+    });
+
+    this.emitter.on("STOP_RECORDING", () => {
+      this.showNotification("Recording stopped", "info", "square");
+    });
+
+    this.emitter.on("CANCEL_RECORDING", () => {
+      this.showNotification("Recording cancelled", "error", "x-circle");
     });
 
     this.emitter.on("SAVED_MACRO", () => {
-      this.showNotification("Recording saved", "success");
+      this.showNotification("Recording saved", "success", "save");
     });
 
     this.emitter.on("PLAY_MACRO", () => {
-      this.showNotification("Playback started", "info");
+      this.showNotification("Playback started", "info", "play");
     });
 
     this.emitter.on("PLAYBACK_COMPLETED", () => {
-      this.showNotification("Playback stopped", "success");
+      this.showNotification("Playback completed", "success", "check-circle");
     });
 
     this.emitter.on("PLAYBACK_ERROR", () => {
-      this.showNotification("Playback errored", "error");
+      this.showNotification("Playback errored", "error", "x-circle");
+    });
+
+    this.emitter.on("RESUME_PLAYBACK", () => {
+      this.showNotification("Playback resumed", "info", "play");
     });
 
     this.emitter.on("STOP_PLAYBACK", () => {
-      this.showNotification("Playback stopped", "info");
+      this.showNotification("Playback stopped", "info", "square");
     });
 
     return Promise.resolve();
@@ -64,10 +89,11 @@ export class NotificationViewModel extends BaseViewModel {
 
   private showNotification(
     message: string,
-    type: "success" | "error" | "info"
+    type: "success" | "error" | "info",
+    icon: NotificationIcon
   ): void {
     const id = `${Date.now()}-${Math.random()}`;
-    const notification: Notification = { id, message, type };
+    const notification: Notification = { id, message, type, icon };
 
     this.logger.info("Showing notification", { notification });
 
