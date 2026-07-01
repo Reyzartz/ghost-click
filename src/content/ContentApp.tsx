@@ -11,6 +11,7 @@ import { StatusIndicatorViewModel } from "./viewmodels/StatusIndicatorViewModel"
 import { NotificationViewModel } from "./viewmodels/NotificationViewModel";
 import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
+import { MacroRepository } from "@/repositories/MacroRepository";
 import { SettingsRepository } from "@/repositories/SettingsRepository";
 import { Storage } from "@/utils/Storage";
 import { ThemeService } from "@/sidepanel/services/ThemeService";
@@ -40,7 +41,12 @@ export class ContentApp extends BaseApp {
       recordingStateRepository,
       playbackStateRepository
     );
-    const notificationViewModel = new NotificationViewModel(emitter);
+    const macroRepository = new MacroRepository(emitter, storage);
+    const notificationViewModel = new NotificationViewModel(
+      emitter,
+      playbackStateRepository,
+      macroRepository
+    );
     const viewModels = [statusIndicatorViewModel, notificationViewModel];
 
     const services: Array<BaseService> = [

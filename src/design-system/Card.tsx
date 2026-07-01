@@ -8,7 +8,8 @@ export type CardVariant =
   | "success"
   | "secondary"
   | "errored"
-  | "deleted";
+  | "deleted"
+  | "warning";
 
 export type CardSize = "sm" | "md" | "lg";
 
@@ -32,6 +33,7 @@ const cardVariants = cva("rounded transition-colors list-none border", {
       secondary: "bg-background-secondary text-text-muted",
       errored: "bg-error-bg text-error-text border-error-border",
       deleted: "bg-error-bg opacity-50 border-error-border",
+      warning: "bg-warning-bg font-medium border-warning-border",
     },
     size: {
       sm: "px-2 py-1.5",

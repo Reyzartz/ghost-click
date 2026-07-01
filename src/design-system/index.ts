@@ -25,8 +25,6 @@ export { Text } from "./Text";
 
 export { Divider } from "./Divider";
 
-export { InfoPanel } from "./InfoPanel";
-
 export { Icon } from "./Icon";
 
 export { Kbd } from "./Kbd";

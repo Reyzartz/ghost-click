@@ -2,6 +2,7 @@ import { MacroStep, StepType } from "@/models";
 import { useMemo, useState } from "react";
 import { Modal, ModalHeader, ModalBody, Button } from "@/design-system";
 import {
+  CirclePauseIcon,
   GlobeIcon,
   KeyboardIcon,
   MousePointerClickIcon,
@@ -12,6 +13,7 @@ import { EditClickStep } from "./EditClickStep";
 import { EditInputStep } from "./EditInputStep";
 import { EditKeyPressStep } from "./EditKeyPressStep";
 import { EditNavigateStep } from "./EditNavigateStep";
+import { EditPauseStep } from "./EditPauseStep";
 
 interface StepEditorModalProps {
   step?: MacroStep;
@@ -52,6 +54,8 @@ export const StepEditorModal = ({
         return MacroUtils.createKeyPressStep();
       case "NAVIGATE":
         return MacroUtils.createNavigateStep();
+      case "PAUSE":
+        return MacroUtils.createPauseStep();
       default:
         return null;
     }
@@ -89,6 +93,15 @@ export const StepEditorModal = ({
       case "NAVIGATE":
         return (
           <EditNavigateStep
+            step={stepToEdit}
+            isOpen={isOpen}
+            onUpdateStep={handleUpdateStep}
+            onClose={handleClose}
+          />
+        );
+      case "PAUSE":
+        return (
+          <EditPauseStep
             step={stepToEdit}
             isOpen={isOpen}
             onUpdateStep={handleUpdateStep}
@@ -137,6 +150,15 @@ export const StepEditorModal = ({
             icon={GlobeIcon}
           >
             Navigate
+          </Button>
+          <Button
+            onClick={() => setSelectedType("PAUSE")}
+            variant="outlined"
+            color="secondary"
+            icon={CirclePauseIcon}
+            className="col-span-2"
+          >
+            Pause
           </Button>
         </div>
       </ModalBody>

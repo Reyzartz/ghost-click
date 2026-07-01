@@ -1,5 +1,7 @@
 import { BaseViewModel } from "@/utils/BaseViewModel";
 import { Emitter } from "@/utils/Emitter";
+import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
+import { MacroRepository } from "@/repositories/MacroRepository";
 
 export type NotificationIcon =
   | "circle-dot"
@@ -8,7 +10,8 @@ export type NotificationIcon =
   | "square"
   | "check-circle"
   | "x-circle"
-  | "info";
+  | "info"
+  | "pause";
 
 export interface Notification {
   id: string;
@@ -19,13 +22,18 @@ export interface Notification {
 
 export interface NotificationState {
   notifications: Notification[];
+  pauseMessage: string | null;
 }
 
 export class NotificationViewModel extends BaseViewModel {
-  private state: NotificationState = { notifications: [] };
+  private state: NotificationState = { notifications: [], pauseMessage: null };
   private listeners: Array<(state: NotificationState) => void> = [];
 
-  constructor(protected readonly emitter: Emitter) {
+  constructor(
+    protected readonly emitter: Emitter,
+    private readonly playbackStateRepository: PlaybackStateRepository,
+    private readonly macroRepository: MacroRepository
+  ) {
     super("NotificationViewModel", emitter);
   }
 
@@ -57,21 +65,47 @@ export class NotificationViewModel extends BaseViewModel {
 
     this.emitter.on("PLAYBACK_COMPLETED", () => {
       this.showNotification("Playback completed", "success", "check-circle");
+      this.setState({ pauseMessage: null });
     });
 
     this.emitter.on("PLAYBACK_ERROR", () => {
       this.showNotification("Playback errored", "error", "x-circle");
     });
 
+    this.emitter.on("PAUSE_STEP", (data) => {
+      this.handlePauseStep(data);
+    });
+
     this.emitter.on("RESUME_PLAYBACK", () => {
       this.showNotification("Playback resumed", "info", "play");
+      this.setState({ pauseMessage: null });
     });
 
     this.emitter.on("STOP_PLAYBACK", () => {
       this.showNotification("Playback stopped", "info", "square");
+      this.setState({ pauseMessage: null });
     });
 
-    return Promise.resolve();
+    await this.setInitialState();
+  }
+
+  private async setInitialState(): Promise<void> {
+    const playbackState = await this.playbackStateRepository.get();
+
+    if (
+      !playbackState?.isPaused ||
+      !playbackState.macroId ||
+      !playbackState.currentStepId
+    ) {
+      return;
+    }
+
+    const macro = await this.macroRepository.findById(playbackState.macroId);
+    const step = macro?.steps.find((s) => s.id === playbackState.currentStepId);
+
+    if (step?.type === "PAUSE") {
+      this.handlePauseStep(step);
+    }
   }
 
   subscribe(listener: (state: NotificationState) => void): () => void {
@@ -105,6 +139,18 @@ export class NotificationViewModel extends BaseViewModel {
     setTimeout(() => {
       this.dismissNotification(id);
     }, 3000);
+  }
+
+  resume(): void {
+    this.emitter.emit("RESUME_PLAYBACK", undefined);
+  }
+
+  stop(): void {
+    this.emitter.emit("STOP_PLAYBACK", undefined);
+  }
+
+  private handlePauseStep(data: { message: string }): void {
+    this.setState({ pauseMessage: data.message || "Playback paused" });
   }
 
   dismissNotification(id: string): void {
