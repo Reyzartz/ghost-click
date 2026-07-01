@@ -1,5 +1,14 @@
 import { MacroStep } from "@/models";
-import { useCallback, useState, useRef, useEffect, useMemo } from "react";
+import {
+  useCallback,
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  type CSSProperties,
+} from "react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { StepEditorModal } from "./StepEditorModal";
 import { StepItemCard } from "./StepItemCard";
 import { ArrowUp, ArrowDown, Trash2, EditIcon } from "lucide-react";
@@ -43,6 +52,30 @@ export const EditStepItem = ({
     null
   );
   const stepRef = useRef<HTMLLIElement>(null);
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: step.id, disabled: isEditDisabled });
+
+  const setRefs = useCallback(
+    (node: HTMLLIElement | null) => {
+      stepRef.current = node;
+      setNodeRef(node);
+    },
+    [setNodeRef]
+  );
+
+  const dragStyle: CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined,
+    zIndex: isDragging ? 1 : undefined,
+  };
 
   useEffect(() => {
     if (isCurrent && stepRef.current) {
@@ -166,7 +199,7 @@ export const EditStepItem = ({
       )}
 
       <StepItemCard
-        ref={stepRef}
+        ref={setRefs}
         step={step}
         isDeleted={isDeleted}
         isNew={isNew}
@@ -179,6 +212,8 @@ export const EditStepItem = ({
         dropdownItems={dropdownItems}
         onClick={onEditHandler}
         onUndoDelete={handleUndoDelete}
+        style={dragStyle}
+        dragHandleProps={{ attributes, listeners }}
       />
     </>
   );

@@ -172,7 +172,7 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
           {state.isPlaying && (
             <Button
               variant="ghost"
-              color="danger"
+              color={state.isPaused ? "danger" : "secondary"}
               onClick={handleStop}
               icon={X}
               title="Stop Playback"

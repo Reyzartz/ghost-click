@@ -13,6 +13,7 @@ const iconVariants = cva("shrink-0", {
     },
     color: {
       default: "text-text",
+      secondary: "text-text-secondary",
       muted: "text-text-muted",
       success: "text-success-icon",
       error: "text-error-icon",
@@ -29,6 +30,7 @@ const iconVariants = cva("shrink-0", {
 export type IconSize = "xs" | "sm" | "md" | "lg" | "xl";
 export type IconColor =
   | "default"
+  | "secondary"
   | "muted"
   | "success"
   | "error"

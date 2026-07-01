@@ -14,6 +14,7 @@ import {
   PauseIcon,
 } from "lucide-react";
 import { memo, useMemo } from "react";
+import { cva } from "class-variance-authority";
 
 interface StepIconWithStateProps {
   type: StepType;
@@ -23,8 +24,9 @@ interface StepIconWithStateProps {
   isPlaying?: boolean;
   isPaused?: boolean;
   isDeleted?: boolean;
-  size?: IconSize;
+  size?: Extract<IconSize, "sm" | "md" | "lg">;
   className?: string;
+  filled?: boolean;
 }
 
 const StepTypeToIcon: Record<StepType, LucideIcon> = {
@@ -34,6 +36,23 @@ const StepTypeToIcon: Record<StepType, LucideIcon> = {
   NAVIGATE: GlobeIcon,
   PAUSE: CirclePauseIcon,
 };
+
+const stepTypeToFilledBackground = cva("", {
+  variants: {
+    color: {
+      info: "bg-info-bg",
+      error: "bg-error-bg-hover",
+      success: "bg-success-bg-hover",
+      secondary: "bg-background-secondary",
+      muted: "bg-background-secondary",
+    },
+    size: {
+      sm: "p-1.5 rounded-sm",
+      md: "p-2.5 rounded",
+      lg: "p-3.5 rounded-lg",
+    },
+  },
+});
 
 const StepIconWithState = memo<StepIconWithStateProps>(
   ({
@@ -46,13 +65,14 @@ const StepIconWithState = memo<StepIconWithStateProps>(
     isCurrent = false,
     size = "md",
     className,
+    filled = false,
   }) => {
     const textColor = useMemo(() => {
       if (isDeleted) return "muted";
       if (isErrored) return "error";
       if (isCurrent) return "info";
       if (isCompleted) return "success";
-      return "default";
+      return "secondary";
     }, [isDeleted, isErrored, isCurrent, isCompleted]);
 
     const iconType = useMemo(() => {
@@ -66,14 +86,25 @@ const StepIconWithState = memo<StepIconWithStateProps>(
     }, [isPlaying, type, isCurrent, isPaused, isCompleted, isErrored]);
 
     return (
-      <Icon
-        icon={iconType}
-        size={size}
-        color={textColor}
-        className={clsx(className, {
-          "animate-spin": isCurrent && isPlaying && !isPaused,
-        })}
-      />
+      <div
+        className={clsx(
+          filled &&
+            stepTypeToFilledBackground({
+              color: textColor,
+              size,
+            }),
+          className
+        )}
+      >
+        <Icon
+          icon={iconType}
+          size={size}
+          color={textColor}
+          className={clsx({
+            "animate-spin": isCurrent && isPlaying && !isPaused,
+          })}
+        />
+      </div>
     );
   }
 );
