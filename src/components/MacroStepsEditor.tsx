@@ -1,4 +1,19 @@
 import { useState } from "react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { StepEditorModal } from "@/components/StepEditorModal";
 import { EditStepItem } from "@/components/EditStepItem";
 import { Text, Button } from "@/design-system";
@@ -40,9 +55,27 @@ export const MacroStepsEditor = ({
   const [isJsonEditorOpen, setIsJsonEditorOpen] = useState(false);
   const [jsonEditorKey, setJsonEditorKey] = useState(0);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
   const handleOpenJsonEditor = (): void => {
     setJsonEditorKey((k) => k + 1);
     setIsJsonEditorOpen(true);
+  };
+
+  const handleDragEnd = (event: DragEndEvent): void => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = macro.steps.findIndex((step) => step.id === active.id);
+    const newIndex = macro.steps.findIndex((step) => step.id === over.id);
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    onUpdateSteps(arrayMove(macro.steps, oldIndex, newIndex));
   };
 
   const editableSteps = macro.steps.filter(
@@ -100,34 +133,45 @@ export const MacroStepsEditor = ({
           </div>
         ) : (
           <div className="flex w-full flex-col items-center gap-1.5">
-            {macro.steps.map((step, index) => {
-              return (
-                <div
-                  key={step.id}
-                  className={clsx(
-                    "group flex w-full flex-col items-center",
-                    isPlaying && "z-10"
-                  )}
-                >
-                  <EditStepItem
-                    step={step}
-                    index={index}
-                    handleUpdateStep={onUpdateStep}
-                    handleDeleteStep={onDeleteStep}
-                    isDeleted={deletedStepIds.has(step.id)}
-                    isNew={newStepIds.has(step.id)}
-                    isEditDisabled={isPlaying}
-                    handleUndoDelete={onUndoDelete}
-                    onAddAbove={(s) => onAddStep(s, index)}
-                    onAddBelow={(s) => onAddStep(s, index + 1)}
-                    isCurrent={currentStepId === step.id}
-                    isCompleted={completedStepIds.includes(step.id)}
-                    isErrored={erroredStepIds.includes(step.id)}
-                    isPlaying={isPlaying}
-                  />
-                </div>
-              );
-            })}
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={macro.steps.map((step) => step.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {macro.steps.map((step, index) => {
+                  return (
+                    <div
+                      key={step.id}
+                      className={clsx(
+                        "group flex w-full flex-col items-center",
+                        isPlaying && "z-10"
+                      )}
+                    >
+                      <EditStepItem
+                        step={step}
+                        index={index}
+                        handleUpdateStep={onUpdateStep}
+                        handleDeleteStep={onDeleteStep}
+                        isDeleted={deletedStepIds.has(step.id)}
+                        isNew={newStepIds.has(step.id)}
+                        isEditDisabled={isPlaying}
+                        handleUndoDelete={onUndoDelete}
+                        onAddAbove={(s) => onAddStep(s, index)}
+                        onAddBelow={(s) => onAddStep(s, index + 1)}
+                        isCurrent={currentStepId === step.id}
+                        isCompleted={completedStepIds.includes(step.id)}
+                        isErrored={erroredStepIds.includes(step.id)}
+                        isPlaying={isPlaying}
+                      />
+                    </div>
+                  );
+                })}
+              </SortableContext>
+            </DndContext>
 
             <Button
               variant="outlined"

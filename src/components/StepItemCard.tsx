@@ -1,15 +1,24 @@
 import { MacroStep } from "@/models";
 import { clsx } from "clsx";
-import { forwardRef, useMemo } from "react";
+import { CSSProperties, forwardRef, useMemo } from "react";
 import { StepMeta } from "./StepMeta";
 import StepIconWithState from "./StepIconWithState";
 import { Dropdown, DropdownItem } from "@/design-system/Dropdown";
-import { Undo2, MoreVertical } from "lucide-react";
+import { Undo2, MoreVertical, GripVertical } from "lucide-react";
 import { Text, Button, Badge, Card } from "@/design-system";
 import { cva } from "class-variance-authority";
+import type {
+  DraggableAttributes,
+  DraggableSyntheticListeners,
+} from "@dnd-kit/core";
+
+export interface DragHandleProps {
+  attributes: DraggableAttributes;
+  listeners: DraggableSyntheticListeners;
+}
 
 const stepContentVariants = cva(
-  "mx-auto flex flex-1 items-start gap-2 overflow-hidden transition-all duration-200 delay-200",
+  "mx-auto flex flex-1 items-center gap-2 overflow-hidden transition-all duration-200 delay-200",
   {
     variants: {
       isDeleted: {
@@ -36,6 +45,8 @@ interface StepItemCardProps {
   dropdownItems?: DropdownItem[];
   onClick?: () => void;
   onUndoDelete?: (stepId: string) => void;
+  style?: CSSProperties;
+  dragHandleProps?: DragHandleProps;
 }
 
 export const StepItemCard = forwardRef<HTMLLIElement, StepItemCardProps>(
@@ -53,6 +64,8 @@ export const StepItemCard = forwardRef<HTMLLIElement, StepItemCardProps>(
       dropdownItems = [],
       onClick,
       onUndoDelete,
+      style,
+      dragHandleProps,
     },
     ref
   ) => {
@@ -81,9 +94,36 @@ export const StepItemCard = forwardRef<HTMLLIElement, StepItemCardProps>(
         onClick={onClick}
         autoScroll={isCurrent}
         disabled={isDisabled}
-        className="group/step relative flex w-full max-w-full items-center"
+        style={style}
+        className="group/step relative flex w-full max-w-full items-center pl-1"
       >
+        {dragHandleProps && (
+          <Button
+            icon={GripVertical}
+            size="sm"
+            variant="ghost"
+            color="secondary"
+            disabled={isDisabled}
+            title="Drag to reorder"
+            className="shrink-0 cursor-grab touch-none active:cursor-grabbing"
+            {...dragHandleProps.attributes}
+            {...dragHandleProps.listeners}
+          />
+        )}
+
         <div className={stepContentVariants({ isDeleted })}>
+          <StepIconWithState
+            type={step.type}
+            size="sm"
+            isCurrent={isCurrent}
+            isErrored={isErrored}
+            isCompleted={isCompleted}
+            isPlaying={isPlaying}
+            isPaused={isPaused}
+            isDeleted={isDeleted}
+            filled
+          />
+
           <div className="flex min-w-0 flex-1 grow flex-col gap-px">
             <div className="flex items-center gap-1.5">
               <Text
@@ -94,17 +134,6 @@ export const StepItemCard = forwardRef<HTMLLIElement, StepItemCardProps>(
                 )}
                 color={textColor}
               >
-                <StepIconWithState
-                  type={step.type}
-                  size="sm"
-                  isCurrent={isCurrent}
-                  isErrored={isErrored}
-                  isCompleted={isCompleted}
-                  isPlaying={isPlaying}
-                  isPaused={isPaused}
-                  isDeleted={isDeleted}
-                  className="mt-0.5 mr-2"
-                />
                 {step.name}
               </Text>
 
@@ -118,7 +147,7 @@ export const StepItemCard = forwardRef<HTMLLIElement, StepItemCardProps>(
               )}
             </div>
 
-            <StepMeta step={step} className="ml-6" />
+            <StepMeta step={step} />
           </div>
         </div>
 
