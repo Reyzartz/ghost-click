@@ -3,7 +3,15 @@ import { SidePanelApp } from "../SidePanelApp";
 import { PlaybackProgressState } from "../viewmodels/PlaybackProgressViewModel";
 import { ErrorDetailsPanel } from "@/components/ErrorDetailsPanel";
 import { Alert, Button, Card, Text } from "@/design-system";
-import { Play, Pause, Edit, RotateCcw, CopyPlus, Trash2 } from "lucide-react";
+import {
+  Play,
+  Pause,
+  Edit,
+  RotateCcw,
+  CopyPlus,
+  Trash2,
+  X,
+} from "lucide-react";
 import { ProgressBar } from "@/components/ProgressBar";
 import { StepListItem } from "@/components/StepListItem";
 import { Layout } from "@/design-system/Layout";
@@ -144,21 +152,33 @@ export const PlaybackProgressView = ({ app }: { app: SidePanelApp }) => {
     >
       {/* Progress + Controls */}
       <Card className="flex flex-col gap-3 rounded-lg pr-2.5 pl-2.5">
-        <Button
-          variant={state.isPlaying && !state.isPaused ? "outlined" : "filled"}
-          color={state.isPlaying && !state.isPaused ? "secondary" : "primary"}
-          onClick={
-            state.isPlaying
-              ? state.isPaused
-                ? handleResume
-                : handlePause
-              : handleReplay
-          }
-          icon={state.isPlaying ? (state.isPaused ? Play : Pause) : RotateCcw}
-          fullWidth
-        >
-          {state.isPlaying ? (state.isPaused ? "Resume" : "Pause") : "Replay"}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant={state.isPlaying && !state.isPaused ? "outlined" : "filled"}
+            color={state.isPlaying && !state.isPaused ? "secondary" : "primary"}
+            onClick={
+              state.isPlaying
+                ? state.isPaused
+                  ? handleResume
+                  : handlePause
+                : handleReplay
+            }
+            icon={state.isPlaying ? (state.isPaused ? Play : Pause) : RotateCcw}
+            fullWidth
+          >
+            {state.isPlaying ? (state.isPaused ? "Resume" : "Pause") : "Replay"}
+          </Button>
+
+          {state.isPlaying && (
+            <Button
+              variant="ghost"
+              color="danger"
+              onClick={handleStop}
+              icon={X}
+              title="Stop Playback"
+            />
+          )}
+        </div>
 
         <ProgressBar
           current={displayStepNumber}
