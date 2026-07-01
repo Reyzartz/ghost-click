@@ -11,6 +11,7 @@ import { SettingsRepository } from "@/repositories/SettingsRepository";
 import { Storage } from "@/utils/Storage";
 import { SidepanelStateService } from "@/utils/SidepanelStateService";
 import { TabEventService } from "./services/TabEventService";
+import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
 
 export class BackgroundApp extends BaseApp {
   constructor() {
@@ -20,8 +21,13 @@ export class BackgroundApp extends BaseApp {
 
     const macroRepository = new MacroRepository(emitter, storage);
     const recordingStateRepository = new RecordingStateRepository(storage);
+    const playbackStateRepository = new PlaybackStateRepository(storage);
     const settingsRepository = new SettingsRepository(storage);
-    const sidepanelStateService = new SidepanelStateService(emitter);
+    const sidepanelStateService = new SidepanelStateService(
+      emitter,
+      recordingStateRepository,
+      playbackStateRepository
+    );
 
     const services: Array<BaseService> = [
       sidepanelStateService,

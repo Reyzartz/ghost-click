@@ -1,5 +1,7 @@
 import { BaseService } from "./BaseService";
 import { Emitter } from "./Emitter";
+import { RecordingStateRepository } from "@/repositories/RecordingStateRepository";
+import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
 
 /*
  * currently, chrome.sidePanel API does not provide a direct method to check if the side panel is open for a specific tab.
@@ -9,7 +11,11 @@ import { Emitter } from "./Emitter";
 export class SidepanelStateService extends BaseService {
   private isPanelOpen = false;
 
-  constructor(protected readonly emitter: Emitter) {
+  constructor(
+    protected readonly emitter: Emitter,
+    private readonly recordingStateRepository: RecordingStateRepository,
+    private readonly playbackStateRepository: PlaybackStateRepository
+  ) {
     super("SidepanelStateService", emitter);
   }
 
@@ -48,7 +54,27 @@ export class SidepanelStateService extends BaseService {
     });
   }
 
+  private async clearStateOnTabClose(): Promise<void> {
+    this.logger.info("Tab closed, clearing side panel state");
+    const isRecording = await this.recordingStateRepository.isRecording();
+    const isPlaying = await this.playbackStateRepository.isPlaying();
+
+    if (isRecording) {
+      this.logger.info("Clearing recording state");
+      this.emitter.emit("STOP_RECORDING");
+      await this.recordingStateRepository.clear();
+    }
+
+    if (isPlaying) {
+      this.logger.info("Clearing playback state");
+      this.emitter.emit("STOP_PLAYBACK");
+      await this.playbackStateRepository.clear();
+    }
+  }
+
   async closeSidePanel(): Promise<void> {
+    await this.clearStateOnTabClose();
+
     await chrome.sidePanel.setOptions({ enabled: false });
     await chrome.sidePanel.setOptions({ enabled: true });
     this.isPanelOpen = false;
