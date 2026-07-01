@@ -5,6 +5,7 @@ import {
   Loader2Icon,
   AlertCircle,
   Check,
+  CirclePauseIcon,
   GlobeIcon,
   KeyboardIcon,
   LucideIcon,
@@ -31,6 +32,7 @@ const StepTypeToIcon: Record<StepType, LucideIcon> = {
   INPUT: TextCursorInputIcon,
   KEYPRESS: KeyboardIcon,
   NAVIGATE: GlobeIcon,
+  PAUSE: CirclePauseIcon,
 };
 
 const StepIconWithState = memo<StepIconWithStateProps>(

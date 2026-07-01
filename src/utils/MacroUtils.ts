@@ -6,6 +6,7 @@ import {
   KeyPressStep,
   MacroStep,
   NavigateStep,
+  PauseStep,
   StepType,
   TargetElementSelector,
 } from "@/models/MacroStep";
@@ -85,6 +86,10 @@ class MacroUtils {
     url: yup.string().required("URL is required").url("Must be a valid URL"),
   });
 
+  static readonly pauseStepSchema = MacroUtils.baseStepSchema.shape({
+    message: yup.string().default(""),
+  });
+
   static readonly stepsSchema = yup
     .array()
     .of(
@@ -99,12 +104,14 @@ class MacroUtils {
             return MacroUtils.keyPressStepSchema as yup.AnyObjectSchema;
           case "NAVIGATE":
             return MacroUtils.navigateStepSchema as yup.AnyObjectSchema;
+          case "PAUSE":
+            return MacroUtils.pauseStepSchema as yup.AnyObjectSchema;
           default:
             return yup.object({
               type: yup
                 .string()
                 .oneOf(
-                  ["CLICK", "INPUT", "KEYPRESS", "NAVIGATE"],
+                  ["CLICK", "INPUT", "KEYPRESS", "NAVIGATE", "PAUSE"],
                   `Unknown step type: "${String(type)}"`
                 )
                 .required("Step type is required"),
@@ -221,6 +228,9 @@ class MacroUtils {
         break;
       case "NAVIGATE":
         displayName = `Go to "${name}"`;
+        break;
+      case "PAUSE":
+        displayName = "Pause";
         break;
     }
     return displayName.length > 30
@@ -445,6 +455,26 @@ class MacroUtils {
       ...baseStep,
       type: "NAVIGATE",
       url: "",
+      ...data,
+    };
+  }
+
+  static createPauseStep(
+    settings: Settings = DEFAULT_SETTINGS,
+    data: Partial<PauseStep> = {}
+  ): PauseStep {
+    const baseStep: BaseMacroStep = MacroUtils.createBaseStep(
+      "PAUSE",
+      settings
+    );
+
+    return {
+      ...baseStep,
+      type: "PAUSE",
+      retryCount: 0,
+      retryInterval: 0,
+      delay: 0,
+      message: "",
       ...data,
     };
   }

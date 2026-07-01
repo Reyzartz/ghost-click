@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { SidePanelApp } from "../SidePanelApp";
 import { Alert, Button, Text, Icon, Card } from "@/design-system";
 import { Layout } from "@/design-system/Layout";
-import { Square, X, CircleSmall } from "lucide-react";
+import { Square, X, CircleSmall, CirclePause } from "lucide-react";
 import { ConfirmActionButton } from "@/components/ConfirmActionButton";
+import { EditPauseStep } from "@/components/EditPauseStep";
 import { EditStepItem } from "@/components/EditStepItem";
-import { MacroStep } from "@/models";
+import { MacroStep, PauseStep } from "@/models";
+import { MacroUtils } from "@/utils/MacroUtils";
 import { RecordingProgressState } from "../viewmodels/RecordingProgressViewModel";
 
 const formatElapsed = (seconds: number): string => {
@@ -25,6 +27,7 @@ export const RecordingProgressView = ({ app }: { app: SidePanelApp }) => {
     elapsed: 0,
     error: null,
   });
+  const [pauseDraft, setPauseDraft] = useState<PauseStep | null>(null);
 
   useEffect(() => {
     const unsubscribe = app.recordingProgressViewModel.subscribe(setState);
@@ -38,6 +41,20 @@ export const RecordingProgressView = ({ app }: { app: SidePanelApp }) => {
   const handleDiscard = (): void => {
     app.emitter.emit("CANCEL_RECORDING", undefined, { currentTab: false });
     app.viewService.navigateToView("macroList");
+  };
+
+  const handleOpenPauseModal = (): void => {
+    setPauseDraft(MacroUtils.createPauseStep());
+  };
+
+  const handleAddPauseStep = (_stepId: string, step: PauseStep): void => {
+    if (!state.sessionId) return;
+
+    app.emitter.emit(
+      "USER_ACTION",
+      { sessionId: state.sessionId, step },
+      { currentTab: false }
+    );
   };
 
   const handleUpdateStep = (stepId: string, step: Partial<MacroStep>): void => {
@@ -147,6 +164,27 @@ export const RecordingProgressView = ({ app }: { app: SidePanelApp }) => {
             </div>
           );
         })}
+
+        <Button
+          onClick={handleOpenPauseModal}
+          variant="outlined"
+          color="secondary"
+          size="md"
+          icon={CirclePause}
+          className="shrink-0"
+          title="Add Pause Step"
+        >
+          Add Pause Step
+        </Button>
+
+        {pauseDraft && (
+          <EditPauseStep
+            step={pauseDraft}
+            isOpen={pauseDraft !== null}
+            onUpdateStep={handleAddPauseStep}
+            onClose={() => setPauseDraft(null)}
+          />
+        )}
 
         {/* Waiting indicator */}
         {state.isRecording && (

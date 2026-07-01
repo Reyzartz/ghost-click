@@ -3,7 +3,7 @@ import {
   MacroStep,
   TargetElementSelector,
 } from "@/models";
-import { Icon, Kbd, Text } from "@/design-system";
+import { Badge, Icon, Kbd, Text } from "@/design-system";
 import clsx from "clsx";
 import { Dot } from "lucide-react";
 import { ReactNode, useMemo } from "react";
@@ -97,6 +97,19 @@ export const StepMeta = ({ step, className }: StepMetaProps) => {
 
       case "NAVIGATE":
         return <span className="truncate">{formatUrl(step.url)}</span>;
+
+      case "PAUSE":
+        return (
+          <>
+            <Badge variant="warning">User action</Badge>
+            {step.message && (
+              <>
+                <Icon icon={Dot} size="xs" color="muted" />
+                <span className="truncate">{step.message}</span>
+              </>
+            )}
+          </>
+        );
 
       default:
         return null;

@@ -4,6 +4,7 @@ import {
   InputStep,
   KeyPressStep,
   NavigateStep,
+  PauseStep,
 } from "@/models/MacroStep";
 import { Emitter } from "@/utils/Emitter";
 import { Logger } from "@/utils/Logger";
@@ -98,6 +99,9 @@ export class PlaybackEngine {
             case "NAVIGATE":
               await this.executeNavigateStep(step);
               break;
+            case "PAUSE":
+              await this.executePauseStep(step);
+              break;
             default:
               this.logger.warn("Unknown step type");
           }
@@ -107,6 +111,18 @@ export class PlaybackEngine {
             stepId: step.id,
             error: (err as Error)?.message,
           });
+        }
+
+        // Wait here if this step just paused playback, even if it's the last
+        // step — otherwise the loop would end and playback would be reported
+        // as completed instead of staying paused.
+        while (this.isPaused && !this.shouldStop) {
+          await PlaybackEngine.sleep(100);
+        }
+
+        if (this.shouldStop) {
+          this.logger.info("Playback stopped by user");
+          break;
         }
 
         // Wait for the delay before next step
@@ -221,6 +237,25 @@ export class PlaybackEngine {
 
     // Wait a bit for the navigation to complete
     await PlaybackEngine.sleep(100);
+  }
+
+  private async executePauseStep(step: PauseStep): Promise<void> {
+    this.logger.info("Executing PAUSE step", { step });
+
+    await this.playbackStateRepository.update({
+      currentStepId: step.id,
+      isPaused: true,
+    });
+    this.isPaused = true;
+
+    // Tell the sidepanel which step is current (same pattern as all other steps)
+    this.emitter.emit("EXECUTE_ACTION", { step });
+
+    // Notify sidepanel that playback is paused
+    this.emitter.emit("PAUSE_PLAYBACK", undefined, { currentTab: false });
+
+    // Show pause banner in the page's content script
+    this.emitter.emit("PAUSE_STEP", { message: step.message });
   }
 
   private static sleep(ms: number): Promise<void> {

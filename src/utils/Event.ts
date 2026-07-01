@@ -13,6 +13,7 @@ export type EventType =
   | "STOP_PLAYBACK"
   | "PAUSE_PLAYBACK"
   | "RESUME_PLAYBACK"
+  | "PAUSE_STEP"
   | "START_ELEMENT_INSPECTION"
   | "STOP_ELEMENT_INSPECTION"
   | "ELEMENT_SELECTED"
@@ -81,6 +82,13 @@ export interface PausePlaybackEvent extends BaseEvent {
 
 export interface ResumePlaybackEvent extends BaseEvent {
   name: "RESUME_PLAYBACK";
+}
+
+export interface PauseStepEvent extends BaseEvent {
+  name: "PAUSE_STEP";
+  data: {
+    message: string;
+  };
 }
 
 export interface PlaybackCompletedEvent extends BaseEvent {
@@ -235,6 +243,7 @@ export type AppEvents =
   | StopPlaybackEvent
   | PausePlaybackEvent
   | ResumePlaybackEvent
+  | PauseStepEvent
   | PlaybackCompletedEvent
   | PlaybackErrorEvent
   | ExecuteActionEvent

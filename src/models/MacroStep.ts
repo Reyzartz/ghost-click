@@ -1,4 +1,4 @@
-export type StepType = "CLICK" | "INPUT" | "KEYPRESS" | "NAVIGATE";
+export type StepType = "CLICK" | "INPUT" | "KEYPRESS" | "NAVIGATE" | "PAUSE";
 
 export interface BaseMacroStep {
   id: string;
@@ -47,4 +47,14 @@ export interface NavigateStep extends BaseMacroStep {
   url: string;
 }
 
-export type MacroStep = ClickStep | InputStep | KeyPressStep | NavigateStep;
+export interface PauseStep extends BaseMacroStep {
+  type: "PAUSE";
+  message: string;
+}
+
+export type MacroStep =
+  | ClickStep
+  | InputStep
+  | KeyPressStep
+  | NavigateStep
+  | PauseStep;
