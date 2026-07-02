@@ -9,7 +9,7 @@ export interface SettingsFormErrors {
   defaultSelectorType?: string;
   minimumDelayMs?: string;
   theme?: string;
-  stopOnError?: string;
+  onStepFailure?: string;
 }
 
 export interface SettingsState {
@@ -117,8 +117,8 @@ export class SettingsViewModel extends BaseViewModel {
       errors.theme = "Invalid theme";
     }
 
-    if (typeof settings.stopOnError !== "boolean") {
-      errors.stopOnError = "Invalid value for stopOnError";
+    if (!["stop", "pause", "continue"].includes(settings.onStepFailure)) {
+      errors.onStepFailure = "Invalid value for onStepFailure";
     }
 
     return errors;

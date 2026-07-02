@@ -3,12 +3,14 @@ import {
   ClickStep,
   InputStep,
   KeyPressStep,
+  MacroStep,
   NavigateStep,
   PauseStep,
 } from "@/models/MacroStep";
 import { Emitter } from "@/utils/Emitter";
 import { Logger } from "@/utils/Logger";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
+import { SettingsRepository } from "@/repositories/SettingsRepository";
 import { TabsManager } from "@/utils/TabsManager";
 
 export class PlaybackEngine {
@@ -19,7 +21,8 @@ export class PlaybackEngine {
 
   constructor(
     private readonly emitter: Emitter,
-    private readonly playbackStateRepository: PlaybackStateRepository
+    private readonly playbackStateRepository: PlaybackStateRepository,
+    private readonly settingsRepository: SettingsRepository
   ) {
     this.logger = new Logger("PlaybackEngine");
   }
@@ -106,9 +109,8 @@ export class PlaybackEngine {
               this.logger.warn("Unknown step type");
           }
         } catch (err) {
-          this.emitter.emit("PLAYBACK_ERROR", {
-            macroId: macro.id,
-            stepId: step.id,
+          this.emitter.emit("PLAYBACK_STEP_ERROR", {
+            step,
             error: (err as Error)?.message,
           });
         }
@@ -145,12 +147,6 @@ export class PlaybackEngine {
       }
     } catch (err) {
       this.logger.error("Playback failed", { error: err, macroId: macro.id });
-
-      this.emitter.emit("PLAYBACK_ERROR", {
-        macroId: macro.id,
-        stepId: null,
-        error: err instanceof Error ? err.message : "Unknown error",
-      });
 
       this.emitter.emit("STOP_PLAYBACK", undefined, {
         currentTab: false,
@@ -256,6 +252,44 @@ export class PlaybackEngine {
 
     // Show pause banner in the page's content script
     this.emitter.emit("PAUSE_STEP", { message: step.message });
+  }
+
+  async handleStepFailure(step: MacroStep, err: unknown): Promise<void> {
+    const message = err instanceof Error ? err.message : "Unknown error";
+
+    const settings = await this.settingsRepository.get();
+
+    switch (settings.onStepFailure) {
+      case "pause":
+        this.logger.info("Pausing playback due to step failure", {
+          stepId: step.id,
+        });
+        this.isPaused = true;
+        await this.playbackStateRepository.update({
+          currentStepId: step.id,
+          isPaused: true,
+        });
+        this.emitter.emit("PAUSE_PLAYBACK", undefined, { currentTab: false });
+        this.emitter.emit("PAUSE_STEP", {
+          message: `Step \`${step.name}\` \nfailed: ${message}.\nFix the issue, then resume.`,
+        });
+        break;
+      case "continue":
+        this.logger.info("Continuing playback despite step failure", {
+          stepId: step.id,
+        });
+        break;
+      case "stop":
+      default:
+        // Treat a missing/unrecognized value (e.g. settings saved before
+        // this field existed) the same as "stop" — the safe default.
+        this.logger.info("Stopping playback due to step failure", {
+          stepId: step.id,
+        });
+        this.shouldStop = true;
+        this.emitter.emit("STOP_PLAYBACK", undefined, { currentTab: false });
+        break;
+    }
   }
 
   private static sleep(ms: number): Promise<void> {

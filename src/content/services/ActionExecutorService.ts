@@ -61,9 +61,8 @@ export class ActionExecutorService extends BaseService {
         return;
       }
 
-      this.emitter.emit("PLAYBACK_ERROR", {
-        macroId,
-        stepId: step.id,
+      this.emitter.emit("PLAYBACK_STEP_ERROR", {
+        step,
         error: (err as Error).message,
       });
     }

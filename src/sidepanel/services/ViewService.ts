@@ -69,7 +69,7 @@ export class ViewService extends BaseService {
       );
     });
 
-    this.emitter.on("PLAYBACK_ERROR", () => {
+    this.emitter.on("PLAYBACK_STEP_ERROR", () => {
       this.logger.info("Playback error - staying on playback progress view");
     });
 
