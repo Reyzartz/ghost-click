@@ -20,7 +20,8 @@ export class PlaybackService extends BaseService {
     this.settingsRepository = new SettingsRepository(storage);
     this.playbackEngine = new PlaybackEngine(
       emitter,
-      this.playbackStateRepository
+      this.playbackStateRepository,
+      this.settingsRepository
     );
     this.macroRepository = new MacroRepository(emitter, storage);
   }
@@ -51,8 +52,8 @@ export class PlaybackService extends BaseService {
       this.playbackEngine.resume();
     });
 
-    this.emitter.on("PLAYBACK_ERROR", () => {
-      void this.handlePlaybackError();
+    this.emitter.on("PLAYBACK_STEP_ERROR", (data) => {
+      void this.playbackEngine.handleStepFailure(data.step, data.error);
     });
 
     return Promise.resolve();
@@ -92,19 +93,6 @@ export class PlaybackService extends BaseService {
         error: err,
         macroId: macro.id,
       });
-    }
-  }
-
-  private async handlePlaybackError(): Promise<void> {
-    const settings = await this.settingsRepository.get();
-
-    if (settings.stopOnError) {
-      this.logger.info("Stopping playback due to error (stopOnError enabled)");
-      this.emitter.emit("STOP_PLAYBACK");
-    } else {
-      this.logger.info(
-        "Continuing playback despite error (stopOnError disabled)"
-      );
     }
   }
 }

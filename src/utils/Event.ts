@@ -9,7 +9,7 @@ export type EventType =
   | "PLAY_MACRO_PREVIEW"
   | "EXECUTE_ACTION"
   | "PLAYBACK_COMPLETED"
-  | "PLAYBACK_ERROR"
+  | "PLAYBACK_STEP_ERROR"
   | "STOP_PLAYBACK"
   | "PAUSE_PLAYBACK"
   | "RESUME_PLAYBACK"
@@ -98,11 +98,10 @@ export interface PlaybackCompletedEvent extends BaseEvent {
   };
 }
 
-export interface PlaybackErrorEvent extends BaseEvent {
-  name: "PLAYBACK_ERROR";
+export interface PlaybackStepErrorEvent extends BaseEvent {
+  name: "PLAYBACK_STEP_ERROR";
   data: {
-    macroId: string;
-    stepId: string | null;
+    step: MacroStep;
     error: string;
   };
 }
@@ -245,7 +244,7 @@ export type AppEvents =
   | ResumePlaybackEvent
   | PauseStepEvent
   | PlaybackCompletedEvent
-  | PlaybackErrorEvent
+  | PlaybackStepErrorEvent
   | ExecuteActionEvent
   | ShowSaveRecordingModalEvent
   | SaveRecordingConfirmedEvent

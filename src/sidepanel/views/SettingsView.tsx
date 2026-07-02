@@ -99,21 +99,24 @@ export const SettingsView = ({ app }: { app: SidePanelApp }) => {
         {state.error && <Alert variant="error">{state.error}</Alert>}
 
         <SettingsSection title="Playback">
-          <SettingsCard
-            label="Stop on error"
-            description="Abort on first failure"
+          <Select
+            label="On step failure"
+            info="What to do when a step fails during playback"
             icon={CircleX}
+            value={state.formSettings.onStepFailure}
+            onChange={(e) =>
+              app.settingsViewModel.updateFormField(
+                "onStepFailure",
+                e.target.value
+              )
+            }
+            error={state.formErrors.onStepFailure}
+            fullWidth
           >
-            <Toggle
-              checked={state.formSettings.stopOnError}
-              onChange={(e) =>
-                app.settingsViewModel.updateFormField(
-                  "stopOnError",
-                  e.target.checked
-                )
-              }
-            />
-          </SettingsCard>
+            <option value="stop">Stop playback</option>
+            <option value="pause">Pause for manual action</option>
+            <option value="continue">Continue to next step</option>
+          </Select>
         </SettingsSection>
 
         <SettingsSection title="Recording">

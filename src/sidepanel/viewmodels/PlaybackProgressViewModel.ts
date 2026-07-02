@@ -3,7 +3,7 @@ import { MacroRepository } from "@/repositories/MacroRepository";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
 import { BaseViewModel } from "@/utils/BaseViewModel";
 import { Emitter } from "@/utils/Emitter";
-import { PlaybackErrorEvent } from "@/utils/Event";
+import { PlaybackStepErrorEvent } from "@/utils/Event";
 
 export interface StepError {
   stepId: string;
@@ -71,7 +71,7 @@ export class PlaybackProgressViewModel extends BaseViewModel {
       });
     });
 
-    this.emitter.on("PLAYBACK_ERROR", (data) => {
+    this.emitter.on("PLAYBACK_STEP_ERROR", (data) => {
       void this.handlePlaybackError(data);
     });
 
@@ -160,16 +160,16 @@ export class PlaybackProgressViewModel extends BaseViewModel {
   }
 
   private async handlePlaybackError(
-    data: PlaybackErrorEvent["data"]
+    data: PlaybackStepErrorEvent["data"]
   ): Promise<void> {
     this.logger.error("Playback error event received", { error: data.error });
-    const erroredStepIds = data.stepId
-      ? Array.from(new Set([...this.state.erroredStepIds, data.stepId]))
+    const erroredStepIds = data.step.id
+      ? Array.from(new Set([...this.state.erroredStepIds, data.step.id]))
       : this.state.erroredStepIds;
 
     const errorDetails = [...this.state.errorDetails];
-    if (data.stepId && this.state.macro) {
-      const step = this.state.macro.steps.find((s) => s.id === data.stepId);
+    if (data.step && this.state.macro) {
+      const step = this.state.macro.steps.find((s) => s.id === data.step.id);
       if (step) {
         errorDetails.push({
           stepId: step.id,

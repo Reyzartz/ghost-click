@@ -3,11 +3,7 @@ import { MacroRepository } from "@/repositories/MacroRepository";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
 import { BaseViewModel } from "@/utils/BaseViewModel";
 import { Emitter } from "@/utils/Emitter";
-import {
-  CreateMacroEvent,
-  EditMacroEvent,
-  PlaybackErrorEvent,
-} from "@/utils/Event";
+import { CreateMacroEvent, EditMacroEvent } from "@/utils/Event";
 
 export interface EditMacroState {
   loading: boolean;
@@ -70,14 +66,15 @@ export class EditMacroViewModel extends BaseViewModel {
       });
     });
 
-    this.emitter.on("PLAYBACK_ERROR", (data: PlaybackErrorEvent["data"]) => {
-      this.logger.info("Detected PLAYBACK_ERROR event", {
-        stepId: data.stepId,
+    this.emitter.on("PLAYBACK_STEP_ERROR", (data) => {
+      this.logger.info("Detected PLAYBACK_STEP_ERROR event", {
+        stepId: data.step.id,
       });
+
       this.setState({
         currentStepId: null,
-        erroredStepIds: data.stepId
-          ? [...this.state.erroredStepIds, data.stepId]
+        erroredStepIds: data.step.id
+          ? [...this.state.erroredStepIds, data.step.id]
           : this.state.erroredStepIds,
       });
     });
