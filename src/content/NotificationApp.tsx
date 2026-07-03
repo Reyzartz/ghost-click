@@ -10,10 +10,13 @@ interface NotificationAppDeps {
   };
 }
 
+const TRANSLUCENCY_DELAY_MS = 1000;
+
 function NotificationApp({ app }: { app: NotificationAppDeps }) {
   const [notificationState, setNotificationState] = useState<NotificationState>(
     { notifications: [], pauseMessage: null }
   );
+  const [isTranslucent, setIsTranslucent] = useState(false);
 
   useEffect(() => {
     const unsubscribe =
@@ -21,10 +24,31 @@ function NotificationApp({ app }: { app: NotificationAppDeps }) {
     return () => unsubscribe();
   }, [app]);
 
+  useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    const handleMouseMove = () => {
+      setIsTranslucent(true);
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(
+        () => setIsTranslucent(false),
+        TRANSLUCENCY_DELAY_MS
+      );
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
   return (
     <div
       style={{ zIndex: 10000 }}
-      className="pointer-events-none fixed top-4 mx-auto flex w-screen flex-col items-center gap-2"
+      className={`pointer-events-none fixed top-4 mx-auto flex w-screen flex-col items-center gap-2 transition-opacity duration-300 ${
+        isTranslucent ? "opacity-30" : "opacity-100"
+      }`}
     >
       {notificationState.pauseMessage && (
         <NotificationCard
