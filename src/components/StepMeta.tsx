@@ -1,8 +1,4 @@
-import {
-  ElementSelectorType,
-  MacroStep,
-  TargetElementSelector,
-} from "@/models";
+import { MacroStep, TargetElementSelector } from "@/models";
 import { Badge, Icon, Kbd, Text } from "@/design-system";
 import clsx from "clsx";
 import { Dot } from "lucide-react";
@@ -13,15 +9,12 @@ interface StepMetaProps {
   className?: string;
 }
 
-const SELECTOR_PREFIX: Record<ElementSelectorType, string> = {
-  id: "#",
-  className: ".",
-  xpath: "",
-};
-
 function formatSelector(target: TargetElementSelector): string {
-  const prefix = SELECTOR_PREFIX[target.defaultSelector];
-  const value = target[target.defaultSelector];
+  const [prefix, value] = target.id
+    ? ["#", target.id]
+    : target.xpath
+      ? ["", target.xpath]
+      : [".", target.className];
   const full = `${prefix}${value}`;
   return full.length > 24 ? `${full.slice(0, 24)}…` : full;
 }

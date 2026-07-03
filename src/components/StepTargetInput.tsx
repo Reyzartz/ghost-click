@@ -1,7 +1,7 @@
 import { TargetElementSelector } from "@/models";
 import { memo, useEffect, useState } from "react";
 import { Square, Search } from "lucide-react";
-import { Text, Button, Input, Select, Card } from "@/design-system";
+import { Text, Button, Input, Card } from "@/design-system";
 import { TabsManager } from "@/utils/TabsManager";
 import { ElementSelectedEvent } from "@/utils/Event";
 
@@ -129,21 +129,6 @@ const StepTargetInput = memo<StepTargetInputProps>(
             placeholder="//div[@id='example']"
             fullWidth
           />
-
-          <Select
-            value={target.defaultSelector}
-            label="Default Element Selector"
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-              onChange({
-                ...target,
-                defaultSelector: e.target.value as "id" | "className" | "xpath",
-              })
-            }
-          >
-            <option value="id">ID</option>
-            <option value="className">Class</option>
-            <option value="xpath">XPath</option>
-          </Select>
 
           {error && (
             <Text variant="small" color="error">

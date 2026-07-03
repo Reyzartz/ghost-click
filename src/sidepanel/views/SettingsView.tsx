@@ -11,7 +11,6 @@ import {
   Timer,
   CircleX,
   RotateCw,
-  Target,
 } from "lucide-react";
 import { Layout } from "@/design-system/Layout";
 import clsx from "clsx";
@@ -194,25 +193,6 @@ export const SettingsView = ({ app }: { app: SidePanelApp }) => {
             error={state.formErrors.defaultRetryIntervalMs}
             fullWidth
           />
-
-          <Select
-            label="Default Selector"
-            info="Strategy used to identify elements on the page (XPath is most reliable, ID is fastest)"
-            icon={Target}
-            value={state.formSettings.defaultSelectorType}
-            onChange={(e) =>
-              app.settingsViewModel.updateFormField(
-                "defaultSelectorType",
-                e.target.value
-              )
-            }
-            error={state.formErrors.defaultSelectorType}
-            fullWidth
-          >
-            <option value="xpath">XPath</option>
-            <option value="id">ID</option>
-            <option value="className">Classname</option>
-          </Select>
         </SettingsSection>
 
         <SettingsSection title="Appearance">

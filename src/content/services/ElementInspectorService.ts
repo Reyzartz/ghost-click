@@ -1,17 +1,13 @@
 import { BaseService } from "@/utils/BaseService";
 import { Emitter } from "@/utils/Emitter";
 import { ElementSelector } from "@/utils/ElementSelector";
-import { SettingsRepository } from "@/repositories/SettingsRepository";
 
 export class ElementInspectorService extends BaseService {
   private isInspecting = false;
   private highlightedElement: HTMLElement | null = null;
   private overlay: HTMLDivElement | null = null;
 
-  constructor(
-    protected readonly emitter: Emitter,
-    private readonly settingsRepository: SettingsRepository
-  ) {
+  constructor(protected readonly emitter: Emitter) {
     super("ElementInspectorService", emitter);
   }
 
@@ -76,10 +72,10 @@ export class ElementInspectorService extends BaseService {
   };
 
   private handleClickSync = (e: MouseEvent): void => {
-    void this.handleClick(e);
+    this.handleClick(e);
   };
 
-  private handleClick = async (e: MouseEvent): Promise<void> => {
+  private handleClick = (e: MouseEvent): void => {
     if (!this.isInspecting) return;
 
     e.preventDefault();
@@ -88,11 +84,7 @@ export class ElementInspectorService extends BaseService {
     const target = e.target as HTMLElement;
     if (!target || target === this.overlay) return;
 
-    const settings = await this.settingsRepository.get();
-    const selector = ElementSelector.getElementSelector(
-      target,
-      settings.defaultSelectorType
-    );
+    const selector = ElementSelector.getElementSelector(target);
 
     this.logger.info("Element selected", { selector });
 

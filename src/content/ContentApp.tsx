@@ -56,7 +56,7 @@ export class ContentApp extends BaseApp {
         settingsRepository
       ),
       new ActionExecutorService(emitter, playbackStateRepository),
-      new ElementInspectorService(emitter, settingsRepository),
+      new ElementInspectorService(emitter),
     ];
 
     super(emitter, logger, services, viewModels);

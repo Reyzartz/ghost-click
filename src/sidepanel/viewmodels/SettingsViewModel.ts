@@ -6,7 +6,6 @@ import { SettingsRepository } from "@/repositories/SettingsRepository";
 export interface SettingsFormErrors {
   defaultRetryCount?: string;
   defaultRetryIntervalMs?: string;
-  defaultSelectorType?: string;
   minimumDelayMs?: string;
   theme?: string;
   onStepFailure?: string;
@@ -107,10 +106,6 @@ export class SettingsViewModel extends BaseViewModel {
 
     if (settings.minimumDelayMs < 0 || settings.minimumDelayMs > 5000) {
       errors.minimumDelayMs = "Must be between 0 and 5000ms";
-    }
-
-    if (!["xpath", "id", "className"].includes(settings.defaultSelectorType)) {
-      errors.defaultSelectorType = "Invalid selector type";
     }
 
     if (!["system", "light", "dark"].includes(settings.theme)) {

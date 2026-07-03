@@ -5,9 +5,14 @@ import {
   InputStep,
   KeyPressStep,
   MacroStep,
+  TargetElementSelector,
 } from "@/models/MacroStep";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
-import { ElementSelector } from "@/utils/ElementSelector";
+import {
+  ResolvableStepType,
+  StepValidationError,
+  TargetResolver,
+} from "@/utils/TargetResolver";
 
 export class ActionExecutorService extends BaseService {
   private overlay: HTMLDivElement | null = null;
@@ -69,21 +74,12 @@ export class ActionExecutorService extends BaseService {
   }
 
   private async executeClickStep(step: ClickStep): Promise<void> {
-    const element = await this.findElementWithRetry(
+    const element = (await this.findElementWithRetry(
       step.target,
+      "CLICK",
       step.retryCount,
       step.retryInterval
-    );
-
-    if (!element) {
-      throw new Error(
-        `Element not found for target: ${JSON.stringify(step.target)}`
-      );
-    }
-
-    if (!(element instanceof HTMLElement)) {
-      throw new Error("Found target is not an HTMLElement");
-    }
+    )) as HTMLElement;
 
     this.logger.info("Clicking element", { selector: step.target });
 
@@ -117,81 +113,67 @@ export class ActionExecutorService extends BaseService {
   }
 
   private async findElementWithRetry(
-    target: ClickStep["target"],
+    target: TargetElementSelector,
+    stepType: ResolvableStepType,
     retryCount: number,
     retryInterval: number
-  ): Promise<Element | null> {
+  ): Promise<Element> {
     let attempts = 0;
     const maxAttempts = retryCount + 1; // Initial attempt + retries
+    let lastFailureMessage = "";
+    let lastFailureCode: StepValidationError["code"] = "NOT_FOUND";
 
     while (attempts < maxAttempts) {
-      const element = this.findElement(target);
+      const result = TargetResolver.resolve(target, stepType);
 
-      if (element) {
+      if (result.valid) {
         if (attempts > 0) {
-          this.logger.info("Element found after retry", {
+          this.logger.info("Element resolved after retry", {
             attempt: attempts + 1,
             maxAttempts,
           });
         }
-        return element;
+        return result.element;
+      }
+
+      lastFailureMessage = result.message;
+      lastFailureCode = result.code;
+
+      if (!result.retryable) {
+        this.logger.error("Step validation failed (not retryable)", {
+          code: result.code,
+          message: result.message,
+        });
+        throw new StepValidationError(result.code, result.message);
       }
 
       attempts++;
 
       if (attempts < maxAttempts) {
-        this.logger.info("Element not found, retrying", {
+        this.logger.info("Step not yet valid, retrying", {
           attempt: attempts,
           maxAttempts,
+          code: result.code,
           retryInterval,
         });
         await this.sleep(retryInterval);
       }
     }
 
-    this.logger.error("Element not found after all retries", {
+    this.logger.error("Step validation failed after all retries", {
       attempts: maxAttempts,
+      code: lastFailureCode,
     });
-    return null;
-  }
-
-  private findElement(target: ClickStep["target"]): Element | null {
-    switch (target.defaultSelector) {
-      case "xpath":
-        return ElementSelector.findElementFromXPath(target.xpath);
-      case "id":
-        return ElementSelector.findElementFromId(target.id);
-      case "className":
-        return ElementSelector.findElementFromClassName(target.className);
-      default:
-        this.logger.warn("Unknown selector type", {
-          defaultSelector: target.defaultSelector,
-        });
-        return null;
-    }
+    throw new StepValidationError(lastFailureCode, lastFailureMessage);
   }
 
   private async executeInputStep(step: InputStep): Promise<void> {
-    const element = await this.findElementWithRetry(
+    const element = (await this.findElementWithRetry(
       step.target,
+      "INPUT",
       step.retryCount,
       step.retryInterval
-    );
-
-    if (!element) {
-      throw new Error(
-        `Element not found for target: ${JSON.stringify(step.target)}`
-      );
-    }
-
-    if (
-      !(
-        element instanceof HTMLInputElement ||
-        element instanceof HTMLTextAreaElement
-      )
-    ) {
-      throw new Error("Found target is not an input or textarea element");
-    }
+    )) as HTMLInputElement | HTMLTextAreaElement;
 
     this.logger.info("Setting input value", {
       selector: step.target,
@@ -219,21 +201,12 @@ export class ActionExecutorService extends BaseService {
   }
 
   private async executeKeyPressStep(step: KeyPressStep): Promise<void> {
-    const element = await this.findElementWithRetry(
+    const element = (await this.findElementWithRetry(
       step.target,
+      "KEYPRESS",
       step.retryCount,
       step.retryInterval
-    );
-
-    if (!element) {
-      throw new Error(
-        `Element not found for target: ${JSON.stringify(step.target)}`
-      );
-    }
-
-    if (!(element instanceof HTMLElement)) {
-      throw new Error("Found target is not an HTMLElement");
-    }
+    )) as HTMLElement;
 
     this.logger.info("Pressing key", { selector: step.target, key: step.key });
 
