@@ -50,13 +50,6 @@ export class MacroShareService extends BaseService {
                   id: yup.string(),
                   className: yup.string(),
                   xpath: yup.string(),
-                  defaultSelector: yup
-                    .string()
-                    .oneOf(
-                      ["id", "className", "xpath"],
-                      "Invalid default selector"
-                    )
-                    .required("Default selector is required"),
                 })
                 .required("Target is required")
                 .test(

@@ -16,7 +16,6 @@ export interface TargetElementSelector {
   id: string;
   className: string;
   xpath: string;
-  defaultSelector: ElementSelectorType;
 }
 
 export interface ClickStep extends BaseMacroStep {

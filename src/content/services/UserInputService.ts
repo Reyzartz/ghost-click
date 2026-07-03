@@ -131,10 +131,7 @@ export class UserInputService extends BaseService {
 
     const clickStep = MacroUtils.createClickStep(settings, {
       name: MacroUtils.getStepName(this.getElementName(target), "CLICK"),
-      target: ElementSelector.getElementSelector(
-        target,
-        settings.defaultSelectorType
-      ),
+      target: ElementSelector.getElementSelector(target),
     });
 
     this.logger.info("Click captured", clickStep);
@@ -165,10 +162,7 @@ export class UserInputService extends BaseService {
 
     const inputStep = MacroUtils.createInputStep(settings, {
       name: MacroUtils.getStepName(target.value, "INPUT"),
-      target: ElementSelector.getElementSelector(
-        target,
-        settings.defaultSelectorType
-      ),
+      target: ElementSelector.getElementSelector(target),
       value: target.value,
     });
 
@@ -209,10 +203,7 @@ export class UserInputService extends BaseService {
 
     const keyPressStep = MacroUtils.createKeyPressStep(settings, {
       name: MacroUtils.getStepName(event.key, "KEYPRESS"),
-      target: ElementSelector.getElementSelector(
-        target,
-        settings.defaultSelectorType
-      ),
+      target: ElementSelector.getElementSelector(target),
       key: event.key,
       code: event.code,
       ctrlKey: event.ctrlKey,

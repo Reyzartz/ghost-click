@@ -22,10 +22,6 @@ class MacroUtils {
       id: yup.string(),
       className: yup.string(),
       xpath: yup.string(),
-      defaultSelector: yup
-        .string()
-        .oneOf(["id", "className", "xpath"], "Invalid default selector")
-        .required("Default selector is required"),
     })
     .test(
       "at-least-one-selector",
@@ -365,14 +361,12 @@ class MacroUtils {
   }
 
   static createDefaultTarget(
-    settings: Settings,
     target: Partial<TargetElementSelector> = {}
   ): TargetElementSelector {
     return {
       id: "",
       className: "",
       xpath: "",
-      defaultSelector: settings.defaultSelectorType,
       ...target,
     };
   }
@@ -386,7 +380,7 @@ class MacroUtils {
       settings
     );
 
-    const defaultTarget = MacroUtils.createDefaultTarget(settings);
+    const defaultTarget = MacroUtils.createDefaultTarget();
 
     return {
       ...baseStep,
@@ -406,7 +400,7 @@ class MacroUtils {
       settings
     );
 
-    const defaultTarget = MacroUtils.createDefaultTarget(settings);
+    const defaultTarget = MacroUtils.createDefaultTarget();
 
     return {
       ...baseStep,
@@ -426,7 +420,7 @@ class MacroUtils {
       settings
     );
 
-    const defaultTarget = MacroUtils.createDefaultTarget(settings);
+    const defaultTarget = MacroUtils.createDefaultTarget();
 
     return {
       ...baseStep,

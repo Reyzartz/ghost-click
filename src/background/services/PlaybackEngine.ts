@@ -255,7 +255,12 @@ export class PlaybackEngine {
   }
 
   async handleStepFailure(step: MacroStep, err: unknown): Promise<void> {
-    const message = err instanceof Error ? err.message : "Unknown error";
+    const message =
+      typeof err === "string"
+        ? err
+        : err instanceof Error
+          ? err.message
+          : "Unknown error";
 
     const settings = await this.settingsRepository.get();
 
