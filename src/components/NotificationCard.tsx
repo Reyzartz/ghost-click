@@ -25,7 +25,7 @@ const notificationIcons = {
 };
 
 const notificationContainer = cva(
-  "pointer-events-auto flex flex-col min-w-60 max-w-xl items-stretch gap-2 rounded px-5 py-3 text-sm font-medium shadow-lg border border-solid",
+  "pointer-events-none flex flex-col min-w-60 max-w-xl items-stretch gap-2 rounded px-5 py-3 text-sm font-medium shadow-lg border border-solid",
   {
     variants: {
       type: {
@@ -67,7 +67,7 @@ const NotificationCard = memo<NotifiactionCardProps>(({ notification }) => {
         <Text
           variant="h4"
           color={notification.type}
-          className="wrap-break-words"
+          className="wrap-break-words whitespace-pre-wrap"
         >
           {notification.message}
         </Text>
