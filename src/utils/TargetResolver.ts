@@ -1,8 +1,14 @@
-import { TargetElementSelector } from "@/models/MacroStep";
+import { ResolvableStepType, TargetElementSelector } from "@/models/MacroStep";
 import { ElementSelector } from "@/utils/ElementSelector";
 
-export type ResolvableStepType = "CLICK" | "INPUT" | "KEYPRESS";
-type SelectorStrategy = "id" | "xpath" | "className";
+type SelectorStrategy =
+  | "id"
+  | "xpath"
+  | "className"
+  | "testId"
+  | "ariaLabel"
+  | "name"
+  | "text";
 
 export type TargetValidationErrorCode =
   | "NOT_FOUND"
@@ -36,22 +42,41 @@ export class StepValidationError extends Error {
   }
 }
 
-const STABILITY_ORDER: SelectorStrategy[] = ["id", "xpath", "className"];
+const STABILITY_ORDER: SelectorStrategy[] = [
+  "id",
+  "testId",
+  "name",
+  "xpath",
+  "ariaLabel",
+  "className",
+  "text",
+];
+
+const TEXT_MATCH_TAGS = new Set([
+  "BUTTON",
+  "A",
+  "LABEL",
+  "SPAN",
+  "DIV",
+  "TD",
+  "TH",
+  "LI",
+  "SUMMARY",
+]);
 
 export class TargetResolver {
   static resolve(
     target: TargetElementSelector,
     stepType: ResolvableStepType
   ): TargetResolutionResult {
-    const order = TargetResolver.buildSelectorOrder(target);
+    const order = TargetResolver.buildSelectorOrder(target, stepType);
 
     if (order.length === 0) {
       return {
         valid: false,
         code: "NOT_FOUND",
         retryable: false,
-        message:
-          "This step has no recorded selector (id, xpath, and class are all empty).",
+        message: "This step has no recorded selector to match against.",
       };
     }
 
@@ -106,9 +131,15 @@ export class TargetResolver {
   }
 
   private static buildSelectorOrder(
-    target: TargetElementSelector
+    target: TargetElementSelector,
+    stepType: ResolvableStepType
   ): SelectorStrategy[] {
-    return STABILITY_ORDER.filter((strategy) => Boolean(target[strategy]));
+    return STABILITY_ORDER.filter((strategy) => {
+      if (strategy === "text" && stepType === "INPUT") {
+        return false;
+      }
+      return Boolean(target[strategy]);
+    });
   }
 
   private static queryBySelector(
@@ -143,7 +174,53 @@ export class TargetResolver {
         ).length;
         return { element, matchCount };
       }
+      case "testId": {
+        const selector = `[data-testid="${CSS.escape(target.testId ?? "")}"]`;
+        return {
+          element: document.querySelector(selector),
+          matchCount: document.querySelectorAll(selector).length,
+        };
+      }
+      case "ariaLabel": {
+        const selector = `[aria-label="${CSS.escape(target.ariaLabel ?? "")}"]`;
+        return {
+          element: document.querySelector(selector),
+          matchCount: document.querySelectorAll(selector).length,
+        };
+      }
+      case "name": {
+        const selector = `[name="${CSS.escape(target.name ?? "")}"]`;
+        return {
+          element: document.querySelector(selector),
+          matchCount: document.querySelectorAll(selector).length,
+        };
+      }
+      case "text": {
+        const matches = TargetResolver.findByOwnText(target.text ?? "");
+        return { element: matches[0] ?? null, matchCount: matches.length };
+      }
     }
+  }
+
+  private static findByOwnText(text: string): Element[] {
+    const matches: Element[] = [];
+    const walker = document.createTreeWalker(
+      document.body,
+      NodeFilter.SHOW_ELEMENT
+    );
+    let node = walker.nextNode() as Element | null;
+
+    while (node) {
+      if (
+        TEXT_MATCH_TAGS.has(node.tagName) &&
+        ElementSelector.getOwnText(node) === text
+      ) {
+        matches.push(node);
+      }
+      node = walker.nextNode() as Element | null;
+    }
+
+    return matches;
   }
 
   private static checkElementType(

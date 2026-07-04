@@ -22,11 +22,29 @@ class MacroUtils {
       id: yup.string(),
       className: yup.string(),
       xpath: yup.string(),
+      testId: yup.string().max(200, "Test ID is too long"),
+      ariaLabel: yup.string().max(200, "Aria label is too long"),
+      name: yup.string().max(200, "Name is too long"),
+      text: yup
+        .string()
+        .max(
+          120,
+          "Text is too long (captured text is truncated to 120 characters)"
+        ),
     })
     .test(
       "at-least-one-selector",
-      "At least one of id, className, or xpath is required",
-      (value) => !!(value?.id || value?.className || value?.xpath)
+      "At least one of id, className, xpath, testId, ariaLabel, name, or text is required",
+      (value) =>
+        !!(
+          value?.id ||
+          value?.className ||
+          value?.xpath ||
+          value?.testId ||
+          value?.ariaLabel ||
+          value?.name ||
+          value?.text
+        )
     );
 
   static readonly baseStepSchema = yup.object({
@@ -367,6 +385,10 @@ class MacroUtils {
       id: "",
       className: "",
       xpath: "",
+      testId: "",
+      ariaLabel: "",
+      name: "",
+      text: "",
       ...target,
     };
   }

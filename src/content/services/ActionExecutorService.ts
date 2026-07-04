@@ -5,14 +5,11 @@ import {
   InputStep,
   KeyPressStep,
   MacroStep,
+  ResolvableStepType,
   TargetElementSelector,
 } from "@/models/MacroStep";
 import { PlaybackStateRepository } from "@/repositories/PlaybackStateRepository";
-import {
-  ResolvableStepType,
-  StepValidationError,
-  TargetResolver,
-} from "@/utils/TargetResolver";
+import { StepValidationError, TargetResolver } from "@/utils/TargetResolver";
 
 export class ActionExecutorService extends BaseService {
   private overlay: HTMLDivElement | null = null;

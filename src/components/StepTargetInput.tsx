@@ -14,6 +14,7 @@ interface StepTargetInputProps {
 const StepTargetInput = memo<StepTargetInputProps>(
   ({ target, onChange, error }) => {
     const [isInspecting, setIsInspecting] = useState(false);
+    const [showAdvanced, setShowAdvanced] = useState(false);
 
     useEffect(() => {
       const handleMessage = (message: {
@@ -129,6 +130,57 @@ const StepTargetInput = memo<StepTargetInputProps>(
             placeholder="//div[@id='example']"
             fullWidth
           />
+
+          <Button
+            type="button"
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            variant="ghost"
+            color="secondary"
+            size="sm"
+          >
+            {showAdvanced ? "Advanced ▾" : "Advanced ▸"}
+          </Button>
+
+          {showAdvanced && (
+            <>
+              <Input
+                type="text"
+                label="Test ID"
+                value={target.testId ?? ""}
+                onChange={(e) =>
+                  onChange({ ...target, testId: e.target.value })
+                }
+                placeholder="data-testid value"
+              />
+
+              <Input
+                type="text"
+                label="Aria Label"
+                value={target.ariaLabel ?? ""}
+                onChange={(e) =>
+                  onChange({ ...target, ariaLabel: e.target.value })
+                }
+                placeholder="aria-label value"
+              />
+
+              <Input
+                type="text"
+                label="Name"
+                value={target.name ?? ""}
+                onChange={(e) => onChange({ ...target, name: e.target.value })}
+                placeholder="name attribute"
+              />
+
+              <Input
+                type="text"
+                label="Text"
+                value={target.text ?? ""}
+                onChange={(e) => onChange({ ...target, text: e.target.value })}
+                placeholder="visible text content"
+                fullWidth
+              />
+            </>
+          )}
 
           {error && (
             <Text variant="small" color="error">
