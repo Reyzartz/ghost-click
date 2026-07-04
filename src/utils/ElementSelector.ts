@@ -1,4 +1,4 @@
-import { TargetElementSelector } from "@/models";
+import { ResolvableStepType, TargetElementSelector } from "@/models";
 
 export class ElementSelector {
   static readonly findElementFromXPath = (xpath: string): Element | null => {
@@ -140,15 +140,54 @@ export class ElementSelector {
     return `.//${result.replace(/^\//, "")}`;
   }
 
-  static getElementSelector(element: HTMLElement): TargetElementSelector {
+  static getTestId(el: Element): string {
+    return el.getAttribute("data-testid") || "";
+  }
+
+  static getAriaLabel(el: Element): string {
+    return el.getAttribute("aria-label") || "";
+  }
+
+  static getName(el: Element): string {
+    if (
+      el instanceof HTMLInputElement ||
+      el instanceof HTMLTextAreaElement ||
+      el instanceof HTMLSelectElement
+    ) {
+      return el.name || "";
+    }
+    return el.getAttribute("name") || "";
+  }
+
+  static getOwnText(el: Element): string {
+    const ownText = Array.from(el.childNodes)
+      .filter((n) => n.nodeType === Node.TEXT_NODE)
+      .map((n) => n.textContent || "")
+      .join(" ");
+    return ownText.replace(/\s+/g, " ").trim().slice(0, 120);
+  }
+
+  static getElementSelector(
+    element: HTMLElement,
+    stepType: ResolvableStepType
+  ): TargetElementSelector {
     const id = ElementSelector.getId(element);
     const className = ElementSelector.getClassName(element);
     const xpath = ElementSelector.getXPath(element);
+    const testId = ElementSelector.getTestId(element);
+    const ariaLabel = ElementSelector.getAriaLabel(element);
+    const name = ElementSelector.getName(element);
+    const text =
+      stepType === "INPUT" ? "" : ElementSelector.getOwnText(element);
 
     return {
       id,
       className,
       xpath,
+      testId,
+      ariaLabel,
+      name,
+      text,
     };
   }
 }

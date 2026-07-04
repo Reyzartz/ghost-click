@@ -10,12 +10,16 @@ export interface BaseMacroStep {
   retryInterval: number;
 }
 
-export type ElementSelectorType = "id" | "className" | "xpath";
+export type ResolvableStepType = "CLICK" | "INPUT" | "KEYPRESS";
 
 export interface TargetElementSelector {
   id: string;
   className: string;
   xpath: string;
+  testId?: string;
+  ariaLabel?: string;
+  name?: string;
+  text?: string;
 }
 
 export interface ClickStep extends BaseMacroStep {

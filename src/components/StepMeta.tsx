@@ -12,9 +12,17 @@ interface StepMetaProps {
 function formatSelector(target: TargetElementSelector): string {
   const [prefix, value] = target.id
     ? ["#", target.id]
-    : target.xpath
-      ? ["", target.xpath]
-      : [".", target.className];
+    : target.testId
+      ? ["data-testid=", target.testId]
+      : target.name
+        ? ["name=", target.name]
+        : target.xpath
+          ? ["", target.xpath]
+          : target.ariaLabel
+            ? ["aria-label=", target.ariaLabel]
+            : target.className
+              ? [".", target.className]
+              : ["", target.text ?? ""];
   const full = `${prefix}${value}`;
   return full.length > 24 ? `${full.slice(0, 24)}…` : full;
 }

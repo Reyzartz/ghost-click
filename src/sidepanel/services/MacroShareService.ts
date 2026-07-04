@@ -50,12 +50,25 @@ export class MacroShareService extends BaseService {
                   id: yup.string(),
                   className: yup.string(),
                   xpath: yup.string(),
+                  testId: yup.string(),
+                  ariaLabel: yup.string(),
+                  name: yup.string(),
+                  text: yup.string(),
                 })
                 .required("Target is required")
                 .test(
                   "at-least-one-selector",
-                  "At least one of id, className, or xpath is required",
-                  (value) => !!(value?.id || value?.className || value?.xpath)
+                  "At least one of id, className, xpath, testId, ariaLabel, name, or text is required",
+                  (value) =>
+                    !!(
+                      value?.id ||
+                      value?.className ||
+                      value?.xpath ||
+                      value?.testId ||
+                      value?.ariaLabel ||
+                      value?.name ||
+                      value?.text
+                    )
                 ),
             otherwise: (schema) => schema.optional(),
           }),

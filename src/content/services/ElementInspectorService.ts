@@ -84,7 +84,7 @@ export class ElementInspectorService extends BaseService {
     const target = e.target as HTMLElement;
     if (!target || target === this.overlay) return;
 
-    const selector = ElementSelector.getElementSelector(target);
+    const selector = ElementSelector.getElementSelector(target, "CLICK");
 
     this.logger.info("Element selected", { selector });
 
